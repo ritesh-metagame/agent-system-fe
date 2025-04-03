@@ -34,7 +34,7 @@ import {
 import KYCVerification from "./tables/common/kyc-verification";
 
 //v2 add
-import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
+// import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import {
   Popover,
   PopoverTrigger,

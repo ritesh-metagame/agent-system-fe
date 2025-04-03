@@ -23,8 +23,8 @@ export default function OperatorCreatePlatinumAccount() {
   return (
     <div>
       <CreateAccountForm
-        roleOptions={roleOptions}
-        categoryOptions={categoryOptions}
+      // roleOptions={roleOptions}
+      // categoryOptions={categoryOptions}
       />
     </div>
   );

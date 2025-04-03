@@ -16,7 +16,6 @@ import type {
 } from "../common-column-defs/common-dashboard-part-column";
 import { QRCodeSVG } from "qrcode.react";
 
-import { CommonDashboardProps } from "@/types/dashBoardTypes";
 import { Card, CardContent } from "@/components/ui/card";
 import { TypographyH2 } from "@/components/ui/typographyh2";
 // import { TypographyH4 } from "@/components/ui/typographyh4";
@@ -50,7 +49,7 @@ export default function CommonDashboard({
   welcomeTierName,
   referralLink,
   networkOverviewData,
-}: CommonDashboardProps) {
+}: any) {
   return (
     <div>
       {/* QR Code and Referral Link */}

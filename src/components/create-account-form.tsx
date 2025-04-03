@@ -60,11 +60,7 @@ const createAccountFormSchema = z.object({
   // ),
 });
 
-export default function CreateAccountForm({
-  onSubmit,
-  roleOptions,
-  categoryOptions,
-}: Props) {
+export default function CreateAccountForm({}) {
   const form = useForm<z.infer<typeof createAccountFormSchema>>({
     resolver: zodResolver(createAccountFormSchema),
     defaultValues: {
@@ -95,9 +91,9 @@ export default function CreateAccountForm({
 
   async function handleSubmit(values: z.infer<typeof createAccountFormSchema>) {
     // If you have an onSubmit prop, call it with full form values if needed.
-    if (onSubmit) {
-      onSubmit(values);
-    }
+    // if (onSubmit) {
+    //   onSubmit(values);
+    // }
     console.log("Full Form Values:", values);
 
     // Extract only the fields needed by your API
