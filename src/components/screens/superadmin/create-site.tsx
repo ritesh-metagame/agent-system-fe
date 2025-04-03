@@ -50,7 +50,7 @@ export default function CreateSiteForm() {
   async function handleSubmit(values: z.infer<typeof createSiteFormSchema>) {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/v1/site/create",
+        "http://54.169.139.130:8080/api/v1/site/create",
         values,
         {
           headers: {

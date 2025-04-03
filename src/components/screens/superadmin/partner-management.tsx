@@ -35,13 +35,16 @@ export default function PartnerManagement({}: Props) {
 
   useEffect(() => {
     const fetchPartners = async () => {
-      const res = await fetch("http://localhost:8080/api/v1/user/partners", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const res = await fetch(
+        "http://54.169.139.130:8080/api/v1/user/partners",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       if (!res.ok) {
         console.error("Error fetching partners:", res.statusText);

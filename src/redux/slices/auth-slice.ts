@@ -97,7 +97,7 @@ export const login =
   async (dispatch: typeof store.dispatch) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/v1/auth/login",
+        "http://54.169.139.130:8080/api/v1/auth/login",
         {
           username,
           password,
