@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -645,6 +646,9 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                         max="100"
                       />
                     </FormControl>
+                    <FormDescription>
+                      Operator commissions can not more than 5%
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -666,6 +670,9 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                         max="100"
                       />
                     </FormControl>
+                    <FormDescription>
+                      Operator commissions can not more than 5%
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -687,6 +694,9 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                         max="100"
                       />
                     </FormControl>
+                    <FormDescription>
+                      Operator commissions can not more than 5%
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

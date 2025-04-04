@@ -16,7 +16,7 @@ export const PageBreadcrumb = () => {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbPage className="text-white font-medium">
+          <BreadcrumbPage className="text-foreground font-medium">
             {pagePaths.get(pathname as Paths)}
           </BreadcrumbPage>
         </BreadcrumbItem>

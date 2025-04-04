@@ -29,13 +29,13 @@ export function generateSidebarMenusBasedOnRole(role: UserRole) {
           ...(role == UserRole.SUPER_ADMIN
             ? [
                 {
-                  title: "Manage Sites",
-                  url: Paths.MANAGE_SITES,
-                },
-                {
                   title: Pages.CREATE_SITE,
                   url: Paths.CREATE_SITE,
                   isActive: true,
+                },
+                {
+                  title: "Manage Sites",
+                  url: Paths.MANAGE_SITES,
                 },
                 {
                   title: "All User",
