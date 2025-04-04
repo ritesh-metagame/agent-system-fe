@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -14,53 +14,193 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import { RootState, useSelector } from "@/redux/store";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+  DialogTrigger,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import KYCVerification from "./tables/common/kyc-verification";
+
+//v2 add
+// import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { Circle, CircleDot, ChevronDown } from "lucide-react"; // Added ChevronDown
 import {
   Select,
+  SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectContent,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Check } from "lucide-react"; // Added Check icon for multi-select
+import { Checkbox } from "@/components/ui/checkbox"; // Import Checkbox component
+import axios from "axios";
+import { MultiSelect } from "@/components/ui/multi-select"; // Import MultiSelect component
+import { useRouter } from "next/navigation";
+//v2 ends
 
 type Props = {
   onSubmit?: (values: z.infer<typeof createAccountFormSchema>) => void;
-  roleOptions: string[];
-  categoryOptions: string[];
 };
 
 const createAccountFormSchema = z.object({
-  firstName: z.string().min(2, { message: "First name is required" }),
-  lastName: z.string().min(2, { message: "Last name is required" }),
-  username: z.string().min(2, { message: "Username is required" }),
+  firstName: z
+    .string()
+    .min(2, { message: "First name must be at least 2 characters" }),
+  lastName: z
+    .string()
+    .min(2, { message: "Last name must be at least 2 characters" }),
+  // username: z
+  //   .string()
+  //   .min(2, { message: "First name must be at least 2 characters" }),
   mobileNumber: z
     .string()
-    .min(10, { message: "Enter a valid mobile number" })
-    .regex(/^\d+$/, { message: "Must contain only numbers" }),
+    .min(10, { message: "Mobile number must be at least 10 digits" })
+    .regex(/^\d+$/, { message: "Mobile number must contain only digits" }),
   bankName: z.string().min(2, { message: "Bank name is required" }),
   accountNumber: z
     .string()
-    .min(5, { message: "Account number must be at least 5 digits" })
-    .regex(/^\d+$/, { message: "Must contain only numbers" }),
+    .min(5, { message: "Account number must be at least 5 characters" })
+    .regex(/^\d+$/, { message: "Account number must contain only digits" }),
+  username: z
+    .string()
+    .min(2, { message: "First name must be at least 2 characters" }),
   password: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters long" }),
-  // role: z.string().min(1, { message: "Role is required" }),
-  // categorySections: z.array(
-  //   z.object({
-  //     category: z.string().min(1, { message: "Category is required" }),
-  //     commissionPercentage: z
-  //       .string()
-  //       .transform((val) => parseFloat(val))
-  //       .refine((val) => !isNaN(val) && val >= 0 && val <= 100, {
-  //         message: "Commission must be between 0 and 100",
-  //       }),
-  //   })
-  // ),
+    .min(8, { message: "Password must be at least 8 characters long" })
+    .regex(/[A-Z]/, {
+      message: "Password must contain at least one uppercase letter",
+    })
+    .regex(/[a-z]/, {
+      message: "Password must contain at least one lowercase letter",
+    })
+    .regex(/\d/, { message: "Password must contain at least one number" })
+    .regex(/[!@#$%^&*]/, {
+      message:
+        "Password must contain at least one special character (!@#$%^&*)",
+    }),
+  eSportsCommission: z
+    .string()
+    .optional()
+    .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
+      message: "Commission percentage must be between 0 and 100",
+    }),
+  sportsBettingCommission: z
+    .string()
+    .optional()
+    .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
+      message: "Commission percentage must be between 0 and 100",
+    }),
+  specialtyGamesCommission: z
+    .string()
+    .optional()
+    .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
+      message: "Commission percentage must be between 0 and 100",
+    }),
+  siteIds: z.array(z.string()),
 });
 
-export default function CreateAccountForm({}) {
+type SiteType = {
+  id: string;
+  name: string;
+  url: string;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+  users: Array<{
+    userId: string;
+    siteId: string;
+    assignedAt: string;
+  }>;
+};
+
+export default function CreateAccountForm({ onSubmit }: Props) {
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [csvPreview, setCsvPreview] = useState<string[][] | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const [sites, setSites] = useState<Record<string, any>[]>([]);
+  const [categories, setCategories] = useState<Record<string, any>[]>([]);
+  const [selectedSiteIds, setSelectedSiteIds] = useState<string[]>([]);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+  console.log("NEXT_PUBLIC_BASE_URL:", BASE_URL);
+
+  console.log(sites);
+
+  // Fetch sites on component mount
+  useEffect(() => {
+    async function fetchSites() {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`${BASE_URL}/site`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        if (response.status !== 200) {
+          throw new Error("Failed to fetch sites");
+        }
+
+        console.log("Sites response:", response.data);
+
+        // Check if response has the expected structure
+        if (
+          response.data &&
+          response.data.data &&
+          Array.isArray(response.data.data)
+        ) {
+          setSites(response.data.data);
+        } else if (response.data && Array.isArray(response.data)) {
+          // Fallback if API directly returns the array
+          setSites(response.data);
+        } else {
+          console.error("Unexpected API response format:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching sites:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchSites();
+  }, [BASE_URL]);
+
+  // Transform sites data for MultiSelect component
+  const siteOptions = sites.map((site) => ({
+    label: site.site.name,
+    value: site.siteId,
+    description: site.site.url,
+  }));
+
+  // Handle site selection changes
+  const handleSiteSelectionChange = (selectedValues: string[]) => {
+    setSelectedSiteIds(selectedValues);
+    form.setValue("siteIds", selectedValues);
+  };
+
   const form = useForm<z.infer<typeof createAccountFormSchema>>({
     resolver: zodResolver(createAccountFormSchema),
     defaultValues: {
@@ -71,45 +211,55 @@ export default function CreateAccountForm({}) {
       bankName: "",
       accountNumber: "",
       password: "",
-      // role: "",
-      // categorySections: [],
+      eSportsCommission: "",
+      sportsBettingCommission: "",
+      specialtyGamesCommission: "",
+      siteIds: [],
     },
   });
 
-  // const { fields, append } = useFieldArray({
-  //   control: form.control,
-  //   name: "categorySections",
-  // });
+  const router = useRouter();
 
-  // // Helper to get selected categories
-  // const selectedCategories = form
-  //   .watch("categorySections")
-  //   .map((c) => c.category);
+  // Handle site selection
+  const toggleSite = (siteId: string) => {
+    setSelectedSiteIds((prev) => {
+      const newSelection = prev.includes(siteId)
+        ? prev.filter((id) => id !== siteId)
+        : [...prev, siteId];
 
-  // Replace this with your actual method for retrieving the token.
-  // const token = "YOUR_AUTHORIZATION_TOKEN";
+      // Update form value
+      form.setValue("siteIds", newSelection);
+      return newSelection;
+    });
+  };
 
   async function handleSubmit(values: z.infer<typeof createAccountFormSchema>) {
     // If you have an onSubmit prop, call it with full form values if needed.
-    // if (onSubmit) {
-    //   onSubmit(values);
-    // }
+    if (onSubmit) {
+      onSubmit(values);
+    }
     console.log("Full Form Values:", values);
 
     // Extract only the fields needed by your API
     const payload = {
       username: values.username,
       password: values.password,
-      firstname: values.firstName,
-      lastname: values.lastName,
+      firstName: values.firstName,
+      lastName: values.lastName,
       mobileNumber: values.mobileNumber,
       bankName: values.bankName,
       accountNumber: values.accountNumber,
+      commissions: {
+        eSports: values.eSportsCommission || undefined,
+        sportsBetting: values.sportsBettingCommission || undefined,
+        specialtyGames: values.specialtyGamesCommission || undefined,
+      },
+      siteIds: selectedSiteIds,
     };
 
     try {
       const response = await fetch(
-        "http://54.169.139.130:8080/api/v1/user/create",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/user/create`,
         {
           method: "POST",
           headers: {
@@ -129,12 +279,55 @@ export default function CreateAccountForm({}) {
         const data = await response.json();
         console.log("Account created successfully:", data);
         // Optionally, perform further actions on success (e.g., navigate away)
+
+        if (data.code === "1004") {
+          router.push("/partner-management");
+        }
       }
     } catch (error) {
       console.error("Network error:", error);
       // Optionally, show a network error message to the user
     }
   }
+
+  function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0] || null;
+    setUploadedFile(file);
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        const rows = text.split("\n").map((row) => row.split(","));
+        setCsvPreview(rows);
+      };
+      reader.readAsText(file);
+    } else {
+      setCsvPreview(null);
+    }
+  }
+
+  function handleRemoveFile() {
+    setUploadedFile(null);
+    setCsvPreview(null);
+  }
+
+  function handlePreview() {
+    setIsDialogOpen(true);
+  }
+
+  function closeDialog() {
+    setIsDialogOpen(false);
+  }
+
+  const options = ["Site 1", "Site 2", "Site 3"]; // Replace with real data
+  const [selected, setSelected] = useState<string[]>([]);
+
+  const toggleSelection = (item: string) => {
+    setSelected((prev) =>
+      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+    );
+  };
 
   return (
     <Card className="w-full max-w-lg mx-auto">
@@ -254,29 +447,108 @@ export default function CreateAccountForm({}) {
               )}
             />
 
-            {/* Role Dropdown */}
-            {/* <FormField
+            {/* Sites Multi-select Dropdown - Using MultiSelect component */}
+            <FormField
               control={form.control}
-              name="role"
+              name="siteIds"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {roleOptions.map((role, index) => (
-                        <SelectItem key={index} value={role}>
-                          {role}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <FormItem className="mb-4">
+                  <FormLabel>Sites</FormLabel>
+                  <FormControl>
+                    {isLoading ? (
+                      <Button
+                        variant="outline"
+                        className="w-full justify-between"
+                        disabled
+                      >
+                        Loading sites...
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    ) : (
+                      <MultiSelect
+                        options={siteOptions}
+                        onValueChange={handleSiteSelectionChange}
+                        defaultValue={selectedSiteIds}
+                        placeholder="Select sites"
+                        variant="inverted"
+                        animation={0}
+                        maxCount={3}
+                      />
+                    )}
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
+
+            {/* Commission Section with Divider */}
+            <div className="pt-4">
+              <h3 className="font-medium text-lg mb-2">Commissions</h3>
+              <Separator className="mb-4" />
+
+              {/* E-Sports Commission */}
+              <FormField
+                control={form.control}
+                name="eSportsCommission"
+                render={({ field }) => (
+                  <FormItem className="mb-4">
+                    <FormLabel>E-Sports Commission (%)</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter commission percentage"
+                        {...field}
+                        type="number"
+                        min="0"
+                        max="100"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Sports Betting Commission */}
+              <FormField
+                control={form.control}
+                name="sportsBettingCommission"
+                render={({ field }) => (
+                  <FormItem className="mb-4">
+                    <FormLabel>Sports Betting Commission (%)</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter commission percentage"
+                        {...field}
+                        type="number"
+                        min="0"
+                        max="100"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Specialty Games Commission */}
+              <FormField
+                control={form.control}
+                name="specialtyGamesCommission"
+                render={({ field }) => (
+                  <FormItem className="mb-4">
+                    <FormLabel>Specialty Games Commission (%)</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter commission percentage"
+                        {...field}
+                        type="number"
+                        min="0"
+                        max="100"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             {/* Submit Button */}
             <Button

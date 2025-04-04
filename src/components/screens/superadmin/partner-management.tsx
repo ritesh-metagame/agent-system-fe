@@ -36,7 +36,7 @@ export default function PartnerManagement({}: Props) {
   useEffect(() => {
     const fetchPartners = async () => {
       const res = await fetch(
-        "http://54.169.139.130:8080/api/v1/user/partners",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/user/partners`,
         {
           method: "GET",
           headers: {

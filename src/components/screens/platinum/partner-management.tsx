@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 
 import {
   platinumnetworkCommissionColumns,
@@ -16,6 +18,11 @@ import { TypographyH2 } from "@/components/ui/typographyh2";
 
 import { DataTable } from "@/components/tables/data-table";
 import Data from "./platinum.json";
+import {
+  partnerColumns,
+  PartnerManagementData,
+} from "@/components/tables/superadmin/network/partner-management-columns";
+import { TypographyH4 } from "@/components/ui/typographyh4";
 
 type Props = {};
 
@@ -27,44 +34,115 @@ const PlatinumNetworkCommissionData: PlatinumNetworkCommissionData[] =
   Data.platinumNetworkCommissionData || [];
 
 export default function PlatinumPartnerManagement({}: Props) {
+  const [partners, setPartners] = React.useState<PartnerManagementData[]>();
+
+  useEffect(() => {
+    const fetchPartners = async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/user/partners`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        console.error("Error fetching partners:", res.statusText);
+        return;
+      }
+
+      const data = await res.json();
+
+      console.log("Fetched partners:", data.data);
+
+      const partnersList = data.data.map((p: any) => ({
+        username: p.username,
+        role: p.role.name,
+        mobileNumber: p.mobileNumber,
+        bankName: p.bankName,
+        accountNumber: p.accountNumber,
+        createdAt: new Date(p.createdAt).toLocaleDateString(),
+      }));
+
+      console.log("Mapped partners:", partnersList);
+
+      setPartners(partnersList);
+    };
+
+    fetchPartners();
+  }, []);
+
   return (
     <div>
-      <div className="container mb-10">
-        <div className="mb-10">
-          <TypographyH2 className="mb-4">Network Stats</TypographyH2>
+      <div className="mb-10">
+        <TypographyH2 className="mb-4">Partners</TypographyH2>
+        <div className="mb-4">
           <DataTable
-            columns={platinumnetworkStatsColumns}
-            data={PlatinumNetworkStatsData}
-            // data={[]}
-            columnWidths={["250px", "250px", "250px"]}
-            tooltips={{
-              gpPending: "As of available cutoff period",
-            }}
+            columns={partnerColumns}
+            data={(partners as any) ?? []}
+            columnWidths={[
+              "100px",
+              "100px",
+              "150px",
+              "150px",
+              "200px",
+              "150px",
+            ]}
           />
         </div>
-
+        {/* <div className="mb-4">
+              <DataTable
+                columns={partnerManagementColumns}
+                data={allNetworkStatsData}
+                columnWidths={[
+                  "300px",
+                  "250px",
+                  "150px",
+                  "150px",
+                  "150px",
+                  "150px",
+                  "150px",
+                ]}
+              />
+            </div>
+            <DataTable
+              columns={partnerManagementColumns}
+              data={operatorWiseNetworkStatsData}
+              columnWidths={[
+                "300px",
+                "250px",
+                "150px",
+                "150px",
+                "150px",
+                "150px",
+                "150px",
+              ]}
+            />
+          </div>
+          <div className="mb-10">
+            <div className="mb-4">
+              <TypographyH2 className="mb-2">Network Commissions</TypographyH2>
+            </div>
+            <div className="mb-4">
+              <DataTable
+                columns={networkCommissionColumns}
+                data={networkCommissionData}
+                columnWidths={["300px", "250px", "150px", "150px", "150px"]}
+                tooltips={{
+                  pendingCommission: "As of available cutoff period",
+                }}
+              />
+            </div>
+          </div> */}
         <div className="mb-10">
-          <TypographyH2 className="mb-4">Network Commission</TypographyH2>
-
-          <DataTable
-            columns={platinumnetworkCommissionColumns}
-            // data={platinumNetworkOverviewData}
-            data={PlatinumNetworkCommissionData}
-            columnWidths={["250px", "250px", "250px", "250px", "250px"]}
-            tooltips={{
-              pendingCommission: "As of available cutoff period",
-            }}
-          />
-        </div>
-
-        <div className="mb-10">
-          <div className="flex items-center gap-4">
-            <TypographyH2 className="mb-4">
-              Cutof Period Available For settlement
-            </TypographyH2>
-            <p className="text-md font-medium text-gray-700">
-              Feb 1 - Feb 15, 2025
-            </p>
+          <div className="mb-4">
+            <TypographyH4 className="mb-2">
+              Cutoff period available for settlement:{" "}
+              <span className="text-gray-500">Feb 1 - Feb 15, 2025</span>
+            </TypographyH4>
           </div>
         </div>
       </div>

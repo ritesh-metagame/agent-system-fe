@@ -26,7 +26,7 @@ export default function SuperAdminManageSites() {
 
   useEffect(() => {
     const fetchSites = async () => {
-      const res = await fetch("http://54.169.139.130:8080/api/v1/site", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/site`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

@@ -90,14 +90,14 @@ export const {
   setUser,
   clearAuthLoading,
 } = authSlice.actions;
-const API_URL = process.env.BASE_URL;
+const API_URL = process.env.NEXT_PUBLIC_BASE_URL;
 // Thunk
 export const login =
   (username: string, password: string) =>
   async (dispatch: typeof store.dispatch) => {
     try {
       const response = await axios.post(
-        "http://54.169.139.130:8080/api/v1/auth/login",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`,
         {
           username,
           password,
