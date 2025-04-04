@@ -38,7 +38,7 @@ export function generateSidebarMenusBasedOnRole(role: UserRole) {
                   url: Paths.MANAGE_SITES,
                 },
                 {
-                  title: "All User",
+                  title: "All Users",
                   url: Paths.ALL_USERS,
                 },
               ]
