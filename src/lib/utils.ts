@@ -38,7 +38,7 @@ export function generateSidebarMenusBasedOnRole(role: UserRole) {
                   isActive: true,
                 },
                 {
-                  title: "All User",
+                  title: "All Users",
                   url: Paths.ALL_USERS,
                 },
               ]
@@ -74,15 +74,24 @@ export function generateSidebarMenusBasedOnRole(role: UserRole) {
           //     ]
           //   : []),
           //v2 ends
-          {
-            title: Pages.PARTNER_MANAGEMENT,
-            url: Paths.PARTNER_MANAGEMENT,
-            isActive: true,
-          },
-          {
-            title: Pages.APPROVE_AGENTS,
-            url: Paths.APPROVE_AGENTS,
-          },
+          ...(role !== UserRole.GOLD
+            ? [
+                {
+                  title: Pages.PARTNER_MANAGEMENT,
+                  url: Paths.PARTNER_MANAGEMENT,
+                  isActive: true,
+                },
+                {
+                  title: Pages.APPROVE_AGENTS,
+                  url: Paths.APPROVE_AGENTS,
+                },
+              ]
+            : [
+                {
+                  title: Pages.PLAYER_MANAGEMENT,
+                  url: Paths.PLAYER_MANAGEMENT,
+                },
+              ]),
         ],
       },
       // {

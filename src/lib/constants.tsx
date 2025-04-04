@@ -62,6 +62,7 @@ export enum Pages {
   MANAGE_SITES = "Manage Sites",
   MANAGE_COMMISSION = "Manage Commission",
   ALL_USERS = "All Users",
+  PLAYER_MANAGEMENT = "Player Management",
 }
 
 export enum Paths {
@@ -78,6 +79,7 @@ export enum Paths {
   MANAGE_SITES = "/manage-sites",
   MANAGE_COMMISSION = "/manage-commission",
   ALL_USERS = "/all-users",
+  PLAYER_MANAGEMENT = "/player-management",
 }
 
 export const pagePaths = new Map<Paths, Pages>([
@@ -92,6 +94,7 @@ export const pagePaths = new Map<Paths, Pages>([
   [Paths.MANAGE_SITES, Pages.MANAGE_SITES],
   [Paths.MANAGE_COMMISSION, Pages.MANAGE_COMMISSION],
   [Paths.ALL_USERS, Pages.ALL_USERS],
+  [Paths.PLAYER_MANAGEMENT, Pages.PLAYER_MANAGEMENT],
 ]);
 
 export const users = [
@@ -170,6 +173,7 @@ export const RolePageComponentMap: RolePageMap = {
     [Pages.CREATE_OPERATOR_ACCOUNT]: () => <GoldenCreateOperatorAccount />,
     [Pages.PARTNER_MANAGEMENT]: () => <GoldenPartnerManagement />,
     [Pages.COMMISSION_RECENT_CUTOFF]: () => <GoldenCommissionRecentCutoff />,
+    [Pages.PLAYER_MANAGEMENT]: () => <GoldenPartnerManagement />,
   },
   [UserRole.OPERATOR]: {
     [Pages.DASHBOARD]: () => <OperatorDashboard />,
