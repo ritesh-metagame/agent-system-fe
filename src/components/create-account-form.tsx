@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -57,6 +58,7 @@ import { useRouter } from "next/navigation";
 import { format, addDays, addMonths } from "date-fns"; // For date calculations
 import { Calendar as CalendarComponent } from "@/components/ui/calendar"; // Calendar component
 import { Calendar } from "lucide-react"; // Added Calendar icon
+import { UserRole } from "@/lib/constants";
 //v2 ends
 
 type Props = {
@@ -649,6 +651,11 @@ export default function CreateAccountForm({ onSubmit }: Props) {
                         max="100"
                       />
                     </FormControl>
+                    <FormDescription>
+                      {localStorage.getItem("role") == UserRole.OPERATOR
+                        ? "Platinum commission percentage can not be more than 3%"
+                        : "Gold commission percentage can not be more than 2%"}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -670,6 +677,11 @@ export default function CreateAccountForm({ onSubmit }: Props) {
                         max="100"
                       />
                     </FormControl>
+                    <FormDescription>
+                      {localStorage.getItem("role") == UserRole.OPERATOR
+                        ? "Platinum commission percentage can not be more than 3%"
+                        : "Gold commission percentage can not be more than 2%"}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -691,6 +703,11 @@ export default function CreateAccountForm({ onSubmit }: Props) {
                         max="100"
                       />
                     </FormControl>
+                    <FormDescription>
+                      {localStorage.getItem("role") == UserRole.OPERATOR
+                        ? "Platinum commission percentage can not be more than 3%"
+                        : "Gold commission percentage can not be more than 2%"}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

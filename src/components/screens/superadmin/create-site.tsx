@@ -46,19 +46,15 @@ export default function CreateSiteForm() {
 
   // ✅ Get authentication token (stored in localStorage)
   const token = localStorage.getItem("token");
-
+  const url = process.env.NEXT_PUBLIC_BASE_URL;
   async function handleSubmit(values: z.infer<typeof createSiteFormSchema>) {
     try {
-      const response = await axios.post(
-        "http://54.169.139.130:8080/api/v1/site/create",
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post(`${url}/site/create`, values, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response) {
         form.reset(); // Reset form after success

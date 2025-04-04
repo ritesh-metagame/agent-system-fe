@@ -74,7 +74,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                           {item.items.map((item) => (
                             <SidebarMenuItem key={item.title}>
                               <SidebarMenuButton
-                                className={`text-green `}
+                                className={`text-foreground `}
                                 asChild
                                 isActive={item.url === pathname}
                               >
