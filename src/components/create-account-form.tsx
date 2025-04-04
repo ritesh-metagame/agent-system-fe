@@ -54,11 +54,21 @@ import { Checkbox } from "@/components/ui/checkbox"; // Import Checkbox componen
 import axios from "axios";
 import { MultiSelect } from "@/components/ui/multi-select"; // Import MultiSelect component
 import { useRouter } from "next/navigation";
+import { format, addDays, addMonths } from "date-fns"; // For date calculations
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"; // Calendar component
+import { Calendar } from "lucide-react"; // Added Calendar icon
 //v2 ends
 
 type Props = {
   onSubmit?: (values: z.infer<typeof createAccountFormSchema>) => void;
 };
+
+// Define settlement period options
+const settlementPeriods = [
+  { value: "WEEKLY", label: "Weekly" },
+  { value: "BI_WEEKLY", label: "Bi-weekly" },
+  { value: "MONTHLY", label: "Monthly" },
+];
 
 const createAccountFormSchema = z.object({
   firstName: z
@@ -115,6 +125,10 @@ const createAccountFormSchema = z.object({
       message: "Commission percentage must be between 0 and 100",
     }),
   siteIds: z.array(z.string()),
+  settlementPeriod: z.enum(["WEEKLY", "BI_WEEKLY", "MONTHLY"]),
+  settlementStartDate: z.date({
+    required_error: "Please select a start date for settlement",
+  }),
 });
 
 type SiteType = {
@@ -135,6 +149,7 @@ export default function CreateAccountForm({ onSubmit }: Props) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [csvPreview, setCsvPreview] = useState<string[][] | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [settlementEndDate, setSettlementEndDate] = useState<Date | null>(null);
 
   const [sites, setSites] = useState<Record<string, any>[]>([]);
   const [categories, setCategories] = useState<Record<string, any>[]>([]);
@@ -201,6 +216,22 @@ export default function CreateAccountForm({ onSubmit }: Props) {
     form.setValue("siteIds", selectedValues);
   };
 
+  // Calculate end date based on start date and settlement period
+  const calculateEndDate = (startDate: Date, period: string) => {
+    if (!startDate) return null;
+
+    switch (period) {
+      case "WEEKLY":
+        return addDays(startDate, 6); // End date is 6 days after start (7 days total)
+      case "BI_WEEKLY":
+        return addDays(startDate, 13); // End date is 13 days after start (14 days total)
+      case "MONTHLY":
+        return addDays(addMonths(startDate, 1), -1); // Last day of the month
+      default:
+        return null;
+    }
+  };
+
   const form = useForm<z.infer<typeof createAccountFormSchema>>({
     resolver: zodResolver(createAccountFormSchema),
     defaultValues: {
@@ -215,8 +246,21 @@ export default function CreateAccountForm({ onSubmit }: Props) {
       sportsBettingCommission: "",
       specialtyGamesCommission: "",
       siteIds: [],
+      settlementPeriod: "MONTHLY", // Default to monthly
+      settlementStartDate: new Date(), // Default to today
     },
   });
+
+  // Update end date whenever start date or period changes
+  useEffect(() => {
+    const startDate = form.getValues("settlementStartDate");
+    const period = form.getValues("settlementPeriod");
+
+    if (startDate && period) {
+      const endDate = calculateEndDate(startDate, period);
+      setSettlementEndDate(endDate);
+    }
+  }, [form.watch("settlementStartDate"), form.watch("settlementPeriod")]);
 
   const router = useRouter();
 
@@ -255,6 +299,13 @@ export default function CreateAccountForm({ onSubmit }: Props) {
         specialtyGames: values.specialtyGamesCommission || undefined,
       },
       siteIds: selectedSiteIds,
+      settlementDetails: {
+        period: values.settlementPeriod,
+        startDate: format(values.settlementStartDate, "yyyy-MM-dd"),
+        endDate: settlementEndDate
+          ? format(settlementEndDate, "yyyy-MM-dd")
+          : null,
+      },
     };
 
     try {
@@ -480,6 +531,102 @@ export default function CreateAccountForm({ onSubmit }: Props) {
                 </FormItem>
               )}
             />
+
+            {/* Settlement Period Section with Divider */}
+            <div className="pt-4">
+              <h3 className="font-medium text-lg mb-2">Settlement Details</h3>
+              <Separator className="mb-4" />
+
+              {/* Settlement Period */}
+              <FormField
+                control={form.control}
+                name="settlementPeriod"
+                render={({ field }) => (
+                  <FormItem className="mb-4">
+                    <FormLabel>Settlement Period</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select settlement period" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {settlementPeriods.map((period) => (
+                          <SelectItem key={period.value} value={period.value}>
+                            {period.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Settlement Dates - Side by side */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Settlement Start Date */}
+                <FormField
+                  control={form.control}
+                  name="settlementStartDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Starting From</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={`w-full pl-3 text-left font-normal ${
+                                !field.value && "text-muted-foreground"
+                              }`}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <Calendar className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <CalendarComponent
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) => date < new Date()}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Settlement End Date (Auto-calculated, Read-only) */}
+                <div>
+                  <FormLabel>End Date</FormLabel>
+                  <Input
+                    value={
+                      settlementEndDate
+                        ? format(settlementEndDate, "PPP")
+                        : "Auto-calculated"
+                    }
+                    disabled
+                    className="bg-gray-50 h-10"
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                End date is calculated automatically based on the selected
+                period and start date
+              </p>
+            </div>
 
             {/* Commission Section with Divider */}
             <div className="pt-4">
