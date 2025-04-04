@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import {
   platinumnetworkCommissionColumns,
   platinumnetworkStatsColumns,
+  platinumPartnerColumns,
 } from "../../tables/platinum/network/partner-management-columns";
 
 import type {
@@ -63,6 +64,7 @@ export default function PlatinumPartnerManagement({}: Props) {
         role: p.role.name,
         mobileNumber: p.mobileNumber,
         bankName: p.bankName,
+        commissions: p.commissions,
         accountNumber: p.accountNumber,
         createdAt: new Date(p.createdAt).toLocaleDateString(),
       }));
@@ -81,7 +83,7 @@ export default function PlatinumPartnerManagement({}: Props) {
         <TypographyH2 className="mb-4">Partners</TypographyH2>
         <div className="mb-4">
           <DataTable
-            columns={partnerColumns}
+            columns={platinumPartnerColumns}
             data={(partners as any) ?? []}
             columnWidths={[
               "100px",

@@ -41,6 +41,7 @@ import {
 } from "@/components/tables/superadmin/network/partner-management-columns";
 import { TypographyH4 } from "@/components/ui/typographyh4";
 import { TypographyH2 } from "@/components/ui/typographyh2";
+import { operatorPartnerColumns } from "@/components/tables/operator/network/partner-management-columns";
 
 type Props = {};
 
@@ -80,6 +81,7 @@ export default function PartnerManagement({}: Props) {
         mobileNumber: p.mobileNumber,
         bankName: p.bankName,
         accountNumber: p.accountNumber,
+        commissions: p.commissions,
         createdAt: new Date(p.createdAt).toLocaleDateString(),
       }));
 
@@ -97,7 +99,7 @@ export default function PartnerManagement({}: Props) {
         <TypographyH2 className="mb-4">Partners</TypographyH2>
         <div className="mb-4">
           <DataTable
-            columns={partnerColumns}
+            columns={operatorPartnerColumns}
             data={(partners as any) ?? []}
             columnWidths={[
               "100px",

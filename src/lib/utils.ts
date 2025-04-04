@@ -51,20 +51,22 @@ export function generateSidebarMenusBasedOnRole(role: UserRole) {
         title: "Network",
         url: "#",
         items: [
-          {
-            title:
-              role == UserRole.SUPER_ADMIN
-                ? "Create Operator Account"
-                : role == UserRole.PLATINUM
-                ? "Create Gold Account"
-                : role == UserRole.OPERATOR
-                ? "Create Platinum Account"
-                : role == UserRole.GOLD
-                ? "Create Player"
-                : "Create Account",
-            url: Paths.CREATE_OPERATOR_ACCOUNT,
-          },
-          // // v2 starts
+          ...(role !== UserRole.GOLD
+            ? [
+                {
+                  title:
+                    role == UserRole.SUPER_ADMIN
+                      ? "Create Operator Account"
+                      : role == UserRole.PLATINUM
+                      ? "Create Gold Account"
+                      : role == UserRole.OPERATOR
+                      ? "Create Platinum Account"
+                      : "Create Account",
+                  url: Paths.CREATE_OPERATOR_ACCOUNT,
+                },
+                // // v2 starts
+              ]
+            : []),
           // ...(role !== UserRole.SUPER_ADMIN
           //   ? [
           //       {

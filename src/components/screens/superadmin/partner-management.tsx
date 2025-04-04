@@ -62,6 +62,7 @@ export default function PartnerManagement({}: Props) {
         bankName: p.bankName,
         accountNumber: p.accountNumber,
         createdAt: new Date(p.createdAt).toLocaleDateString(),
+        commissions: p.commissions,
       }));
 
       console.log("Mapped partners:", partnersList);

@@ -108,7 +108,7 @@ const createAccountFormSchema = z.object({
       message:
         "Password must contain at least one special character (!@#$%^&*)",
     }),
-  eSportsCommission: z
+  eGamesCommission: z
     .string()
     .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
@@ -244,7 +244,7 @@ export default function CreateAccountForm({ onSubmit }: Props) {
       bankName: "",
       accountNumber: "",
       password: "",
-      eSportsCommission: "",
+      eGamesCommission: "",
       sportsBettingCommission: "",
       specialtyGamesCommission: "",
       siteIds: [],
@@ -296,7 +296,7 @@ export default function CreateAccountForm({ onSubmit }: Props) {
       bankName: values.bankName,
       accountNumber: values.accountNumber,
       commissions: {
-        eSports: values.eSportsCommission || undefined,
+        eGames: values.eGamesCommission || undefined,
         sportsBetting: values.sportsBettingCommission || undefined,
         specialtyGames: values.specialtyGamesCommission || undefined,
       },
@@ -638,10 +638,10 @@ export default function CreateAccountForm({ onSubmit }: Props) {
               {/* E-Sports Commission */}
               <FormField
                 control={form.control}
-                name="eSportsCommission"
+                name="eGamesCommission"
                 render={({ field }) => (
                   <FormItem className="mb-4">
-                    <FormLabel>E-Sports Commission (%)</FormLabel>
+                    <FormLabel>E Games Commission (%)</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Enter commission percentage"
