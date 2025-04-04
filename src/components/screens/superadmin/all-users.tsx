@@ -90,7 +90,7 @@ export default function UserManagement() {
       </div>
 
       <DataTable
-        columnWidths={["120px", "120px", "120px", "120px", "120px", "120px"]}
+        columnWidths={["180px", "180px", "180px", "180px", "180px", "180px"]}
         columns={userTableColumns}
         data={users}
       />
