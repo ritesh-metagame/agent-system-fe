@@ -11,14 +11,11 @@ export interface User {
   }[];
 }
 
-export const userTableColumns: ColumnDef<User>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-  },
+export const userTableColumns: ColumnDef<any>[] = [
   {
     accessorKey: "username",
     header: "Username",
+    cell: ({ row }) => row.original.user?.username || "N/A",
   },
   {
     accessorKey: "role.name",
@@ -28,27 +25,47 @@ export const userTableColumns: ColumnDef<User>[] = [
   {
     accessorKey: "commissions[0].category.name",
     header: "Category",
-    cell: ({ row }) => row.original.commissions?.[0]?.category?.name || "N/A",
+    cell: ({ row }) => row.original?.category?.name || "N/A",
   },
   {
-    accessorKey: "commissions[0].commissionPercentage",
-    header: "Commission(%)",
-    cell: ({ row }) =>
-      row.original.commissions?.[0]?.commissionPercentage || "N/A",
-  },
-
-  {
-    accessorKey: "commissions[0].site.name",
-    header: "Site",
-    cell: ({ row }) => row.original.commissions?.[0]?.site?.name || "N/A",
+    accessorKey: "commissionPercentage",
+    header: "Commission (%)",
+    // cell: ({ row }) =>
+    //   row.original.commissions?.[0]?.commissionPercentage
+    //     ? `${row.original.commissions[0].commissionPercentage}%`
+    //     : "N/A",
   },
   {
-    accessorKey: "site.url",
+    accessorKey: "site.name",
+    header: "Site Name",
+    cell: ({ row }) => row.original.site?.name || "N/A",
+  },
+  {
+    accessorKey: "commissions[0].site.url",
     header: "URL",
     cell: ({ row }) => {
-      const url = row.original.commissions?.[0]?.site?.url || "N/A"; // Ensure safe access
-      const maxLength = 30; // Set desired length
-      return url.length > maxLength ? `${url.substring(0, maxLength)}...` : url;
+      const url = row.original.site?.url;
+      const maxLength = 30; // Adjust the character limit as needed
+
+      return url ? (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-block",
+            maxWidth: "200px", // Adjust width as needed
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+          title={url} // Show full URL on hover
+        >
+          {url.length > maxLength ? `${url.substring(0, maxLength)}...` : url}
+        </a>
+      ) : (
+        "N/A"
+      );
     },
   },
 ];
