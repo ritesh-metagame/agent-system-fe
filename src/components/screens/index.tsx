@@ -27,6 +27,7 @@ export { default as CreateGoldenAccount } from "./platinum/create-golden-account
 export { default as SuperAdminCommissions } from "./superadmin/commissions";
 export { default as SuperAdminTransactions } from "./superadmin/transactions";
 export { default as SuperAdminSettlementHistory } from "./superadmin/settlement-history";
+export { default as AllUser } from "./superadmin/all-users";
 //below operator
 export { default as OperatorCommissions } from "./operator/commissions";
 export { default as OperatorTransactions } from "./operator/transactions";
