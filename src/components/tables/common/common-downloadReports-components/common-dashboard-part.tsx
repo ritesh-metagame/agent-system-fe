@@ -85,7 +85,7 @@ export default function CommonDashboard({
 
           <DataTable
             columns={cutoffPeriodColumns}
-            data={CutoffPeriodData}
+            data={[]}
             columnWidths={["250px", "250px"]}
           />
         </div>
@@ -95,7 +95,7 @@ export default function CommonDashboard({
 
           <DataTable
             columns={networkOverviewColumns}
-            data={networkOverviewData}
+            data={[]}
             columnWidths={["250px", "250px", "250px", "250px", "250px"]}
           />
         </div>
@@ -113,7 +113,7 @@ export default function CommonDashboard({
 
           <DataTable
             columns={overallSummaryColumns}
-            data={OverallSummaryData}
+            data={[]}
             columnWidths={["250px", "250px", "250px", "250px"]}
           />
         </div>
@@ -125,7 +125,7 @@ export default function CommonDashboard({
 
           <DataTable
             columns={eGamesColumns}
-            data={EGamesData}
+            data={[]}
             columnWidths={["250px", "250px", "250px", "250px", "250px"]}
           />
         </div>
@@ -133,11 +133,11 @@ export default function CommonDashboard({
         {/* SportsBetting */}
 
         <div className="mb-10">
-          <TypographyH2 className="mb-4">SportsBetting</TypographyH2>
+          <TypographyH2 className="mb-4">Sports-Betting</TypographyH2>
 
           <DataTable
             columns={sportsbettingColumns}
-            data={SportsbettingData}
+            data={[]}
             columnWidths={["250px", "250px", "250px", "250px", "250px"]}
           />
         </div>

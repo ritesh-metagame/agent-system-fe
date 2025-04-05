@@ -47,7 +47,7 @@ export default function Dashboard({}: Props) {
 
           <DataTable
             columns={platinumtopPerformersAllTimeColumns}
-            data={platinumTopPerformersAllTimeData}
+            data={[]}
             columnWidths={["250px", "250px", "250px"]}
             tooltips={{
               pendingCommission: "As of available cutoff period",
@@ -61,7 +61,7 @@ export default function Dashboard({}: Props) {
 
           <DataTable
             columns={platinumtopPerformersPerCutoffColumns}
-            data={platinumTopPerformersPerCutoffData}
+            data={[]}
             columnWidths={["250px", "250px", "250px"]}
             tooltips={{
               pendingCommission: "As of available cutoff period",
