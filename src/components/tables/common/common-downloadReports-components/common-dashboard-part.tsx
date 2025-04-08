@@ -230,7 +230,7 @@ export default function CommonDashboard({
 
           <DataTable
             columns={networkOverviewColumns}
-            data={[]}
+            data={networkOverviewData}
             columnWidths={["250px", "250px", "250px", "250px", "250px"]}
           />
         </div>

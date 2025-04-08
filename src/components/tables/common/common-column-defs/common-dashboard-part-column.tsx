@@ -32,11 +32,11 @@ export type NetworkOverviewData = {
 
 export const networkOverviewColumns: ColumnDef<NetworkOverviewData>[] = [
   {
-    accessorKey: "network",
+    accessorKey: "role",
     header: "NETWORK",
     cell: ({ row }) => (
       <>
-        <h1 className="font-bold">{row.getValue("network")}</h1>
+        <h1 className="font-bold">{row.getValue("role")}</h1>
       </>
     ),
   },

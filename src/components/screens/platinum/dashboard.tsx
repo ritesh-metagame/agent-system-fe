@@ -60,27 +60,27 @@ export default function Dashboard({}: Props) {
       console.log("Fetched network overview data:", data);
 
       // Transform API response to match our PlatinumNetworkOverviewData type
-      if (data && data.networkOverview && Array.isArray(data.networkOverview)) {
+      if (data && Array.isArray(data)) {
         // Transform API response to match our PlatinumNetworkOverviewData type
-        const formattedData = data.networkOverview
-          .filter((item) => {
-            const role = item.role?.toLowerCase() || "";
-            return (
-              role !== "superadmin" &&
-              role !== "operator" &&
-              role !== "platinum"
-            );
-          })
-          .map((item) => ({
-            role: item.role || "",
-            approved: item.approved || 0,
-            declined: item.declined || 0,
-            suspended: item.suspended || 0,
-          }));
+        // const formattedData = data.networkOverview
+        //   .filter((item) => {
+        //     const role = item.role?.toLowerCase() || "";
+        //     return (
+        //       role !== "superadmin" &&
+        //       role !== "operator" &&
+        //       role !== "platinum"
+        //     );
+        //   })
+        //   .map((item) => ({
+        //     role: item.role || "",
+        //     approved: item.approved || 0,
+        //     declined: item.declined || 0,
+        //     suspended: item.suspended || 0,
+        //   }));
 
-        console.log("Formatted network overview data:", formattedData);
+        console.log("Formatted network overview data:", data);
 
-        setNetworkOverviewData(formattedData);
+        setNetworkOverviewData(data);
         return;
       }
 
