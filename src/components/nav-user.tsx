@@ -17,7 +17,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { RootState, useSelector } from "@/redux/store";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 export function NavUser({
   user,
@@ -33,6 +33,8 @@ export function NavUser({
   const { role, username } = useSelector(
     (state: RootState) => state.authReducer
   );
+
+  const router = useRouter();
 
   return (
     <SidebarMenu>
@@ -72,7 +74,7 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => redirect("/login")}>
+            <DropdownMenuItem onClick={() => router.push("/login")}>
               <LogOut />
               Log out
             </DropdownMenuItem>

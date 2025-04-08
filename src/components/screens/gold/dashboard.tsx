@@ -47,7 +47,7 @@ export default function Dashboard({}: Props) {
           <TypographyH4 className="mb-4">Depositors</TypographyH4>
           <DataTable
             columns={goldtopPerformersDepositsColumns}
-            data={goldTopPerformersDepositsdata}
+            data={[]}
             columnWidths={["250px", "250px", "250px"]}
             tooltips={{
               deposits: "As of available cutoff period",
@@ -61,7 +61,7 @@ export default function Dashboard({}: Props) {
 
           <DataTable
             columns={goldtopPerformersGgrColumns}
-            data={goldTopPerformersGGRdata}
+            data={[]}
             columnWidths={["250px", "250px", "250px"]}
             tooltips={{
               ggr: "As of available cutoff period",

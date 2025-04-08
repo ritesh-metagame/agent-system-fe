@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 // import { Button } from "@/components/ui/button";
 // import {
@@ -21,6 +23,8 @@ import {
 import CommonDashboard from "@/components/tables/common/common-downloadReports-components/common-dashboard-part";
 import Data from "./operator.json";
 import { useSelector } from "@/redux/store";
+import axios from "axios";
+import { PlatinumNetworkOverviewData } from "@/components/tables/platinum/general/dashboard-columns";
 
 type Props = {};
 
@@ -30,7 +34,7 @@ export default function Dashboard({}: Props) {
   const performerOneTimeData: OperatorTopPerformersPerCutoff[] =
     Data.performerOneTimeData || [];
 
-  const networkOverviewData: any[] = Data.networkOverviewData;
+  // const networkOverviewData: any[] = Data.networkOverviewData;
 
   // const performerAllTimeData: OperatorTopPerformersAllTime[] = [
   //   {
@@ -68,9 +72,104 @@ export default function Dashboard({}: Props) {
   //   },
   // ];
 
-  const user = useSelector((state) => state.authReducer.user);
+  // const user = useSelector((state) => state.authReducer.user);
 
-  console.log("user", user);
+  // console.log("user", user);
+
+  const { user } = useSelector((state) => state.authReducer);
+
+  const [allTimeTopPerformersData, setAllTimeTopPerformersData] =
+    React.useState<OperatorTopPerformersAllTime[]>([]);
+
+  const [networkOverviewData, setNetworkOverviewData] = React.useState<
+    PlatinumNetworkOverviewData[]
+  >([]);
+
+  const fetchNetworkOverviewData = async () => {
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      // Fetch data from the API or perform any other async operation
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/network-statistics`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data.data; // Use response.data instead of response.json()
+      console.log("Fetched network overview data:", data);
+
+      // Transform API response to match our PlatinumNetworkOverviewData type
+      if (data && data.networkOverview && Array.isArray(data.networkOverview)) {
+        // Transform API response to match our PlatinumNetworkOverviewData type
+        const formattedData = data.networkOverview
+          .filter((item) => {
+            const role = item.role?.toLowerCase() || "";
+            return role !== "superadmin" && role !== "operator";
+          })
+          .map((item) => ({
+            role: item.role || "",
+            approved: item.approved || 0,
+            declined: item.declined || 0,
+            suspended: item.suspended || 0,
+          }));
+
+        console.log("Formatted network overview data:", formattedData);
+
+        setNetworkOverviewData(formattedData);
+        return;
+      }
+
+      setNetworkOverviewData(data);
+    } catch (error) {
+      console.error("Error fetching network overview data:", error);
+    }
+  };
+
+  const fetchAllTimeTopPerformersData = async () => {
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      // Fetch data from the API or perform any other async operation
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/top-performers/role/${user.role.name}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data; // Use response.data instead of response.json()
+      console.log("Fetched all time top performers data:", data);
+
+      // Transform API response to match our PlatinumTopPerformersAllTimeData type
+      if (data && data.topPerformers && Array.isArray(data.topPerformers)) {
+        const formattedData = data.topPerformers.map((performer: any) => ({
+          platinumName: performer.name || "",
+          pendingCommission: performer.pendingCommission || 0,
+          released: performer.released || 0,
+        }));
+
+        console.log("Formatted all time top performers data:", formattedData);
+
+        setAllTimeTopPerformersData(formattedData);
+        return;
+      }
+
+      setAllTimeTopPerformersData(data);
+    } catch (error) {
+      console.error("Error fetching all time top performers data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllTimeTopPerformersData();
+    fetchNetworkOverviewData();
+  }, []);
 
   return (
     <div className="container mx-auto p-4 space-y-6">
@@ -89,7 +188,7 @@ export default function Dashboard({}: Props) {
 
       <DataTable
         columns={operatorTopPerformersAllTime}
-        data={performerAllTimeData}
+        data={allTimeTopPerformersData}
         tooltips={{
           pendingCommission: "As of available cutoff period",
         }}
@@ -103,7 +202,7 @@ export default function Dashboard({}: Props) {
 
       <DataTable
         columns={operatortopPerformersPerCutoff}
-        data={performerOneTimeData}
+        data={allTimeTopPerformersData}
         tooltips={{
           pendingCommission: "As of available cutoff period",
         }}
