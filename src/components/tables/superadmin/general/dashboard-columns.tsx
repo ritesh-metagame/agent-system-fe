@@ -36,7 +36,7 @@ export const commissionOverviewColumns: ColumnDef<CommissionOverview>[] = [
 ];
 
 export type NetworkStatistics = {
-  id: string;
+  role: string;
   approved: number | string;
   pending: number | string;
   declined: number | string;
@@ -44,11 +44,11 @@ export type NetworkStatistics = {
 
 export const networkStatisticsColumn: ColumnDef<NetworkStatistics>[] = [
   {
-    accessorKey: "id",
+    accessorKey: "role",
     header: "", // Empty header for first column
     cell: ({ row }) => (
       <>
-        <h1 className="font-bold">{row.getValue("id")}</h1>
+        <h1 className="font-bold">{row.getValue("role")}</h1>
       </>
     ), // Display the actual ID value
   },
