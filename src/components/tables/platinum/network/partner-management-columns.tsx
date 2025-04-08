@@ -117,12 +117,12 @@ export const platinumPartnerColumns: ColumnDef<Partners>[] = [
                     <thead className="bg-gray-100">
                       <tr>
                         <th className="border p-2 text-left">Site</th>
-                        <th className="border p-2 text-center">E Games</th>
+                        <th className="border p-2 text-center">eGames</th>
                         <th className="border p-2 text-center">
-                          Sports Betting
+                          Sports-Betting
                         </th>
                         <th className="border p-2 text-center">
-                          Specialty Games
+                          SpecialityGames
                         </th>
                       </tr>
                     </thead>
@@ -131,9 +131,9 @@ export const platinumPartnerColumns: ColumnDef<Partners>[] = [
                         <tr key={index} className="hover:bg-gray-50">
                           <td className="border p-2 font-medium">{siteName}</td>
                           <td className="border p-2 text-center">
-                            {commissionsBySite[siteName]["E Games"] ? (
+                            {commissionsBySite[siteName]["eGames"] ? (
                               <div className="flex flex-col gap-1">
-                                {commissionsBySite[siteName]["E Games"].map(
+                                {commissionsBySite[siteName]["eGames"].map(
                                   (comm, i) => (
                                     <div key={i} className="text-sm">
                                       {comm.percentage}%
@@ -146,10 +146,10 @@ export const platinumPartnerColumns: ColumnDef<Partners>[] = [
                             )}
                           </td>
                           <td className="border p-2 text-center">
-                            {commissionsBySite[siteName]["Sports Betting"] ? (
+                            {commissionsBySite[siteName]["Sports-Betting"] ? (
                               <div className="flex flex-col gap-1">
                                 {commissionsBySite[siteName][
-                                  "Sports Betting"
+                                  "Sports-Betting"
                                 ].map((comm, i) => (
                                   <div key={i} className="text-sm">
                                     {comm.percentage}%
@@ -161,10 +161,10 @@ export const platinumPartnerColumns: ColumnDef<Partners>[] = [
                             )}
                           </td>
                           <td className="border p-2 text-center">
-                            {commissionsBySite[siteName]["Specialty Games"] ? (
+                            {commissionsBySite[siteName]["SpecialityGames"] ? (
                               <div className="flex flex-col gap-1">
                                 {commissionsBySite[siteName][
-                                  "Specialty Games"
+                                  "SpecialityGames"
                                 ].map((comm, i) => (
                                   <div key={i} className="text-sm">
                                     {comm.percentage}%

@@ -115,7 +115,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  No Data Available
                 </TableCell>
               </TableRow>
             )}
@@ -123,6 +123,7 @@ export function DataTable<TData, TValue>({
         </Table>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
+         
     </div>
   );
 }

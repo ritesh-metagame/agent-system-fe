@@ -270,35 +270,35 @@
   "performerAllTimeData": [
     {
       "platinumName": "PLAT-001",
-      "pendingCommission": "Feb 1 - Feb 15, 2025",
-      "released": "100000"
+      "pendingCommission": "100000",
+      "released": "YES"
     },
     {
       "platinumName": "PLAT-002",
-      "pendingCommission": "Feb 16 - Feb 28, 2025",
-      "released": "85000"
+      "pendingCommission": "85000",
+      "released": "NO"
     },
     {
       "platinumName": "PLAT-003",
-      "pendingCommission": "Mar 1 - Mar 15, 2025",
-      "released": "120000"
+      "pendingCommission": "120000",
+      "released": "YES"
     }
   ],
   "performerOneTimeData": [
     {
       "platinumName": "PLAT-001",
-      "pendingCommission": "Feb 1 - Feb 15, 2025",
-      "released": "120000"
+      "pendingCommission": "120000",
+      "released": "NO"
     },
     {
       "platinumName": "PLAT-002",
-      "pendingCommission": "Feb 16 - Feb 28, 2025",
-      "released": "120000"
+      "pendingCommission": "120000",
+      "released": "NO"
     },
     {
       "platinumName": "PLAT-003",
-      "pendingCommission": "Mar 1 - Mar 15, 2025",
-      "released": "120000"
+      "pendingCommission": "120000",
+      "released": "1200NO00"
     }
   ],
   "operatorAllCommissionCutoffData": [

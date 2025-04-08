@@ -55,7 +55,7 @@ export default function Dashboard({}) {
         <TypographyH2 className="mb-4">Operator Statistics</TypographyH2>
         <DataTable
           columns={networkStatisticsColumn}
-          data={data}
+          data={[]}
           columnWidths={["250px", "250px", "250px"]}
         />
       </div>
@@ -70,7 +70,7 @@ export default function Dashboard({}) {
         <div className="mb-4">
           <DataTable
             columns={commissionOverviewColumns}
-            data={dummyCommissionData}
+            data={[]}
             columnWidths={["250px", "250px"]}
             tooltips={{
               pendingCommission: "As of Available cutoff period",
@@ -79,7 +79,7 @@ export default function Dashboard({}) {
         </div>
         <DataTable
           columns={financialOverviewColumns}
-          data={financialOverviewData}
+          data={[]}
           columnWidths={["250px", "250px", "250px", "250px"]}
           tooltips={{
             pendingCommission: "As of Available cutoff period",
@@ -88,10 +88,10 @@ export default function Dashboard({}) {
       </div>
       <div className="mb-4">
         <TypographyH2 className="mb-2">Per Category</TypographyH2>
-        <TypographyH4 className="mb-2">E-Games</TypographyH4>
+        <TypographyH4 className="mb-2">eGames</TypographyH4>
         <DataTable
           columns={categoryFinancialOverviewColumns}
-          data={categoryFinancialOverviewData}
+          data={[]}
           columnWidths={["250px", "250px", "250px", "250px", "150px"]}
           tooltips={{
             pendingCommission: "As of Available cutoff period",
@@ -102,7 +102,7 @@ export default function Dashboard({}) {
         <TypographyH4 className="mb-2">Sports Betting</TypographyH4>
         <DataTable
           columns={sportsBettingOverviewColumns}
-          data={sportsBettingOverviewData}
+          data={[]}
           columnWidths={["250px", "250px", "250px", "250px", "150px"]}
           tooltips={{
             pendingCommission: "As of Available cutoff period",
@@ -114,7 +114,7 @@ export default function Dashboard({}) {
         <TypographyH4 className="mb-2">All Time</TypographyH4>
         <DataTable
           columns={topPerformersColumns}
-          data={topPerformersData}
+          data={[]}
           columnWidths={["250px", "250px", "250px"]}
           tooltips={{
             pendingCommission: "As of Available cutoff period",
@@ -124,7 +124,7 @@ export default function Dashboard({}) {
           <TypographyH4 className="mb-2">Per Cutoff</TypographyH4>
           <DataTable
             columns={topPerformersColumns}
-            data={topPerformersDataPerCutoff}
+            data={[]}
             columnWidths={["250px", "250px", "250px"]}
             tooltips={{
               pendingCommission: "As of Available cutoff period",
@@ -137,14 +137,14 @@ export default function Dashboard({}) {
         <TypographyH4 className="mb-2">Deposits</TypographyH4>
         <DataTable
           columns={topPlayersDepositsColumns}
-          data={topPlayersDepositsData}
+          data={[]}
           columnWidths={["250px", "250px", "250px", "250px"]}
         />
         <div className="mt-4">
           <TypographyH4 className="mb-2">GGR</TypographyH4>
           <DataTable
             columns={topPlayersGGRColumns}
-            data={topPlayersGGRData}
+            data={[]}
             columnWidths={["250px", "250px", "250px", "250px"]}
             tooltips={{
               pendingCommission: "As of Available cutoff period",

@@ -636,7 +636,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                 name="eGamesCommission"
                 render={({ field }) => (
                   <FormItem className="mb-4">
-                    <FormLabel>E Games Commission (%)</FormLabel>
+                    <FormLabel>eGames Commission (%)</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Enter commission percentage"
@@ -660,7 +660,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                 name="sportsBettingCommission"
                 render={({ field }) => (
                   <FormItem className="mb-4">
-                    <FormLabel>Sports Betting Commission (%)</FormLabel>
+                    <FormLabel>Sports-Betting Commission (%)</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Enter commission percentage"
@@ -684,7 +684,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                 name="specialtyGamesCommission"
                 render={({ field }) => (
                   <FormItem className="mb-4">
-                    <FormLabel>Specialty Games Commission (%)</FormLabel>
+                    <FormLabel>SpecialityGames Commission (%)</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Enter commission percentage"
