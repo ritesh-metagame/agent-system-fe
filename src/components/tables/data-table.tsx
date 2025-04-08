@@ -76,7 +76,7 @@ export function DataTable<TData, TValue>({
 
                         {tooltip && (
                           <div className="relative group">
-                            <CircleHelp className="h-4 w-4 text-gray-400 cursp" />
+                            <CircleHelp className="h-4 w-4 text-gray-400" />
                             <div className="absolute z-10 invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 left-0 transform -translate-x-1/4 -translate-y-full w-48 min-w-max">
                               {tooltip}
                             </div>
