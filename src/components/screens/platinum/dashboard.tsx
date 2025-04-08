@@ -129,6 +129,7 @@ export default function Dashboard({}: Props) {
 
   useEffect(() => {
     fetchAllTimeTopPerformersData();
+    fetchNetworkOverviewData();
   }, []);
 
   return (
