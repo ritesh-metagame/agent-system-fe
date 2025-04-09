@@ -63,41 +63,12 @@ export default function CommonDashboard({
   const token = localStorage.getItem("token");
   console.log("token:", token);
 
-  // useEffect(() => {
-  //   const fetchTransactions = async (category: string, agent: string) => {
-  //     try {
-  //       const response = await axios.get(
-  //         "http://localhost:8080/api/v1/user/transactionsByCategory",
-  //         {
-  //           params: { categoryName: category, agent },
-  //           headers: {
-  //             Authorization: `Bearer ${token}`, // Replace `yourToken` with the actual token variable
-  //           },
-  //         }
-  //       );
-  //       return response.data;
-  //     } catch (error) {
-  //       console.error(`Error fetching ${category} transactions:`, error);
-  //       return [];
-  //     }
-  //   };
-
-  //   const loadData = async () => {
-  //     const eGames = await fetchTransactions("eGames", userRole);
-  //     const sports = await fetchTransactions("Sports-Betting", userRole);
-
-  //     setEGamesData(eGames);
-  //     setSportsBettingData(sports);
-  //   };
-
-  //   loadData();
-  // }, []);
-
   useEffect(() => {
     const fetchTransactions = async (category: string, agent: string) => {
+      console.log("agent:", agent);
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/v1/user/transactionsByCategory",
+          `${process.env.NEXT_PUBLIC_BASE_URL}/user/transactionsByCategory`,
           {
             params: { categoryName: category, agent },
             headers: {
@@ -114,9 +85,11 @@ export default function CommonDashboard({
     };
 
     const formatCurrency = (value: number): string => {
-      return `$${value.toLocaleString(undefined, {
+      return new Intl.NumberFormat("en-PH", {
+        style: "currency",
+        currency: "PHP",
         minimumFractionDigits: 2,
-      })}`;
+      }).format(value);
     };
 
     const getSummary = (data: any[]) => {
@@ -143,29 +116,29 @@ export default function CommonDashboard({
         {
           item: "TOTAL BETS",
           dailyOverview: formatCurrency(totalBets),
-          pendingSettlement: "$0",
-          previousSettled: "$0",
+          pendingSettlement: "0",
+          previousSettled: "0",
           summary: formatCurrency(totalBets),
         },
         {
           item: "TOTAL WINNINGS",
           dailyOverview: formatCurrency(totalWinnings),
-          pendingSettlement: "$0",
-          previousSettled: "$0",
+          pendingSettlement: "0",
+          previousSettled: "0",
           summary: formatCurrency(totalWinnings),
         },
         {
           item: "GGR",
           dailyOverview: formatCurrency(ggr),
-          pendingSettlement: "$0",
-          previousSettled: "$0",
+          pendingSettlement: "0",
+          previousSettled: "0",
           summary: formatCurrency(ggr),
         },
         {
           item: "GROSS COMMISSIONS",
           dailyOverview: formatCurrency(grossCommissions),
-          pendingSettlement: "$0",
-          previousSettled: "$0",
+          pendingSettlement: "0",
+          previousSettled: "0",
           summary: formatCurrency(grossCommissions),
         },
       ];
