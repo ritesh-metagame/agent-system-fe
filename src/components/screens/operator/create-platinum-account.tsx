@@ -1,28 +1,15 @@
-// import CreateAccountForm from "@/components/create-account-form";
-// import React from "react";
-
-// type Props = {};
-
-// export default function OperatorCreatePlatinumAccount({}: Props) {
-//   return (
-//     <div>
-//       <CreateAccountForm />
-
-//       {/* <p>tesxt</p> */}
-//     </div>
-//   );
-// }
+import CreateAccountFormWithCommissionPeriod from "@/components/create-account-form";
 import CreateAccountForm from "@/components/create-account-form";
 import React from "react";
 
 export default function OperatorCreatePlatinumAccount() {
   // Correct role and category options
   const roleOptions = ["Platinum", "Gold"];
-  const categoryOptions = ["Sports Betting", "eGames", "Speciality Games"];
+  const categoryOptions = ["Sports-Betting", "eGames", "SpecialityGames"];
 
   return (
     <div>
-      <CreateAccountForm
+      <CreateAccountFormWithCommissionPeriod
       // roleOptions={roleOptions}
       // categoryOptions={categoryOptions}
       />

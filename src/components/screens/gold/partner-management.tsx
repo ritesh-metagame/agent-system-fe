@@ -31,11 +31,19 @@ export default function PlatinumPartnerManagement({}: Props) {
       <div className="container mb-10">
         <div className="mb-10">
           <TypographyH2 className="mb-4">Network Stats</TypographyH2>
-          <DataTable
+          <div className="flex items-center justify-between w-[200px] mb-4">
+            <div className="font-bold border-2 p-2 rounded-l-md w-[100px]">
+              PLAYERS
+            </div>
+            <div className="border-2 p-2 rounded-r-md w-[100px] text-center">
+              _
+            </div>
+          </div>
+          {/* <DataTable
             columns={goldNetworkStatsColumns}
             data={goldNetworkStatsData}
             columnWidths={["250px"]}
-          />
+          /> */}
         </div>
 
         <div className="mb-10">
@@ -43,7 +51,7 @@ export default function PlatinumPartnerManagement({}: Props) {
 
           <DataTable
             columns={goldnetworkCommissionColumns}
-            data={goldNetworkCommissionData}
+            data={[]}
             columnWidths={["250px", "250px", "250px", "250px", "250px"]}
             tooltips={{
               pendingCommission: "As of available cutoff period",

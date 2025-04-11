@@ -89,7 +89,6 @@ export default function Dashboard({}: Props) {
     try {
       const accessToken = localStorage.getItem("token");
 
-      // Fetch data from the API or perform any other async operation
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}/network-statistics`,
         {
@@ -99,33 +98,31 @@ export default function Dashboard({}: Props) {
           },
         }
       );
-      const data = response.data.data; // Use response.data instead of response.json()
-      console.log("Fetched network overview data: 1", data);
+      const data = response.data.data;
 
-      // Transform API response to match our PlatinumNetworkOverviewData type
-      if (data && Array.isArray(data)) {
-        // Transform API response to match our PlatinumNetworkOverviewData type
-        // const formattedData = data.networkOverview
-        //   .filter((item) => {
-        //     const role = item.role?.toLowerCase() || "";
-        //     return role !== "superadmin" && role !== "operator";
-        //   })
-        //   .map((item) => ({
-        //     role: item.role || "",
-        //     approved: item.approved || 0,
-        //     declined: item.declined || 0,
-        //     suspended: item.suspended || 0,
-        //   }));
+      if (data && typeof data === "object") {
+        const formattedData = Object.entries(data).map(
+          ([role, stats]: [string, any]) => ({
+            network: role.charAt(0).toUpperCase() + role.slice(1),
+            approved: stats.approved || 0,
+            pending: stats.pending || 0,
+            suspended: stats.suspended || 0,
+            total: stats.total || 0,
+            summary: `${stats.approved || 0} Approved, ${
+              stats.pending || 0
+            } Pending, ${stats.suspended || 0} Suspended`,
+          })
+        );
 
-        console.log("Formatted network overview data:", data);
-
-        setNetworkOverviewData(data);
+        console.log("Formatted network overview data:", formattedData);
+        setNetworkOverviewData(formattedData);
         return;
       }
 
-      setNetworkOverviewData(data);
+      setNetworkOverviewData([]);
     } catch (error) {
       console.error("Error fetching network overview data:", error);
+      setNetworkOverviewData([]);
     }
   };
 
@@ -171,6 +168,8 @@ export default function Dashboard({}: Props) {
     fetchNetworkOverviewData();
   }, []);
 
+  console.log("Network Overview Data:10", networkOverviewData);
+
   return (
     <div className="container mx-auto p-4 space-y-6">
       {/* below is the common-dashboard-part rendered */}
@@ -179,35 +178,35 @@ export default function Dashboard({}: Props) {
         referralLink={user?.affiliateLink}
         networkOverviewData={networkOverviewData}
         userRole={user?.role.name}
+        userId={user?.id}
       />
 
       {/* Top Performers All Time */}
-      <CardContent className="p-1  ">
-        {/* <CardContent className=" "> */}
+      {/* <CardContent className="p-1  ">
         <h2 className="text-lg font-semibold">Top Performers All Time</h2>
-      </CardContent>
+      </CardContent> */}
 
-      <DataTable
+      {/* <DataTable
         columns={operatorTopPerformersAllTime}
         data={allTimeTopPerformersData}
         tooltips={{
           pendingCommission: "As of available cutoff period",
         }}
-      />
+      /> */}
 
       {/* Per Cut Off */}
-      <CardContent className="p-1  ">
-        {/* <CardContent className=" "> */}
+      {/* <CardContent className="p-1  ">
         <h2 className="text-lg font-semibold">Per Cut Off</h2>
-      </CardContent>
-
+      </CardContent> */}
+      {/* <CardContent className=" ">
       <DataTable
         columns={operatortopPerformersPerCutoff}
         data={allTimeTopPerformersData}
         tooltips={{
           pendingCommission: "As of available cutoff period",
-        }}
-      />
+        // }}
+        // />
+        */}
     </div>
   );
 }

@@ -74,10 +74,10 @@
   "networkOverviewData": [
     {
       "network": "PLAYERS",
-      "approved": 300,
-      "pending": 25,
-      "suspended": 10,
-      "summary": 335
+      "approved": 0,
+      "pending": 0,
+      "suspended": 0,
+      "summary": 0
     }
   ],
   "overallSummaryData": [

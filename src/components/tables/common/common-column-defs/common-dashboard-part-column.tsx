@@ -32,11 +32,11 @@ export type NetworkOverviewData = {
 
 export const networkOverviewColumns: ColumnDef<NetworkOverviewData>[] = [
   {
-    accessorKey: "role",
+    accessorKey: "network",
     header: "NETWORK",
     cell: ({ row }) => (
       <>
-        <h1 className="font-bold">{row.getValue("role")}</h1>
+        <h1 className="font-bold">{row.getValue("network")}</h1>
       </>
     ),
   },
@@ -66,9 +66,30 @@ export const overallSummaryColumns: ColumnDef<OverallSummaryData>[] = [
       </>
     ),
   },
-  { accessorKey: "pendingSettlement", header: "PENDING SETTLEMENT" },
-  { accessorKey: "previousSettled", header: "PREVIOUS SETTLED (Cumulative)" },
-  { accessorKey: "summary", header: "SUMMARY" },
+  {
+    accessorKey: "pendingSettlement",
+    header: "PENDING SETTLEMENT",
+    cell: ({ row }) => {
+      const value = row.getValue("pendingSettlement");
+      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+    },
+  },
+  {
+    accessorKey: "previousSettled",
+    header: "PREVIOUS SETTLED (Cumulative)",
+    cell: ({ row }) => {
+      const value = row.getValue("previousSettled");
+      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+    },
+  },
+  {
+    accessorKey: "summary",
+    header: "SUMMARY",
+    cell: ({ row }) => {
+      const value = row.getValue("summary");
+      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+    },
+  },
 ];
 
 /**
@@ -92,10 +113,38 @@ export const eGamesColumns: ColumnDef<EGamesData>[] = [
       </>
     ),
   },
-  { accessorKey: "dailyOverview", header: "DAILY OVERVIEW" },
-  { accessorKey: "pendingSettlement", header: "PENDING SETTLEMENT" },
-  { accessorKey: "previousSettled", header: "PREVIOUS SETTLED " },
-  { accessorKey: "summary", header: "SUMMARY" },
+  {
+    accessorKey: "dailyOverview",
+    header: "DAILY OVERVIEW",
+    cell: ({ row }) => {
+      const value = row.getValue("dailyOverview");
+      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+    },
+  },
+  {
+    accessorKey: "pendingSettlement",
+    header: "PENDING SETTLEMENT",
+    cell: ({ row }) => {
+      const value = row.getValue("pendingSettlement");
+      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+    },
+  },
+  {
+    accessorKey: "previousSettled",
+    header: "PREVIOUS SETTLED ",
+    cell: ({ row }) => {
+      const value = row.getValue("previousSettled");
+      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+    },
+  },
+  {
+    accessorKey: "summary",
+    header: "SUMMARY",
+    cell: ({ row }) => {
+      const value = row.getValue("summary");
+      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+    },
+  },
 ];
 
 /**
@@ -119,10 +168,38 @@ export const sportsbettingColumns: ColumnDef<SportsbettingData>[] = [
       </>
     ),
   },
-  { accessorKey: "dailyOverview", header: "DAILY OVERVIEW" },
-  { accessorKey: "pendingSettlement", header: "PENDING SETTLEMENT" },
-  { accessorKey: "previousSettled", header: "PREVIOUS SETTLED " },
-  { accessorKey: "summary", header: "SUMMARY" },
+  {
+    accessorKey: "dailyOverview",
+    header: "DAILY OVERVIEW",
+    cell: ({ row }) => {
+      const value = row.getValue("dailyOverview");
+      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+    },
+  },
+  {
+    accessorKey: "pendingSettlement",
+    header: "PENDING SETTLEMENT",
+    cell: ({ row }) => {
+      const value = row.getValue("pendingSettlement");
+      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+    },
+  },
+  {
+    accessorKey: "previousSettled",
+    header: "PREVIOUS SETTLED ",
+    cell: ({ row }) => {
+      const value = row.getValue("previousSettled");
+      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+    },
+  },
+  {
+    accessorKey: "summary",
+    header: "SUMMARY",
+    cell: ({ row }) => {
+      const value = row.getValue("summary");
+      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+    },
+  },
 ];
 
 /**
