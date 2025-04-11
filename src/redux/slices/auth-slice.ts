@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { store } from "../store";
 import { UserRole, users } from "@/lib/constants";
+import { toast } from "sonner";
 
 interface ImportMetaEnv {
   readonly VITE_API_URL: string;
@@ -107,27 +108,35 @@ export const login =
       console.log("Login response:", response.data);
 
       if (response.status === 200) {
-        const { user, token } = response.data.data;
+        if (response.data.code === "1002") {
+          const { user, token } = response.data.data;
 
-        // Dispatch to Redux Store
-        dispatch(setUsername(user.username));
-        dispatch(setRole(user.role.name));
-        dispatch(setUser(user));
+          // Dispatch to Redux Store
+          dispatch(setUsername(user.username));
+          dispatch(setRole(user.role.name));
+          dispatch(setUser(user));
 
-        // Save credentials to localStorage
-        localStorage.setItem("username", user.username);
-        localStorage.setItem("role", user.role.name);
-        localStorage.setItem("token", token); // Store JWT Token
-        //  for auth
-        // Save user to localStorage
-        localStorage.setItem("user", JSON.stringify(user));
+          // Save credentials to localStorage
+          localStorage.setItem("username", user.username);
+          localStorage.setItem("role", user.role.name);
+          localStorage.setItem("token", token); // Store JWT Token
+          //  for auth
+          // Save user to localStorage
+          localStorage.setItem("user", JSON.stringify(user));
 
-        return true;
+          toast(response.data.message || "Login successful");
+
+          return true;
+        } else {
+          toast(response.data.message || "Login failed");
+          return false;
+        }
       } else {
+        toast(response.data.message || "Login failed");
         return false;
       }
     } catch (error) {
-      console.error("Login failed:", error.response?.data || error.message);
+      toast("Login failed:", error.response?.data || error.message);
       return false;
     }
   };

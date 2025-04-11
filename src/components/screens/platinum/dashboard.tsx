@@ -17,6 +17,7 @@ import CommonDashboard from "@/components/tables/common/common-downloadReports-c
 import Data from "./platinum.json";
 import { useSelector } from "@/redux/store";
 import axios from "axios";
+import { NetworkOverviewData } from "@/components/tables/common/common-column-defs/common-dashboard-part-column";
 
 type Props = {};
 
@@ -60,30 +61,26 @@ export default function Dashboard({}: Props) {
       console.log("Fetched network overview data:", data);
 
       // Transform API response to match our PlatinumNetworkOverviewData type
-      if (data && Array.isArray(data)) {
-        // Transform API response to match our PlatinumNetworkOverviewData type
-        // const formattedData = data.networkOverview
-        //   .filter((item) => {
-        //     const role = item.role?.toLowerCase() || "";
-        //     return (
-        //       role !== "superadmin" &&
-        //       role !== "operator" &&
-        //       role !== "platinum"
-        //     );
-        //   })
-        //   .map((item) => ({
-        //     role: item.role || "",
-        //     approved: item.approved || 0,
-        //     declined: item.declined || 0,
-        //     suspended: item.suspended || 0,
-        //   }));
+      if (data) {
+        const formattedData: NetworkOverviewData[] = [];
 
-        console.log("Formatted network overview data:", data);
+        // Extract data for each role from the response
+        for (const [role, stats] of Object.entries(data)) {
+          if (typeof stats === "object" && stats !== null) {
+            formattedData.push({
+              network: role.charAt(0).toUpperCase() + role.slice(1), // Capitalize role name
+              approved: (stats as any).approved || 0,
+              pending: (stats as any).pending || 0,
+              suspended: (stats as any).declined || 0,
+              summary: "_",
+            });
+          }
+        }
 
-        setNetworkOverviewData(data);
+        console.log("Formatted operator statistics data:", formattedData);
+        setNetworkOverviewData(formattedData);
         return;
       }
-
       setNetworkOverviewData(data);
     } catch (error) {
       console.error("Error fetching network overview data:", error);

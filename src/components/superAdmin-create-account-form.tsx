@@ -35,13 +35,19 @@ import {
 import KYCVerification from "./tables/common/kyc-verification";
 
 //v2 add
-// import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { Circle, CircleDot, ChevronDown, Check, Calendar } from "lucide-react"; // Added ChevronDown, Check, Calendar
+import {
+  Circle,
+  CircleDot,
+  ChevronDown,
+  Check,
+  Calendar,
+  Info,
+} from "lucide-react"; // Added Info icon
 import {
   Select,
   SelectContent,
@@ -50,22 +56,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Checkbox } from "@/components/ui/checkbox"; // Import Checkbox component
+import { Checkbox } from "@/components/ui/checkbox";
 import axios from "axios";
-import { MultiSelect } from "@/components/ui/multi-select"; // Import MultiSelect component
-import { format, addDays, addWeeks, addMonths } from "date-fns"; // For date calculations
-import { Calendar as CalendarComponent } from "@/components/ui/calendar"; // Calendar component
+import { MultiSelect } from "@/components/ui/multi-select";
+import { format, addDays, addWeeks, addMonths } from "date-fns";
 import { useRouter } from "next/navigation";
-//v2 ends
+import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"; // Import tooltip components
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 type Props = {
   onSubmit?: (values: z.infer<typeof createAccountFormSchema>) => void;
 };
 
-// Define settlement period options
+// Define commission computation period options with only monthly and bi-monthly
 const settlementPeriods = [
-  { value: "WEEKLY", label: "Weekly" },
-  { value: "BI_WEEKLY", label: "Bi-weekly" },
+  { value: "BI_MONTHLY", label: "Bi-Monthly" },
   { value: "MONTHLY", label: "Monthly" },
 ];
 
@@ -76,9 +92,6 @@ const createAccountFormSchema = z.object({
   lastName: z
     .string()
     .min(2, { message: "Last name must be at least 2 characters" }),
-  // username: z
-  //   .string()
-  //   .min(2, { message: "First name must be at least 2 characters" }),
   mobileNumber: z
     .string()
     .min(10, { message: "Mobile number must be at least 10 digits" })
@@ -105,29 +118,32 @@ const createAccountFormSchema = z.object({
       message:
         "Password must contain at least one special character (!@#$%^&*)",
     }),
+  // Category-specific commission and commission computation details
   eGamesCommission: z
     .string()
     .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
+  eGamesCommissionComputationPeriod: z.enum(["BI_MONTHLY", "MONTHLY"]),
+
   sportsBettingCommission: z
     .string()
     .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-  specialtyGamesCommission: z
+  sportsBettingCommissionComputationPeriod: z.enum(["BI_MONTHLY", "MONTHLY"]),
+
+  specialityGamesCommission: z
     .string()
     .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
+  specialityGamesCommissionComputationPeriod: z.enum(["BI_MONTHLY", "MONTHLY"]),
+
   siteIds: z.array(z.string()),
-  settlementPeriod: z.enum(["WEEKLY", "BI_WEEKLY", "MONTHLY"]),
-  settlementStartDate: z.date({
-    required_error: "Please select a start date for settlement",
-  }),
 });
 
 type SiteType = {
@@ -172,7 +188,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
         });
 
         if (response.status !== 200) {
-          throw new Error("Failed to fetch sites");
+          toast("Something went wrong");
         }
 
         console.log("Sites response:", response.data);
@@ -226,11 +242,12 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
       accountNumber: "",
       password: "",
       eGamesCommission: "",
+      eGamesCommissionComputationPeriod: "BI_MONTHLY", // Default to bIBI_MONTHLY
       sportsBettingCommission: "",
-      specialtyGamesCommission: "",
+      sportsBettingCommissionComputationPeriod: "BI_MONTHLY", // Default to bIBI_MONTHLY
+      specialityGamesCommission: "",
+      specialityGamesCommissionComputationPeriod: "BI_MONTHLY", // Default to monthly
       siteIds: [],
-      settlementPeriod: "MONTHLY", // Default to monthly
-      settlementStartDate: new Date(), // Default to today
     },
   });
 
@@ -246,33 +263,6 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
       return newSelection;
     });
   };
-
-  // Calculate end date based on start date and settlement period
-  const calculateEndDate = (startDate: Date, period: string) => {
-    if (!startDate) return null;
-
-    switch (period) {
-      case "WEEKLY":
-        return addDays(startDate, 6); // End date is 6 days after start (7 days total)
-      case "BI_WEEKLY":
-        return addDays(startDate, 13); // End date is 13 days after start (14 days total)
-      case "MONTHLY":
-        return addDays(addMonths(startDate, 1), -1); // Last day of the month
-      default:
-        return null;
-    }
-  };
-
-  // Update end date whenever start date or period changes
-  useEffect(() => {
-    const startDate = form.getValues("settlementStartDate");
-    const period = form.getValues("settlementPeriod");
-
-    if (startDate && period) {
-      const endDate = calculateEndDate(startDate, period);
-      setSettlementEndDate(endDate);
-    }
-  }, [form.watch("settlementStartDate"), form.watch("settlementPeriod")]);
 
   async function handleSubmit(values: z.infer<typeof createAccountFormSchema>) {
     // If you have an onSubmit prop, call it with full form values if needed.
@@ -293,16 +283,15 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
       commissions: {
         eGames: values.eGamesCommission || undefined,
         sportsBetting: values.sportsBettingCommission || undefined,
-        specialtyGames: values.specialtyGamesCommission || undefined,
+        specialityGames: values.specialityGamesCommission || undefined,
       },
       siteIds: selectedSiteIds,
-      settlementDetails: {
-        period: values.settlementPeriod,
-        startDate: format(values.settlementStartDate, "yyyy-MM-dd"),
-        endDate: settlementEndDate
-          ? format(settlementEndDate, "yyyy-MM-dd")
-          : null,
-      },
+      eGamesCommissionComputationPeriod:
+        values.eGamesCommissionComputationPeriod,
+      sportsBettingCommissionComputationPeriod:
+        values.sportsBettingCommissionComputationPeriod,
+      specialityGamesCommissionComputationPeriod:
+        values.specialityGamesCommissionComputationPeriod,
     };
 
     try {
@@ -325,9 +314,9 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
         // Optionally, show a message to the user
       } else {
         const data = await response.json();
-        console.log("Account created successfully:", data);
 
         if (data.code === "1004") {
+          toast(data.message ?? "Something went wrong");
           router.push("/partner-management");
         }
         // Optionally, perform further actions on success (e.g., navigate away)
@@ -378,9 +367,9 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
   };
 
   return (
-    <Card className="w-full max-w-lg mx-auto">
+    <Card className="w-full max-w-3xl mx-auto p-6">
       <CardHeader>
-        <CardTitle className="text-xl font-bold text-center">
+        <CardTitle className="text-lg font-bold text-center">
           Create Account
         </CardTitle>
       </CardHeader>
@@ -388,7 +377,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4"
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
           >
             {/* First Name */}
             <FormField
@@ -495,12 +484,12 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
               )}
             />
 
-            {/* Sites Multi-select Dropdown - Using MultiSelect component */}
+            {/* Sites Multi-select Dropdown */}
             <FormField
               control={form.control}
               name="siteIds"
               render={({ field }) => (
-                <FormItem className="mb-4">
+                <FormItem className="col-span-1">
                   <FormLabel>Sites</FormLabel>
                   <FormControl>
                     {isLoading ? (
@@ -529,188 +518,237 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
               )}
             />
 
-            {/* Settlement Period Section with Divider */}
-            <div className="pt-4">
-              <h3 className="font-medium text-lg mb-2">Settlement Details</h3>
-              <Separator className="mb-4" />
-
-              {/* Settlement Period */}
-              <FormField
-                control={form.control}
-                name="settlementPeriod"
-                render={({ field }) => (
-                  <FormItem className="mb-4">
-                    <FormLabel>Settlement Period</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select settlement period" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {settlementPeriods.map((period) => (
-                          <SelectItem key={period.value} value={period.value}>
-                            {period.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Settlement Dates - Side by side */}
-              <div className="grid grid-cols-2 gap-4">
-                {/* Settlement Start Date */}
-                <FormField
-                  control={form.control}
-                  name="settlementStartDate"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Starting From</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
+            {/* Category-wise Commission Inputs */}
+            <div className="col-span-2">
+              <Accordion type="multiple" className="w-full">
+                {/* eGames Category */}
+                <AccordionItem value="egames">
+                  <AccordionTrigger className="text-xl">
+                    eGames
+                  </AccordionTrigger>
+                  <AccordionContent className="flex items-center gap-2 justify-center w-full">
+                    <FormField
+                      control={form.control}
+                      name="eGamesCommission"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>Commission (%)</FormLabel>
                           <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={`w-full pl-3 text-left font-normal ${
-                                !field.value && "text-muted-foreground"
-                              }`}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <Calendar className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
+                            <Input
+                              placeholder="Enter commission percentage"
+                              {...field}
+                            />
                           </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <CalendarComponent
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date < new Date()}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="eGamesCommissionComputationPeriod"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>
+                            Commission Computation Period
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="ml-1 text-gray-500 cursor-pointer">
+                                    ?
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>
+                                    <strong>Bi-Monthly:</strong> Settlement
+                                    occurs twice a month (1st-15th and
+                                    16th-31st).
+                                    <br />
+                                    <strong>Monthly:</strong> Settlement occurs
+                                    once at the end of each month.
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </FormLabel>
+                          <FormControl>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select period" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="BI_MONTHLY">
+                                  Bi-Monthly
+                                </SelectItem>
+                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
 
-                {/* Settlement End Date (Auto-calculated, Read-only) */}
-                <div>
-                  <FormLabel>End Date</FormLabel>
-                  <Input
-                    value={
-                      settlementEndDate
-                        ? format(settlementEndDate, "PPP")
-                        : "Auto-calculated"
-                    }
-                    disabled
-                    className="bg-gray-50 h-10"
-                  />
-                </div>
-              </div>
-              <p className="text-xs text-gray-500 mt-1">
-                End date is calculated automatically based on the selected
-                period and start date
-              </p>
-            </div>
+                {/* Sports Betting Category */}
+                <AccordionItem value="sportsbetting">
+                  <AccordionTrigger className="text-xl">
+                    Sports Betting
+                  </AccordionTrigger>
+                  <AccordionContent className="flex items-center gap-2 justify-center w-full">
+                    <FormField
+                      control={form.control}
+                      name="sportsBettingCommission"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>Commission (%)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Enter commission percentage"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="sportsBettingCommissionComputationPeriod"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>
+                            Commission Computation Period
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="ml-1 text-gray-500 cursor-pointer">
+                                    ?
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>
+                                    <strong>Bi-Monthly:</strong> Settlement
+                                    occurs twice a month (1st-15th and
+                                    16th-31st).
+                                    <br />
+                                    <strong>Monthly:</strong> Settlement occurs
+                                    once at the end of each month.
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </FormLabel>
+                          <FormControl>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select period" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="BI_MONTHLY">
+                                  Bi-Monthly
+                                </SelectItem>
+                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
 
-            {/* Commission Section with Divider */}
-            <div className="pt-4">
-              <h3 className="font-medium text-lg mb-2">Commissions</h3>
-              <Separator className="mb-4" />
-
-              {/* E-Sports Commission */}
-              <FormField
-                control={form.control}
-                name="eGamesCommission"
-                render={({ field }) => (
-                  <FormItem className="mb-4">
-                    <FormLabel>eGames Commission (%)</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter commission percentage"
-                        {...field}
-                        type="number"
-                        min="0"
-                        max="100"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Operator commissions can not more than 5%
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Sports Betting Commission */}
-              <FormField
-                control={form.control}
-                name="sportsBettingCommission"
-                render={({ field }) => (
-                  <FormItem className="mb-4">
-                    <FormLabel>Sports-Betting Commission (%)</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter commission percentage"
-                        {...field}
-                        type="number"
-                        min="0"
-                        max="100"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Operator commissions can not more than 5%
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Specialty Games Commission */}
-              <FormField
-                control={form.control}
-                name="specialtyGamesCommission"
-                render={({ field }) => (
-                  <FormItem className="mb-4">
-                    <FormLabel>SpecialityGames Commission (%)</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter commission percentage"
-                        {...field}
-                        type="number"
-                        min="0"
-                        max="100"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Operator commissions can not more than 5%
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                {/* Specialty Games Category */}
+                <AccordionItem value="specialtygames">
+                  <AccordionTrigger className="text-xl">
+                    Specialty Games
+                  </AccordionTrigger>
+                  <AccordionContent className="flex items-center gap-2 justify-center w-full">
+                    <FormField
+                      control={form.control}
+                      name="specialityGamesCommission"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>Commission (%)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Enter commission percentage"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="specialityGamesCommissionComputationPeriod"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>
+                            Commission Computation Period
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="ml-1 text-gray-500 cursor-pointer">
+                                    ?
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>
+                                    <strong>Bi-Monthly:</strong> Settlement
+                                    occurs twice a month (1st-15th and
+                                    16th-31st).
+                                    <br />
+                                    <strong>Monthly:</strong> Settlement occurs
+                                    once at the end of each month.
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </FormLabel>
+                          <FormControl>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select period" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="BI_MONTHLY">
+                                  Bi-Monthly
+                                </SelectItem>
+                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
 
             {/* Submit Button */}
-            <Button
-              variant="default"
-              type="submit"
-              className="w-full bg-blue-500 text-white"
-            >
-              Submit
-            </Button>
+            <div className="col-span-2 flex justify-end">
+              <Button
+                variant="default"
+                type="submit"
+                className="bg-blue-500 text-white"
+              >
+                Submit
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>

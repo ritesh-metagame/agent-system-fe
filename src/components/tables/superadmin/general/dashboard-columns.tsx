@@ -9,6 +9,72 @@ export type CommissionOverview = {
   releasedAllTime: number | string; // Released all time values
 };
 
+export type commissionRunningTally = {
+  item: string;
+  eGames: number | string;
+  sportsBetting: number | string;
+};
+
+export type CommissionAvailableForSettlement = {
+  item: string;
+  availableForPayout: number | string;
+  settledAllTime: number | string;
+};
+
+export const commissionAvailableForSettlementColumns: ColumnDef<CommissionAvailableForSettlement>[] =
+  [
+    {
+      accessorKey: "item",
+      header: "",
+      cell: ({ row }) => (
+        <span className="font-bold">{row.getValue("item")}</span>
+      ),
+    },
+    {
+      accessorKey: "availableForPayout",
+      header: "COMMISSION AVAILABLE FOR PAYOUT",
+      cell: ({ row }) => {
+        const value = row.getValue("availableForPayout");
+        return typeof value === "number" ? value.toLocaleString() : value;
+      },
+    },
+    {
+      accessorKey: "settledAllTime",
+      header: "SETTLED ALL TIME",
+      cell: ({ row }) => {
+        const value = row.getValue("settledAllTime");
+        return typeof value === "number" ? value.toLocaleString() : value;
+      },
+    },
+  ];
+
+export const commissionRunningTallyColumns: ColumnDef<commissionRunningTally>[] =
+  [
+    {
+      accessorKey: "item",
+      header: "",
+      cell: ({ row }) => (
+        <span className="font-bold">{row.getValue("item")}</span>
+      ),
+    },
+    {
+      accessorKey: "eGames",
+      header: "EGAMES",
+      cell: ({ row }) => {
+        const value = row.getValue("eGames");
+        return typeof value === "number" ? value.toLocaleString() : value;
+      },
+    },
+    {
+      accessorKey: "sportsBetting",
+      header: "SPORTS BETTING",
+      cell: ({ row }) => {
+        const value = row.getValue("sportsBetting");
+        return typeof value === "number" ? value.toLocaleString() : value;
+      },
+    },
+  ];
+
 export const commissionOverviewColumns: ColumnDef<CommissionOverview>[] = [
   {
     accessorKey: "id",
@@ -34,6 +100,39 @@ export const commissionOverviewColumns: ColumnDef<CommissionOverview>[] = [
     },
   },
 ];
+
+export type TotalCommissionPayoutsBreakdown = {
+  metric: string; // Total Deposits, Total Withdrawals, etc.
+  amountPendingSettlement: number | string; // Amount based on latest completed commission periods pending settlement
+  settledAllTime: number | string; // Settled All Time
+};
+
+export const totalCommissionPayoutsBreakdownColumns: ColumnDef<TotalCommissionPayoutsBreakdown>[] =
+  [
+    {
+      accessorKey: "metric",
+      header: "",
+      cell: ({ row }) => (
+        <span className="font-bold">{row.getValue("metric")}</span>
+      ),
+    },
+    {
+      accessorKey: "pendingSettlement",
+      header: "AMOUNT",
+      cell: ({ row }) => {
+        const value = row.getValue("pendingSettlement");
+        return typeof value === "number" ? value.toLocaleString() : value;
+      },
+    },
+    {
+      accessorKey: "allTime",
+      header: "SETTLED ALL TIME",
+      cell: ({ row }) => {
+        const value = row.getValue("allTime");
+        return typeof value === "number" ? value.toLocaleString() : value;
+      },
+    },
+  ];
 
 export type NetworkStatistics = {
   role: string;
@@ -212,32 +311,50 @@ export const sportsBettingOverviewColumns: ColumnDef<SportsBettingOverview>[] =
   ];
 
 export type TopPerformersOverview = {
-  operatorName: string; // Operator name, e.g., ETA-001
-  pendingCommission: number | string; // Pending commission values
-  releasedAllTime: number | string; // Released all time values
+  item: string; // Operator name, e.g., ETA-001
+  playerUserId: string; // Player user ID, e.g., 1234567890
+  operator: string; // Operator name, e.g., ETA-001
+  basedOnPreviouslyCompletedMonth: string; // Based on previously completed month, e.g., 2023-09
+  allTime: string; // All time, e.g., 2023-09-01
 };
 
 export const topPerformersColumns: ColumnDef<TopPerformersOverview>[] = [
   {
-    accessorKey: "operatorName",
-    header: "OPERATOR NAME",
-    cell: ({ row }) => (
-      <span className="font-bold">{row.getValue("operatorName")}</span>
-    ),
+    accessorKey: "item", // Correct key
+    header: "",
+    cell: ({ row }) => {
+      return <b>{row.getValue("item")}</b>;
+    },
   },
   {
-    accessorKey: "pendingCommission",
-    header: "PENDING COMMISSION",
+    accessorKey: "playerUserId",
+    header: "PLAYER USER ID",
     cell: ({ row }) => {
-      const value = row.getValue("pendingCommission");
+      const value = row.getValue("playerUserId");
       return typeof value === "number" ? value.toLocaleString() : value;
     },
   },
   {
-    accessorKey: "releasedAllTime",
-    header: "RELEASED ALL TIME",
+    accessorKey: "operator",
+    header: "OPERATOR",
     cell: ({ row }) => {
-      const value = row.getValue("releasedAllTime");
+      const value = row.getValue("operator");
+      return typeof value === "number" ? value.toLocaleString() : value;
+    },
+  },
+  {
+    accessorKey: "basedOnPreviouslyCompletedMonth",
+    header: "BASED ON PREVIOUSLY COMPLETED MONTH",
+    cell: ({ row }) => {
+      const value = row.getValue("basedOnPreviouslyCompletedMonth");
+      return typeof value === "number" ? value.toLocaleString() : value;
+    },
+  },
+  {
+    accessorKey: "allTime",
+    header: "ALL TIME",
+    cell: ({ row }) => {
+      const value = row.getValue("allTime");
       return typeof value === "number" ? value.toLocaleString() : value;
     },
   },

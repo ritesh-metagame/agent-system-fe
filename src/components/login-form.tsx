@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 import {
   Form,
@@ -51,6 +53,7 @@ export function LoginForm({
   });
 
   const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
@@ -98,11 +101,27 @@ export function LoginForm({
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Password"
-                        type="password"
-                        {...field}
-                      />
+                      <div className="relative">
+                        <Input
+                          placeholder="Password"
+                          type={showPassword ? "text" : "password"}
+                          {...field}
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center text-gray-500 hover:text-gray-700"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setShowPassword(!showPassword);
+                          }}
+                        >
+                          {showPassword ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
+                        </button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
