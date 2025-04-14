@@ -36,6 +36,8 @@ import {
 } from "@/components/screens";
 import CommissionRecentCutsOff from "@/components/screens/operator/commission-recent-cutoff";
 import PartnerManagement from "@/components/screens/operator/partner-management";
+import SuperAdminUpdateAccountForm from "@/components/superadmin-update-account-form";
+import UpdateAccountFormWithCommissionPeriod from "@/components/update-account-form";
 // import AllCommissionCutoffs from "@/components/screens/superadmin/all-commission-cutoffs";
 // import { OperatorDashboard } from "@/components/screens";
 import { JSX } from "react";
@@ -63,6 +65,8 @@ export enum Pages {
   MANAGE_COMMISSION = "Manage Commission",
   ALL_USERS = "All Users",
   PLAYER_MANAGEMENT = "Player Management",
+  PROFILE = "Profile",
+  UPDATE_PARTNER = "Update Partner",
 }
 
 export enum Paths {
@@ -80,6 +84,8 @@ export enum Paths {
   MANAGE_COMMISSION = "/manage-commission",
   ALL_USERS = "/all-users",
   PLAYER_MANAGEMENT = "/player-management",
+  PROFILE = "/profile",
+  UPDATE_PARTNER = "/partner-management/update/:username",
 }
 
 export const pagePaths = new Map<Paths, Pages>([
@@ -96,6 +102,8 @@ export const pagePaths = new Map<Paths, Pages>([
   [Paths.MANAGE_COMMISSION, Pages.MANAGE_COMMISSION],
   [Paths.ALL_USERS, Pages.ALL_USERS],
   [Paths.PLAYER_MANAGEMENT, Pages.PLAYER_MANAGEMENT],
+  [Paths.PROFILE, Pages.PROFILE],
+  [Paths.UPDATE_PARTNER, Pages.UPDATE_PARTNER],
 ]);
 
 export const users = [
@@ -144,6 +152,7 @@ export const RolePageComponentMap: RolePageMap = {
     [Pages.ALL_USERS]: () => <AllUser />,
     [Pages.MANAGE_SITES]: () => <SuperAdminManageSites />,
     [Pages.CREATE_OPERATOR_ACCOUNT]: () => <SuperAdminCreateAccountForm />,
+    [Pages.UPDATE_PARTNER]: () => <SuperAdminUpdateAccountForm />,
     [Pages.PARTNER_MANAGEMENT]: () => <SuperAdminPartnerManagement />,
     [Pages.COMMISSION_RECENT_CUTOFF]: () => (
       <SuperAdminCommissionRecentCutoff />
@@ -157,6 +166,7 @@ export const RolePageComponentMap: RolePageMap = {
   [UserRole.PLATINUM]: {
     [Pages.DASHBOARD]: () => <PlatinumDashboard />,
     [Pages.CREATE_OPERATOR_ACCOUNT]: () => <CreateGoldenAccount />,
+    [Pages.UPDATE_PARTNER]: () => <UpdateAccountFormWithCommissionPeriod />,
     [Pages.PARTNER_MANAGEMENT]: () => <PlatinumPartnerManagement />,
     [Pages.COMMISSION_RECENT_CUTOFF]: () => <PlatinumCommissionRecentCutoff />,
     [Pages.HISTORICAL_CUTOFFS]: () => <PlatinumHistoricalCutoff />,
@@ -179,6 +189,7 @@ export const RolePageComponentMap: RolePageMap = {
   [UserRole.OPERATOR]: {
     [Pages.DASHBOARD]: () => <OperatorDashboard />,
     [Pages.CREATE_OPERATOR_ACCOUNT]: () => <OperatorCreatePlatinumAccount />,
+    [Pages.UPDATE_PARTNER]: () => <UpdateAccountFormWithCommissionPeriod />,
     [Pages.PARTNER_MANAGEMENT]: () => <PartnerManagement />,
     [Pages.COMMISSION_RECENT_CUTOFF]: () => <CommissionRecentCutsOff />,
     [Pages.HISTORICAL_CUTOFFS]: () => <OperatorAllCommissionCutoff />,

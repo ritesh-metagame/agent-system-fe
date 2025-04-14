@@ -1,4 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { formatCurrency } from "@/lib/utils";
 
 /**
  * Cutoff Period Table
@@ -71,7 +72,7 @@ export const overallSummaryColumns: ColumnDef<OverallSummaryData>[] = [
     header: "PENDING SETTLEMENT",
     cell: ({ row }) => {
       const value = row.getValue("pendingSettlement");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
   {
@@ -79,7 +80,7 @@ export const overallSummaryColumns: ColumnDef<OverallSummaryData>[] = [
     header: "PREVIOUS SETTLED (Cumulative)",
     cell: ({ row }) => {
       const value = row.getValue("previousSettled");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
   {
@@ -87,7 +88,7 @@ export const overallSummaryColumns: ColumnDef<OverallSummaryData>[] = [
     header: "SUMMARY",
     cell: ({ row }) => {
       const value = row.getValue("summary");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
 ];
@@ -118,7 +119,7 @@ export const eGamesColumns: ColumnDef<EGamesData>[] = [
     header: "DAILY OVERVIEW",
     cell: ({ row }) => {
       const value = row.getValue("dailyOverview");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
   {
@@ -126,15 +127,15 @@ export const eGamesColumns: ColumnDef<EGamesData>[] = [
     header: "PENDING SETTLEMENT",
     cell: ({ row }) => {
       const value = row.getValue("pendingSettlement");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
   {
     accessorKey: "previousSettled",
-    header: "PREVIOUS SETTLED ",
+    header: "PREVIOUS SETTLED",
     cell: ({ row }) => {
       const value = row.getValue("previousSettled");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
   {
@@ -142,7 +143,7 @@ export const eGamesColumns: ColumnDef<EGamesData>[] = [
     header: "SUMMARY",
     cell: ({ row }) => {
       const value = row.getValue("summary");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
 ];

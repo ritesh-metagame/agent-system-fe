@@ -1,6 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { formatCurrency } from "@/lib/utils";
 
 // Updated type for commission data
 export type CommissionOverview = {
@@ -35,7 +36,7 @@ export const commissionAvailableForSettlementColumns: ColumnDef<CommissionAvaila
       header: "COMMISSION AVAILABLE FOR PAYOUT",
       cell: ({ row }) => {
         const value = row.getValue("availableForPayout");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return formatCurrency(value as any);
       },
     },
     {
@@ -43,7 +44,7 @@ export const commissionAvailableForSettlementColumns: ColumnDef<CommissionAvaila
       header: "SETTLED ALL TIME",
       cell: ({ row }) => {
         const value = row.getValue("settledAllTime");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return formatCurrency(value as any);
       },
     },
   ];
@@ -62,7 +63,7 @@ export const commissionRunningTallyColumns: ColumnDef<commissionRunningTally>[] 
       header: "EGAMES",
       cell: ({ row }) => {
         const value = row.getValue("eGames");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return formatCurrency(value as any);
       },
     },
     {
@@ -70,7 +71,7 @@ export const commissionRunningTallyColumns: ColumnDef<commissionRunningTally>[] 
       header: "SPORTS BETTING",
       cell: ({ row }) => {
         const value = row.getValue("sportsBetting");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return formatCurrency(value as any);
       },
     },
   ];

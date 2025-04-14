@@ -1,4 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { formatCurrency } from "@/lib/utils";
 
 /**
  * Cutoff Period Table
@@ -179,8 +180,49 @@ export const platinumtopPerformersPerCutoffColumns: ColumnDef<PlatinumTopPerform
     {
       accessorKey: "pendingCommission",
       header: "PENDING COMMISSION ",
+      cell: ({ row }) => formatCurrency(row.getValue("pendingCommission")),
     },
-    { accessorKey: "released", header: "RELEASED " },
+    {
+      accessorKey: "released",
+      header: "RELEASED ",
+      cell: ({ row }) => formatCurrency(row.getValue("released")),
+    },
+  ];
+
+/**
+ * Financial Overview Table
+ */
+export type PlatinumFinancialOverview = {
+  item: string;
+  pendingCommission: number | string;
+  releasedAllTime: number | string;
+  totalSummary: number | string;
+};
+
+export const platinumFinancialOverviewColumns: ColumnDef<PlatinumFinancialOverview>[] =
+  [
+    {
+      accessorKey: "item",
+      header: "ITEM",
+      cell: ({ row }) => (
+        <span className="font-bold">{row.getValue("item")}</span>
+      ),
+    },
+    {
+      accessorKey: "pendingCommission",
+      header: "PENDING COMMISSION",
+      cell: ({ row }) => formatCurrency(row.getValue("pendingCommission")),
+    },
+    {
+      accessorKey: "releasedAllTime",
+      header: "RELEASED ALL TIME",
+      cell: ({ row }) => formatCurrency(row.getValue("releasedAllTime")),
+    },
+    {
+      accessorKey: "totalSummary",
+      header: "SUMMARY",
+      cell: ({ row }) => formatCurrency(row.getValue("totalSummary")),
+    },
   ];
 
 /**
@@ -194,4 +236,5 @@ export const tableColumns = {
   platinumsportsbettingColumns,
   platinumtopPerformersAllTimeColumns,
   platinumtopPerformersPerCutoffColumns,
+  platinumFinancialOverviewColumns,
 };

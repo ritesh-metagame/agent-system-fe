@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ColumnDef } from "@tanstack/react-table";
+import { formatCurrency } from "@/lib/utils";
 
 // Define the data structure for the Settlement table
 export type SuperAdiminAllCommissionCutoffsData = {
@@ -36,6 +37,7 @@ export const superAdminAllCommissionCutoffsColumns: ColumnDef<SuperAdiminAllComm
     {
       accessorKey: "amount",
       header: "AMOUNT",
+      cell: ({ row }) => formatCurrency(row.getValue("amount")),
     },
     {
       accessorKey: "status",

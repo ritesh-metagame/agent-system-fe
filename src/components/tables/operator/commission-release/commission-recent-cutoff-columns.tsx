@@ -1,6 +1,8 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/utils";
 
 // Define the shape of the data for Partners
 export type OperatorPartnersData = {
@@ -23,27 +25,34 @@ export const operatorpartnersColumns: ColumnDef<OperatorPartnersData>[] = [
   {
     accessorKey: "totalNetworkBets",
     header: "TOTAL NETWORK BETS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalNetworkBets")),
   },
   {
     accessorKey: "totalNetworkWinnings",
     header: "TOTAL NETWORK WINNINGS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalNetworkWinnings")),
   },
   {
     accessorKey: "totalNetworkGGR",
     header: "TOTAL NETWORK GGR",
+    cell: ({ row }) => formatCurrency(row.getValue("totalNetworkGGR")),
   },
   {
     accessorKey: "totalNetworkGrossCommissions",
     header: "TOTAL NETWORK GROSS COMMISSIONS",
+    cell: ({ row }) =>
+      formatCurrency(row.getValue("totalNetworkGrossCommissions")),
   },
   {
     accessorKey: "totalNetworkDeductions",
     header:
       "TOTAL NETWORK DEDUCTIONS (Payment Gateway Fee Deductions from GP Commissions)",
+    cell: ({ row }) => formatCurrency(row.getValue("totalNetworkDeductions")),
   },
   {
     accessorKey: "totalNetCommissions",
     header: "TOTAL NET COMMISSIONS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalNetCommissions")),
   },
   {
     accessorKey: "partnerBreakdown",
