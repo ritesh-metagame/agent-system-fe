@@ -75,7 +75,7 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => router.push("/update-profile")}>
+            <DropdownMenuItem onClick={() => router.push("/profile")}>
               <Edit />
               Edit Profile
             </DropdownMenuItem>

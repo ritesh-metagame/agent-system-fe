@@ -20,6 +20,13 @@ import { ChevronDown } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Props = {
   onSubmit?: (values: z.infer<typeof createAccountFormSchema>) => void;
@@ -30,27 +37,41 @@ const settlementPeriods = [
   { value: "MONTHLY", label: "Monthly" },
 ];
 
+const mobilePrefixes = [
+  { value: "09", label: "09" },
+  { value: "+639", label: "+639" },
+  { value: "639", label: "639" },
+];
+
 const createAccountFormSchema = z.object({
   firstName: z
     .string()
+    .trim()
     .min(2, { message: "First name must be at least 2 characters" }),
   lastName: z
     .string()
+    .trim()
     .min(2, { message: "Last name must be at least 2 characters" }),
+  mobileNumberPrefix: z.string(),
   mobileNumber: z
     .string()
-    .min(10, { message: "Mobile number must be at least 10 digits" })
-    .regex(/^\d+$/, { message: "Mobile number must contain only digits" }),
-  bankName: z.string().min(2, { message: "Bank name is required" }),
+    .trim()
+    .regex(/^\d{9}$/, {
+      message: "Please enter 9 digits",
+    }),
+  bankName: z.string().trim().min(2, { message: "Bank name is required" }),
   accountNumber: z
     .string()
+    .trim()
     .min(5, { message: "Account number must be at least 5 characters" })
     .regex(/^\d+$/, { message: "Account number must contain only digits" }),
   username: z
     .string()
+    .trim()
     .min(2, { message: "First name must be at least 2 characters" }),
   password: z
     .string()
+    .trim()
     .min(8, { message: "Password must be at least 8 characters long" })
     .regex(/[A-Z]/, {
       message: "Password must contain at least one uppercase letter",
@@ -63,28 +84,24 @@ const createAccountFormSchema = z.object({
       message:
         "Password must contain at least one special character (!@#$%^&*)",
     }),
-  // Category-specific commission and commission computation details
   eGamesCommission: z
     .string()
     .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-
   sportsBettingCommission: z
     .string()
     .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-
   specialtyGamesCommission: z
     .string()
     .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-
   siteIds: z.array(z.string()),
 });
 
@@ -169,6 +186,7 @@ export default function CreateAccountFormWithCommissionPeriod({
       firstName: "",
       lastName: "",
       username: "",
+      mobileNumberPrefix: "09",
       mobileNumber: "",
       bankName: "",
       accountNumber: "",
@@ -186,20 +204,14 @@ export default function CreateAccountFormWithCommissionPeriod({
   };
 
   async function handleSubmit(values: z.infer<typeof createAccountFormSchema>) {
-    // if (onSubmit) {
-    //   onSubmit(values);
-    // }
-
-    console.log(
-      "-----------------------------------------------------------------------------------------------"
-    );
+    const fullMobileNumber = values.mobileNumberPrefix + values.mobileNumber;
 
     const payload = {
       username: values.username,
       password: values.password,
       firstName: values.firstName,
       lastName: values.lastName,
-      mobileNumber: values.mobileNumber,
+      mobileNumber: fullMobileNumber,
       bankName: values.bankName,
       accountNumber: values.accountNumber,
       commissions: {
@@ -284,16 +296,50 @@ export default function CreateAccountFormWithCommissionPeriod({
               )}
             />
 
-            {/* Mobile Number */}
+            {/* Mobile Number with Prefix */}
             <FormField
               control={form.control}
               name="mobileNumber"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel>Mobile Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="1234567890" {...field} />
-                  </FormControl>
+                  <div className="flex gap-2">
+                    <FormField
+                      control={form.control}
+                      name="mobileNumberPrefix"
+                      render={({ field: prefixField }) => (
+                        <Select
+                          value={prefixField.value}
+                          onValueChange={prefixField.onChange}
+                        >
+                          <SelectTrigger className="w-24">
+                            <SelectValue placeholder="Prefix" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {mobilePrefixes.map((prefix) => (
+                              <SelectItem
+                                key={prefix.value}
+                                value={prefix.value}
+                              >
+                                {prefix.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="123456789"
+                        maxLength={9}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^\d]/g, "");
+                          field.onChange(value);
+                        }}
+                      />
+                    </FormControl>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}

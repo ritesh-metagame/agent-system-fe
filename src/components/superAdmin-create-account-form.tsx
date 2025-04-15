@@ -85,25 +85,48 @@ const settlementPeriods = [
   { value: "MONTHLY", label: "Monthly" },
 ];
 
+const mobilePrefixes = [
+  { value: "09", label: "09" },
+  { value: "+639", label: "+639" },
+  { value: "639", label: "639" },
+];
+
 const createAccountFormSchema = z.object({
   firstName: z
     .string()
-    .min(2, { message: "First name must be at least 2 characters" }),
+    .min(2, { message: "First name must be at least 2 characters" })
+    .refine((value) => !value.endsWith(" "), {
+      message: "First name cannot end with a space",
+    }),
   lastName: z
     .string()
-    .min(2, { message: "Last name must be at least 2 characters" }),
+    .min(2, { message: "Last name must be at least 2 characters" })
+    .refine((value) => !value.endsWith(" "), {
+      message: "Last name cannot end with a space",
+    }),
+  mobileNumberPrefix: z.string(),
   mobileNumber: z
     .string()
-    .min(10, { message: "Mobile number must be at least 10 digits" })
-    .regex(/^\d+$/, { message: "Mobile number must contain only digits" }),
-  bankName: z.string().min(2, { message: "Bank name is required" }),
+    .trim()
+    .regex(/^\d{9}$/, {
+      message: "Please enter 9 digits after the prefix",
+    }),
+  bankName: z
+    .string()
+    .min(2, { message: "Bank name is required" })
+    .refine((value) => !value.endsWith(" "), {
+      message: "Bank name cannot end with a space",
+    }),
   accountNumber: z
     .string()
     .min(5, { message: "Account number must be at least 5 characters" })
     .regex(/^\d+$/, { message: "Account number must contain only digits" }),
   username: z
     .string()
-    .min(2, { message: "First name must be at least 2 characters" }),
+    .min(2, { message: "First name must be at least 2 characters" })
+    .refine((value) => !value.endsWith(" "), {
+      message: "Username cannot end with a space",
+    }),
   password: z
     .string()
     .min(8, { message: "Password must be at least 8 characters long" })
@@ -117,6 +140,9 @@ const createAccountFormSchema = z.object({
     .regex(/[!@#$%^&*]/, {
       message:
         "Password must contain at least one special character (!@#$%^&*)",
+    })
+    .refine((value) => !value.endsWith(" "), {
+      message: "Password cannot end with a space",
     }),
   // Category-specific commission and commission computation details
   eGamesCommission: z
@@ -237,6 +263,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
       firstName: "",
       lastName: "",
       username: "",
+      mobileNumberPrefix: mobilePrefixes[0].value, // Default to first prefix
       mobileNumber: "",
       bankName: "",
       accountNumber: "",
@@ -277,7 +304,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
       password: values.password,
       firstName: values.firstName,
       lastName: values.lastName,
-      mobileNumber: values.mobileNumber,
+      mobileNumber: values.mobileNumberPrefix + values.mobileNumber,
       bankName: values.bankName,
       accountNumber: values.accountNumber,
       commissions: {
@@ -314,6 +341,11 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
         // Optionally, show a message to the user
       } else {
         const data = await response.json();
+
+        if (data.code === "2005") {
+          toast(data.message ?? "Something went wrong");
+          return;
+        }
 
         if (data.code === "1004") {
           toast(data.message ?? "Something went wrong");
@@ -414,11 +446,45 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
               control={form.control}
               name="mobileNumber"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel>Mobile Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="1234567890" {...field} />
-                  </FormControl>
+                  <div className="flex gap-2">
+                    <FormField
+                      control={form.control}
+                      name="mobileNumberPrefix"
+                      render={({ field: prefixField }) => (
+                        <Select
+                          value={prefixField.value}
+                          onValueChange={prefixField.onChange}
+                        >
+                          <SelectTrigger className="w-24">
+                            <SelectValue placeholder="Prefix" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {mobilePrefixes.map((prefix) => (
+                              <SelectItem
+                                key={prefix.value}
+                                value={prefix.value}
+                              >
+                                {prefix.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="123456789"
+                        maxLength={9}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^\d]/g, "");
+                          field.onChange(value);
+                        }}
+                      />
+                    </FormControl>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}

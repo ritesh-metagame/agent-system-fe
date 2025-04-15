@@ -85,19 +85,24 @@ const settlementPeriods = [
   { value: "MONTHLY", label: "Monthly" },
 ];
 
+const mobilePrefixes = [
+  { value: "09", label: "09" },
+  { value: "+639", label: "+639" },
+  { value: "639", label: "639" },
+];
+
 const createAccountFormSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
+  mobileNumberPrefix: z.string(),
   mobileNumber: z
     .string()
-    .regex(/^\d+$/, { message: "Mobile number must contain only digits" }),
+    .regex(/^\d{9}$/, { message: "Please enter 9 digits after the prefix" }),
   bankName: z.string().min(2, { message: "Bank name is required" }),
   accountNumber: z
     .string()
     .regex(/^\d+$/, { message: "Account number must contain only digits" }),
-  username: z
-    .string()
-    .min(2, { message: "First name must be at least 2 characters" }),
+  username: z.string(),
   password: z.string(),
   // Category-specific commission and commission computation details
   eGamesCommission: z
@@ -166,6 +171,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
       firstName: "",
       lastName: "",
       username: "",
+      mobileNumberPrefix: "09",
       mobileNumber: "",
       bankName: "",
       accountNumber: "",
@@ -260,11 +266,26 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
           const userSiteIds = user.userSites.map((site: any) => site.siteId);
           setSelectedSiteIds(userSiteIds);
 
+          // Extract prefix and remaining digits from mobile number
+          let prefix = "09"; // default prefix
+          let remainingDigits = user.mobileNumber || "";
+
+          // Check for different prefix patterns
+          const prefixPatterns = ["+639", "639", "09"];
+          for (const pattern of prefixPatterns) {
+            if (user.mobileNumber?.startsWith(pattern)) {
+              prefix = pattern;
+              remainingDigits = user.mobileNumber.substring(pattern.length);
+              break;
+            }
+          }
+
           const formValues = {
             firstName: user.firstName || "",
             lastName: user.lastName || "",
             username: user.username || "",
-            mobileNumber: user.mobileNumber || "",
+            mobileNumberPrefix: prefix,
+            mobileNumber: remainingDigits,
             bankName: user.bankName || "",
             accountNumber: user.accountNumber || "",
             password: "",
@@ -376,7 +397,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
       password: values.password,
       firstName: values.firstName,
       lastName: values.lastName,
-      mobileNumber: values.mobileNumber,
+      mobileNumber: values.mobileNumberPrefix + values.mobileNumber,
       bankName: values.bankName,
       accountNumber: values.accountNumber,
       commissions: {
@@ -513,11 +534,45 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
               control={form.control}
               name="mobileNumber"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel>Mobile Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="1234567890" {...field} />
-                  </FormControl>
+                  <div className="flex gap-2">
+                    <FormField
+                      control={form.control}
+                      name="mobileNumberPrefix"
+                      render={({ field: prefixField }) => (
+                        <Select
+                          value={prefixField.value}
+                          onValueChange={prefixField.onChange}
+                        >
+                          <SelectTrigger className="w-24">
+                            <SelectValue placeholder="Prefix" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {mobilePrefixes.map((prefix) => (
+                              <SelectItem
+                                key={prefix.value}
+                                value={prefix.value}
+                              >
+                                {prefix.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="123456789"
+                        maxLength={9}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^\d]/g, "");
+                          field.onChange(value);
+                        }}
+                      />
+                    </FormControl>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -561,7 +616,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="johndoe" {...field} />
+                    <Input placeholder="johndoe" disabled {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -576,7 +631,12 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="********"
+                      disabled
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

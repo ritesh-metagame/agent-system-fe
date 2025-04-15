@@ -21,6 +21,13 @@ import { ChevronDown } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Props = {
   onSubmit?: (values: z.infer<typeof createAccountFormSchema>) => void;
@@ -31,18 +38,27 @@ const settlementPeriods = [
   { value: "MONTHLY", label: "Monthly" },
 ];
 
+// Define mobile prefix options
+const mobilePrefixes = [
+  { value: "09", label: "09" },
+  { value: "+639", label: "+639" },
+  { value: "639", label: "639" },
+];
+
 const createAccountFormSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
-  mobileNumber: z.string(),
+  mobileNumberPrefix: z.string(),
+  mobileNumber: z.string().regex(/^\d{9}$/, {
+    message: "Please enter 9 digits after the prefix",
+  }),
   bankName: z.string().optional(),
   accountNumber: z.string(),
   username: z.string(),
-  // .min(, { message: "Username must be at least 2 characters" }),
   password: z.string(),
   eGamesCommission: z.string(),
   sportsBettingCommission: z.string(),
-  specialtyGamesCommission: z.string(),
+  specialityGamesCommission: z.string(),
   siteIds: z.array(z.string()),
 });
 
@@ -79,14 +95,15 @@ export default function UpdateAccountFormWithCommissionPeriod() {
     defaultValues: {
       firstName: "",
       lastName: "",
-      username: "",
+      mobileNumberPrefix: mobilePrefixes[0].value,
       mobileNumber: "",
       bankName: "",
       accountNumber: "",
+      username: "",
       password: "",
       eGamesCommission: "",
       sportsBettingCommission: "",
-      specialtyGamesCommission: "",
+      specialityGamesCommission: "",
       siteIds: [],
     },
   });
@@ -159,17 +176,32 @@ export default function UpdateAccountFormWithCommissionPeriod() {
           const userSiteIds = user.userSites.map((site: any) => site.siteId);
           setSelectedSiteIds(userSiteIds);
 
+          // Extract prefix and remaining digits from mobile number
+          let prefix = "09"; // default prefix
+          let remainingDigits = user.mobileNumber || "";
+
+          // Check for different prefix patterns
+          const prefixPatterns = ["+639", "639", "09"];
+          for (const pattern of prefixPatterns) {
+            if (user.mobileNumber?.startsWith(pattern)) {
+              prefix = pattern;
+              remainingDigits = user.mobileNumber.substring(pattern.length);
+              break;
+            }
+          }
+
           const formValues = {
             firstName: user.firstName || "",
             lastName: user.lastName || "",
             username: user.username || "",
-            mobileNumber: user.mobileNumber || "",
+            mobileNumberPrefix: prefix,
+            mobileNumber: remainingDigits,
             bankName: user.bankName || "",
             accountNumber: user.accountNumber || "",
             password: "",
             eGamesCommission: commissionsByCategory.eGames,
             sportsBettingCommission: commissionsByCategory.sportsBetting,
-            specialtyGamesCommission: commissionsByCategory.specialtyGames,
+            specialityGamesCommission: commissionsByCategory.specialtyGames,
             siteIds: userSiteIds,
           };
 
@@ -237,18 +269,21 @@ export default function UpdateAccountFormWithCommissionPeriod() {
   };
 
   async function handleSubmit(values: z.infer<typeof createAccountFormSchema>) {
+    // Combine prefix and mobile number
+    const fullMobileNumber = values.mobileNumberPrefix + values.mobileNumber;
+
     const payload = {
       username: values.username,
       password: values.password,
       firstName: values.firstName,
       lastName: values.lastName,
-      mobileNumber: values.mobileNumber,
+      mobileNumber: fullMobileNumber, // Use combined number
       bankName: values.bankName,
       accountNumber: values.accountNumber,
       commissions: {
         eGames: values.eGamesCommission || undefined,
         sportsBetting: values.sportsBettingCommission || undefined,
-        specialtyGames: values.specialtyGamesCommission || undefined,
+        specialtyGames: values.specialityGamesCommission || undefined,
       },
       siteIds: selectedSiteIds,
     };
@@ -334,11 +369,45 @@ export default function UpdateAccountFormWithCommissionPeriod() {
               control={form.control}
               name="mobileNumber"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel>Mobile Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="1234567890" {...field} />
-                  </FormControl>
+                  <div className="flex gap-2">
+                    <FormField
+                      control={form.control}
+                      name="mobileNumberPrefix"
+                      render={({ field: prefixField }) => (
+                        <Select
+                          value={prefixField.value}
+                          onValueChange={prefixField.onChange}
+                        >
+                          <SelectTrigger className="w-24">
+                            <SelectValue placeholder="Prefix" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {mobilePrefixes.map((prefix) => (
+                              <SelectItem
+                                key={prefix.value}
+                                value={prefix.value}
+                              >
+                                {prefix.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="123456789"
+                        maxLength={9}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^\d]/g, "");
+                          field.onChange(value);
+                        }}
+                      />
+                    </FormControl>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -382,7 +451,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="johndoe" {...field} />
+                    <Input placeholder="johndoe" disabled {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -397,7 +466,12 @@ export default function UpdateAccountFormWithCommissionPeriod() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
+                    <Input
+                      type="password"
+                      disabled
+                      placeholder="********"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -482,7 +556,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
             {/* <div className="grid grid-cols-2 col-span-2 gap-4"> */}
             <FormField
               control={form.control}
-              name="specialtyGamesCommission"
+              name="specialityGamesCommission"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>SpecialityGames Commission (%)</FormLabel>
