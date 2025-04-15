@@ -283,7 +283,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
       commissions: {
         eGames: values.eGamesCommission || undefined,
         sportsBetting: values.sportsBettingCommission || undefined,
-        specialtyGames: values.specialityGamesCommission || undefined,
+        specialityGames: values.specialityGamesCommission || undefined,
       },
       siteIds: selectedSiteIds,
     };
