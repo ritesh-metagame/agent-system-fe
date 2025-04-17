@@ -33,6 +33,7 @@ import {
   SuperAdminManageSites,
   OperatorCreatePlatinumAccount,
   AllUser,
+  SuperAdminCommissionSettlementQueue,
 } from "@/components/screens";
 import CommissionRecentCutsOff from "@/components/screens/operator/commission-recent-cutoff";
 import PartnerManagement from "@/components/screens/operator/partner-management";
@@ -84,6 +85,7 @@ export enum Pages {
   PLAYER_TRANSACTIONS = "Player Transactions",
   PROFILE = "Profile",
   UPDATE_PARTNER = "Update Partner",
+  SETTLEMENT_DETAILS = "Settlement Details",
   SETTLEMENT_TRANSACTIONS = "Settlement Transactions",
 }
 
@@ -106,6 +108,7 @@ export enum Paths {
   PLAYER_TRANSACTIONS = "/player-transactions",
   PROFILE = "/profile",
   UPDATE_PARTNER = "/partner-management/update/:username",
+  SETTLEMENT_DETAILS = "/commission-settlement-queue/:username",
   SETTLEMENT_TRANSACTIONS = "/settlement-transactions",
 }
 
@@ -129,6 +132,7 @@ export const pagePaths = new Map<Paths, Pages>([
   [Paths.SETTLEMENT_TRANSACTIONS, Pages.SETTLEMENT_TRANSACTIONS],
   [Paths.PROFILE, Pages.PROFILE],
   [Paths.UPDATE_PARTNER, Pages.UPDATE_PARTNER],
+  [Paths.SETTLEMENT_DETAILS, Pages.SETTLEMENT_DETAILS],
 ]);
 
 export const roleWiseLinks: RoleWiseLinkMap = {
@@ -362,6 +366,7 @@ export const RolePageComponentMap: RolePageMap = {
     [Pages.COMMISSION_RECENT_CUTOFF]: () => (
       <SuperAdminCommissionRecentCutoff />
     ),
+    [Pages.SETTLEMENT_QUEUE]: () => <SuperAdminCommissionSettlementQueue />,
 
     [Pages.HISTORICAL_CUTOFFS]: () => <SuperAdminAllCommissionCutoffs />,
     [Pages.TRANSACTIONS]: () => <SuperAdminTransactions />,
