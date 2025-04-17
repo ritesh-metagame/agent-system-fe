@@ -71,6 +71,7 @@ export default function CommonDashboard({
   referralLink,
   networkOverviewData,
   userRole,
+  userId,
 }: any) {
   const [eGamesData, setEGamesData] = useState([]);
   const [sportsBettingData, setSportsBettingData] = useState([]);
@@ -308,6 +309,38 @@ export default function CommonDashboard({
     }
   };
 
+  const fetchTotalCommissionByUser = async () => {
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/getTotalCommissionByUser?userId=${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data;
+
+      console.log("Fetched total commission by user data:", userId);
+
+      setCommissionAvailableForSettlementData([
+        {
+          item: userRole === "operator" ? "ALL PLATINUM" : "ALL GOLD",
+          availableForPayout: data.totalPending || 0,
+          settledAllTime: data.totalSettled || 0,
+        },
+      ]);
+      console.log("Fetched commission settlement data:", data);
+
+      // Set date range from periodInfo
+    } catch (error) {
+      console.error("Error fetching commission overview data:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchTransactions = async (category: string, agent: string) => {
       try {
@@ -430,6 +463,7 @@ export default function CommonDashboard({
       fetchOperatorStatisticsData();
       fetchCommissionRunningTallyData();
       fetchCommissionBreakdownData();
+      fetchTotalCommissionByUser();
 
       const eGamesSummary = getSummary(eGames);
       const sportsSummary = getSummary(sports);

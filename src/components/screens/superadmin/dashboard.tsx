@@ -159,8 +159,8 @@ export default function Dashboard({}) {
   // Format date helper function
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
@@ -189,26 +189,26 @@ export default function Dashboard({}) {
     response: any
   ): commissionRunningTally[] {
     const tallyData = response?.data?.tally || [];
-    
+
     // Update the date range with formatted dates
     if (response?.data?.from && response?.data?.to) {
       const fromDate = new Date(response.data.from);
       const toDate = new Date(response.data.to);
-      
+
       // Format dates as DD/MM/YYYY
       const formatDate = (date: Date) => {
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, "0");
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
       };
 
       setCommissionDateRange({
         from: formatDate(fromDate),
-        to: formatDate(toDate)
+        to: formatDate(toDate),
       });
     }
-    
+
     return tallyData.map((entry: any) => ({
       item: response.data.roleLabel,
       eGames: entry.eGames,
@@ -305,7 +305,7 @@ export default function Dashboard({}) {
         const { start, end } = data.data.periodInfo.pendingPeriod;
         setPayoutsDateRange({
           from: formatDate(start),
-          to: formatDate(end)
+          to: formatDate(end),
         });
       }
 
@@ -419,7 +419,38 @@ export default function Dashboard({}) {
     }
   };
 
+  const fetchTotalCommissionByUser = async () => {
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/getTotalCommissionByUser?userId=${user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data;
+
+      setCommissionAvailableForSettlementData([
+        {
+          item: "ALL OPERATORS",
+          availableForPayout: data.totalPending,
+          settledAllTime: data.totalSettled,
+        },
+      ]);
+      console.log("Fetched commission settlement data:", data);
+
+      // Set date range from periodInfo
+    } catch (error) {
+      console.error("Error fetching commission overview data:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchTotalCommissionByUser();
     fetchAllTimeTopPerformersData();
     fetchOperatorStatisticsData();
     fetchCommissionRunningTallyData();
@@ -485,7 +516,9 @@ export default function Dashboard({}) {
           </div>
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-2">
-              <TypographyH2 className="">Total Commission Payouts Breakdown</TypographyH2>
+              <TypographyH2 className="">
+                Total Commission Payouts Breakdown
+              </TypographyH2>
               <Badge variant="outline" className="text-xs">
                 {payoutsDateRange.from} - {payoutsDateRange.to}
               </Badge>
