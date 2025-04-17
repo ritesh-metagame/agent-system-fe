@@ -322,262 +322,297 @@ export default function UpdateAccountFormWithCommissionPeriod() {
   }
 
   return (
-    <Card className="w-full max-w-3xl mx-auto p-6">
-      <CardHeader>
-        <CardTitle className="text-lg font-bold text-center">
+    <Card className="w-[95%] md:w-full max-w-3xl mx-auto p-4 md:p-6">
+      <CardHeader className="p-4 md:p-6">
+        <CardTitle className="text-lg md:text-xl font-bold text-center">
           {username ? "Update Account" : "Create Account"}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 md:p-6">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            className="space-y-4 md:space-y-6"
           >
-            {/* First Name */}
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>First Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              {/* First Name */}
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-sm md:text-base">
+                      First Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input className="w-full" placeholder="John" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Last Name */}
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              {/* Last Name */}
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-sm md:text-base">
+                      Last Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input className="w-full" placeholder="Doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Mobile Number */}
-            <FormField
-              control={form.control}
-              name="mobileNumber"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Mobile Number</FormLabel>
-                  <div className="flex gap-2">
-                    <FormField
-                      control={form.control}
-                      name="mobileNumberPrefix"
-                      render={({ field: prefixField }) => (
-                        <Select
-                          value={prefixField.value}
-                          onValueChange={prefixField.onChange}
-                        >
-                          <SelectTrigger className="w-24">
-                            <SelectValue placeholder="Prefix" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {mobilePrefixes.map((prefix) => (
-                              <SelectItem
-                                key={prefix.value}
-                                value={prefix.value}
-                              >
-                                {prefix.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    />
+              {/* Mobile Number */}
+              <FormField
+                control={form.control}
+                name="mobileNumber"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col col-span-1">
+                    <FormLabel className="text-sm md:text-base">
+                      Mobile Number
+                    </FormLabel>
+                    <div className="flex gap-2">
+                      <FormField
+                        control={form.control}
+                        name="mobileNumberPrefix"
+                        render={({ field: prefixField }) => (
+                          <Select
+                            value={prefixField.value}
+                            onValueChange={prefixField.onChange}
+                          >
+                            <SelectTrigger className="w-[90px] md:w-24">
+                              <SelectValue placeholder="Prefix" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {mobilePrefixes.map((prefix) => (
+                                <SelectItem
+                                  key={prefix.value}
+                                  value={prefix.value}
+                                >
+                                  {prefix.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                      <FormControl>
+                        <Input
+                          className="flex-1"
+                          {...field}
+                          placeholder="123456789"
+                          maxLength={9}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/[^\d]/g, "");
+                            field.onChange(value);
+                          }}
+                        />
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Bank Name */}
+              <FormField
+                control={form.control}
+                name="bankName"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-sm md:text-base">
+                      Bank Name
+                    </FormLabel>
                     <FormControl>
                       <Input
+                        className="w-full"
+                        placeholder="Bank Name"
                         {...field}
-                        placeholder="123456789"
-                        maxLength={9}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/[^\d]/g, "");
-                          field.onChange(value);
-                        }}
                       />
                     </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Bank Name */}
-            <FormField
-              control={form.control}
-              name="bankName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bank Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Bank Name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Account Number */}
-            <FormField
-              control={form.control}
-              name="accountNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Account Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Account Number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Username */}
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="johndoe" disabled {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Password */}
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      disabled
-                      placeholder="********"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Sites Multi-select Dropdown */}
-            <FormField
-              control={form.control}
-              name="siteIds"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>Sites</FormLabel>
-                  <FormControl>
-                    {isLoading ? (
-                      <Button
-                        variant="outline"
-                        className="w-full justify-between"
-                        disabled
-                      >
-                        Loading sites...
-                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    ) : (
-                      <MultiSelect
-                        options={siteOptions}
-                        onValueChange={handleSiteSelectionChange}
-                        defaultValue={selectedSiteIds}
-                        placeholder="Select sites"
-                        variant="inverted"
-                        animation={0}
-                        maxCount={3}
+              {/* Account Number */}
+              <FormField
+                control={form.control}
+                name="accountNumber"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-sm md:text-base">
+                      Account Number
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="w-full"
+                        placeholder="Account Number"
+                        {...field}
                       />
-                    )}
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* eGames Commission and Commission Computation Period */}
-            {/* <div className="grid grid-cols-2 col-span-2 gap-4"> */}
-            <FormField
-              control={form.control}
-              name="eGamesCommission"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>eGames Commission (%)</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter commission percentage"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* </div> */}
+              {/* Username */}
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-sm md:text-base">
+                      Username
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="w-full"
+                        placeholder="johndoe"
+                        disabled
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Sports-Betting Commission and Commission Computation Period */}
-            {/* <div className="grid grid-cols-2 col-span-2 gap-4"> */}
-            <FormField
-              control={form.control}
-              name="sportsBettingCommission"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Sports-Betting Commission (%)</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter commission percentage"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* </div> */}
+              {/* Password */}
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-sm md:text-base">
+                      Password
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="w-full"
+                        type="password"
+                        disabled
+                        placeholder="********"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* SpecialityGames Commission and Commission Computation Period */}
-            {/* <div className="grid grid-cols-2 col-span-2 gap-4"> */}
-            <FormField
-              control={form.control}
-              name="specialityGamesCommission"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>SpecialityGames Commission (%)</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter commission percentage"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* </div> */}
+              {/* Sites Multi-select Dropdown */}
+              <FormField
+                control={form.control}
+                name="siteIds"
+                render={({ field }) => (
+                  <FormItem className="col-span-1">
+                    <FormLabel className="text-sm md:text-base">
+                      Sites
+                    </FormLabel>
+                    <FormControl>
+                      {isLoading ? (
+                        <Button
+                          variant="outline"
+                          className="w-full justify-between"
+                          disabled
+                        >
+                          Loading sites...
+                          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      ) : (
+                        <MultiSelect
+                          options={siteOptions}
+                          onValueChange={handleSiteSelectionChange}
+                          defaultValue={selectedSiteIds}
+                          placeholder="Select sites"
+                          variant="inverted"
+                          animation={0}
+                          maxCount={3}
+                          className="w-full"
+                        />
+                      )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Commission Fields */}
+              <FormField
+                control={form.control}
+                name="eGamesCommission"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-sm md:text-base">
+                      eGames Commission (%)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="w-full"
+                        placeholder="Enter commission percentage"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="sportsBettingCommission"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-sm md:text-base">
+                      Sports-Betting Commission (%)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="w-full"
+                        placeholder="Enter commission percentage"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="specialityGamesCommission"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-sm md:text-base">
+                      SpecialityGames Commission (%)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="w-full"
+                        placeholder="Enter commission percentage"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             {/* Submit/Update Button */}
-            <div className="col-span-2 flex justify-end">
+            <div className="flex justify-end pt-4 md:pt-6">
               <Button
                 variant="default"
                 type="submit"
-                className="bg-blue-500 text-white"
+                className="w-full md:w-auto bg-blue-500 text-white px-8"
                 disabled={username ? !isDirty : false}
               >
                 {username ? "Update" : "Submit"}

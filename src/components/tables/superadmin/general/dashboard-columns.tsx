@@ -142,6 +142,64 @@ export type NetworkStatistics = {
   declined: number | string;
 };
 
+export type PaymentGatewayFees = {
+  type: string; // e.g., "Payment Gateway Fees"
+  amount: number | string; // Amount in PHP
+};
+
+export const paymentGatewayFeesColumns: ColumnDef<PaymentGatewayFees>[] = [
+  {
+    accessorKey: "type",
+    header: "",
+    cell: ({ row }) => (
+      <span className="font-bold">{row.getValue("type")}</span>
+    ),
+  },
+  {
+    accessorKey: "amount",
+    header: "AMOUNT",
+    cell: ({ row }) => {
+      const value = row.getValue("amount");
+      return typeof value === "number"
+        ? value.toLocaleString()
+        : formatCurrency(value as any);
+    },
+  },
+];
+
+export type LicenseCommissionBreakdown = {
+  label: string;
+  pendingSettlement: string | number;
+  settledAllTime: string | number;
+};
+
+export const licenseCommissionBreakdownColumns: ColumnDef<LicenseCommissionBreakdown>[] =
+  [
+    {
+      accessorKey: "label",
+      header: "",
+      cell: ({ row }) => (
+        <span className="font-bold">{row.getValue("label")}</span>
+      ),
+    },
+    {
+      accessorKey: "pendingSettlement",
+      header: "AMOUNT PENDING SETTLEMENT",
+      cell: ({ row }) => {
+        const value = row.getValue("pendingSettlement");
+        return typeof value === "number" ? value.toLocaleString() : value;
+      },
+    },
+    {
+      accessorKey: "settledAllTime",
+      header: "SETTLED ALL TIME",
+      cell: ({ row }) => {
+        const value = row.getValue("settledAllTime");
+        return typeof value === "number" ? value.toLocaleString() : value;
+      },
+    },
+  ];
+
 export const networkStatisticsColumn: ColumnDef<NetworkStatistics>[] = [
   {
     accessorKey: "role",
@@ -436,5 +494,48 @@ export const topPlayersGGRColumns: ColumnDef<TopPlayersGGROverview>[] = [
     accessorKey: "operatorName",
     header: "OPERATOR NAME",
     cell: ({ row }) => row.getValue("operatorName"),
+  },
+];
+
+// 1) Define the row shape
+export type PlayerActivityRow = {
+  label: string; // e.g. "PLAYERS"
+  active: number;
+  inactive: number;
+  totalApprovedPlayers: number; // must match the row in E12, as per your note
+};
+
+// 2) Define columns for the “PLAYER ACTIVITY” table
+export const playerActivityColumns: ColumnDef<PlayerActivityRow>[] = [
+  {
+    accessorKey: "label",
+    header: "PLAYER ACTIVITY",
+    cell: ({ row }) => (
+      <span className="font-bold">{row.getValue("label")}</span>
+    ),
+  },
+  {
+    accessorKey: "active",
+    header: "ACTIVE",
+    cell: ({ row }) => {
+      const value = row.getValue("active") as number;
+      return value.toLocaleString();
+    },
+  },
+  {
+    accessorKey: "inactive",
+    header: "INACTIVE",
+    cell: ({ row }) => {
+      const value = row.getValue("inactive") as number;
+      return value.toLocaleString();
+    },
+  },
+  {
+    accessorKey: "totalApprovedPlayers",
+    header: "TOTAL APPROVED PLAYERS",
+    cell: ({ row }) => {
+      const value = row.getValue("totalApprovedPlayers") as number;
+      return value.toLocaleString();
+    },
   },
 ];
