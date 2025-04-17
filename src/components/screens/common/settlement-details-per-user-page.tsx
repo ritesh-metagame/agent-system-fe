@@ -1,6 +1,16 @@
 "use client";
 
-import { TotalCommissionPayoutsBreakdown } from "@/components/tables/superadmin/general/dashboard-columns";
+import {
+  GoldenPartnerBreakdown,
+  PartnerBreakdown,
+  partnerBreakdownColumnDefs,
+} from "@/components/tables/common/partner-breakdown-column-defs";
+import { DataTable } from "@/components/tables/data-table";
+import {
+  TotalCommissionPayoutsBreakdown,
+  totalCommissionPayoutsBreakdownColumns,
+} from "@/components/tables/superadmin/general/dashboard-columns";
+import { Badge } from "@/components/ui/badge";
 import { TypographyH2 } from "@/components/ui/typographyh2";
 import { TypographyH4 } from "@/components/ui/typographyh4";
 import { RootState, useSelector } from "@/redux/store";
@@ -14,7 +24,8 @@ type Props = {};
 export default function SettlementDetailsPerUser({}: Props) {
   const { username } = useParams();
 
-  const [user, setUser] = React.useState<any>(null);
+  const [user, setUser] = React.useState<any>();
+
   const [
     eGamesTotalCommissionPayoutsBreakdownData,
     setEGamesTotalCommissionPayoutsBreakdownData,
@@ -22,7 +33,16 @@ export default function SettlementDetailsPerUser({}: Props) {
   const [
     sportsBettingTotalCommissionPayoutsBreakdownData,
     setSportsBettingTotalCommissionPayoutsBreakdownData,
-  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([null]);
+  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([]);
+
+  const [platinumPartnerBreakdownData, setPlatinumPartnerBreakdownData] =
+    React.useState<PartnerBreakdown[]>([]);
+
+  const [goldPartnerBreakdownData, setGoldPartnerBreakdownData] =
+    React.useState<GoldenPartnerBreakdown[]>([]);
+
+  const [platinumPartnerTotal, setPlatinumPartnerTotal] = React.useState(0);
+  const [goldPartnerTotal, setGoldPartnerTotal] = React.useState(0);
 
   const { role } = useSelector((state: RootState) => state.authReducer);
 
@@ -71,15 +91,25 @@ export default function SettlementDetailsPerUser({}: Props) {
     if (data.code === "1014") {
       setUser(data.data.user);
     }
+
+    return data.data.user;
   };
 
-  const fetchCommissionBreakdownData = async () => {
+  useEffect(() => {
+    fetchUserDetails().then((user) => {
+      console.log(user, "==================");
+      fetchCommissionPayoutReport(user);
+      fetchPartnerBreakdownReport(user);
+    });
+  }, [username]);
+
+  const fetchCommissionPayoutReport = async (user) => {
     try {
       const accessToken = localStorage.getItem("token");
 
       // Fetch data from the API or perform any other async operation
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/total-breakdown`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/payout-report?userId=${user?.id}`,
 
         {
           headers: {
@@ -104,10 +134,10 @@ export default function SettlementDetailsPerUser({}: Props) {
       }
 
       setEGamesTotalCommissionPayoutsBreakdownData(
-        data.data?.breakdownPerGame.eGames
+        data.data?.categories["E-GAMES"]
       );
       setSportsBettingTotalCommissionPayoutsBreakdownData(
-        data.data?.breakdownPerGame["Sports-Betting"]
+        data.data?.categories["SPORTS BETTING"]
       );
       // return;
       // }
@@ -116,9 +146,78 @@ export default function SettlementDetailsPerUser({}: Props) {
     }
   };
 
-  useEffect(() => {
-    fetchUserDetails();
-  }, [username]);
+  const fetchPartnerBreakdownReport = async (user) => {
+    try {
+      console.log({ user });
+
+      const accessToken = localStorage.getItem("token");
+
+      // Fetch data from the API or perform any other async operation
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/breakdown?id=${user?.id}`,
+
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data; // Use response.data instead of response.json()
+      console.log(
+        "Fetched commission overview data:_______________________",
+        data
+      );
+
+      const platinumData = data.data?.data?.platinum.filter(
+        (item) => item.name !== "PLATINUM PARTNER TOTAL"
+      );
+
+      const goldData = data.data?.data?.gold.filter(
+        (item) => item.name !== "GOLD PARTNER TOTAL"
+      );
+
+      setPlatinumPartnerBreakdownData(platinumData);
+      setGoldPartnerBreakdownData(goldData);
+
+      const platinumPartnerTotal = data.data?.data?.platinum.find(
+        (item) => item.isPlatinumTotal === true
+      )?.totalNetCommission;
+
+      console.log(
+        "Fetched platinum partner total:_______________________",
+        platinumPartnerTotal
+      );
+
+      const goldPartnerTotal = data.data?.data?.gold.find(
+        (item) => item.isGoldTotal === true
+      )?.totalNetCommission;
+
+      console.log(
+        "Fetched gold partner total:_______________________",
+        goldPartnerTotal
+      );
+
+      setPlatinumPartnerTotal(platinumPartnerTotal);
+      setGoldPartnerTotal(goldPartnerTotal);
+
+      // setEGamesTotalCommissionPayoutsBreakdownData(
+      //   data.data?.categories["E-GAMES"]
+      // );
+      // setSportsBettingTotalCommissionPayoutsBreakdownData(
+      //   data.data?.categories["SPORTS BETTING"]
+      // );
+      // return;
+      // }
+    } catch (error) {
+      console.error("Error fetching commission overview data:", error);
+    }
+  };
+
+  //   useEffect(() => {
+  //     // fetchUserDetails();
+
+  //   }, [username]);
 
   return (
     <div>
@@ -131,7 +230,54 @@ export default function SettlementDetailsPerUser({}: Props) {
         </TypographyH2>
       </div>
       <div>
-        <h6 className=" font-bold text-sm">BREAKDOWN PER GAME TYPE</h6>
+        <div className="flex items-center gap-2 mb-2">
+          <h6 className=" font-bold text-sm">BREAKDOWN PER GAME TYPE</h6>
+          <Badge variant="outline" className="text-xs">
+            {payoutsDateRange.from} - {payoutsDateRange.to}
+          </Badge>
+        </div>
+        <div className="mb-4 mt-4">
+          <h6 className=" font-bold text-sm">E-Games</h6>
+          <DataTable
+            columns={totalCommissionPayoutsBreakdownColumns}
+            data={eGamesTotalCommissionPayoutsBreakdownData}
+          />
+        </div>
+        <div className="mb-4 mt-4">
+          <h6 className=" font-bold text-sm">Sports Betting</h6>
+          <DataTable
+            columns={totalCommissionPayoutsBreakdownColumns}
+            data={sportsBettingTotalCommissionPayoutsBreakdownData}
+          />
+        </div>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <h6 className=" font-bold text-sm">BREAKDOWN PER PARTNER</h6>
+          <Badge variant="outline" className="text-xs">
+            {payoutsDateRange.from} - {payoutsDateRange.to}
+          </Badge>
+        </div>
+      </div>
+
+      <div className="mb-8 mt-4">
+        <h6 className=" font-bold text-sm">PLATINUM PARTNERS</h6>
+        <DataTable
+          columns={partnerBreakdownColumnDefs}
+          data={platinumPartnerBreakdownData}
+        />
+        <h6 className="font-medium">
+          PLATINUM PARTNER TOTAL: ₱{platinumPartnerTotal}
+        </h6>
+      </div>
+      <div className="mb-4 mt-4">
+        <h6 className=" font-bold text-sm">GOLD PARTNERS</h6>
+        <DataTable
+          columns={partnerBreakdownColumnDefs}
+          data={goldPartnerBreakdownData}
+        />
+        {/* <h6>PLATINUM PARTNER TOTAL: ${platinumPartnerTotal}</h6> */}
+        <h6 className="font-medium">GOLD PARTNER TOTAL: ₱{goldPartnerTotal}</h6>
       </div>
     </div>
   );
