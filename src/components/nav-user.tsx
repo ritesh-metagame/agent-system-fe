@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown, Edit, LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { RootState, useSelector } from "@/redux/store";
 import { redirect, useRouter } from "next/navigation";
+import { Separator } from "./ui/separator";
 
 export function NavUser({
   user,
@@ -74,6 +75,11 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => router.push("/profile")}>
+              <Edit />
+              Edit Profile
+            </DropdownMenuItem>
+            <Separator />
             <DropdownMenuItem onClick={() => router.push("/login")}>
               <LogOut />
               Log out

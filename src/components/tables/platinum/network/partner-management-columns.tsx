@@ -8,6 +8,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ColumnDef } from "@tanstack/react-table";
+import { Edit } from "lucide-react";
+import Link from "next/link";
 
 export type Partners = {
   id: string;
@@ -189,6 +191,21 @@ export const platinumPartnerColumns: ColumnDef<Partners>[] = [
             </DialogClose>
           </DialogContent>
         </Dialog>
+      );
+    },
+  },
+  {
+    id: "action",
+    header: "ACTION",
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/partner-management/update/${row.original.username}`}>
+            <Button variant="secondary">
+              <Edit />
+            </Button>
+          </Link>
+        </div>
       );
     },
   },

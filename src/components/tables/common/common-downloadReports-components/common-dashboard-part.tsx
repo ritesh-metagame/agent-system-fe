@@ -220,7 +220,7 @@ export default function CommonDashboard({
       const accessToken = localStorage.getItem("token");
 
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/payout-report`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/total-breakdown`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -620,7 +620,7 @@ export default function CommonDashboard({
                 }}
               />
             </div>
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
                 <TypographyH2 className="">Breakdown Per Game</TypographyH2>
               </div>
@@ -662,109 +662,9 @@ export default function CommonDashboard({
                   pendingCommission: "As of Available cutoff period",
                 }}
               />
-            </div>
+            </div> */}
           </div>
-          {/* <DataTable
-          columns={financialOverviewColumns}
-          data={[]}
-          columnWidths={["250px", "250px", "250px", "250px"]}
-          tooltips={{
-            pendingCommission: "As of Available cutoff period",
-          }}
-        /> */}
         </div>
-        {/* <div className="mb-10">
-        <div className="mb-4">
-          <TypographyH2 className="mb-2">Commissions Overview</TypographyH2>
-          <p>
-            Cutoff period available for settlement:{" "}
-            <span>Feb1 - Feb 15, 2025</span>
-          </p>
-        </div>
-        <div className="mb-4">
-          <DataTable
-            columns={commissionOverviewColumns}
-            data={[]}
-            columnWidths={["250px", "250px"]}
-            tooltips={{
-              pendingCommission: "As of Available cutoff period",
-            }}
-          />
-        </div>
-        <DataTable
-          columns={financialOverviewColumns}
-          data={[]}
-          columnWidths={["250px", "250px", "250px", "250px"]}
-          tooltips={{
-            pendingCommission: "As of Available cutoff period",
-          }}
-        />
-      </div> */}
-        {/* <div className="mb-4">
-        <TypographyH2 className="mb-2">Per Category</TypographyH2>
-        <TypographyH4 className="mb-2">eGames</TypographyH4>
-        <DataTable
-          columns={categoryFinancialOverviewColumns}
-          data={[]}
-          columnWidths={["250px", "250px", "250px", "250px", "150px"]}
-          tooltips={{
-            pendingCommission: "As of Available cutoff period",
-          }}
-        />
-      </div>
-      <div className="mb-10">
-        <TypographyH4 className="mb-2">Sports Betting</TypographyH4>
-        <DataTable
-          columns={sportsBettingOverviewColumns}
-          data={[]}
-          columnWidths={["250px", "250px", "250px", "250px", "150px"]}
-          tooltips={{
-            pendingCommission: "As of Available cutoff period",
-          }}
-        />
-      </div> */}
-
-        {/* summary */}
-        {/* <div className="mb-10">
-          <div className="flex items-center gap-4">
-            <TypographyH2 className="mb-4">
-              Summary: eGames & Sports-Betting
-            </TypographyH2>
-            <p className="text-md font-medium text-gray-700">
-              Cutoff Period: Feb 1 - Feb 15, 2025
-            </p>
-          </div>
-
-          <DataTable
-            columns={overallSummaryColumns}
-            data={Data.overallSummaryData}
-            columnWidths={["250px", "250px", "250px", "250px"]}
-          />
-        </div> */}
-
-        {/* egames */}
-
-        {/* <div className="mb-10">
-          <TypographyH2 className="mb-4">eGames</TypographyH2>
-
-          <DataTable
-            columns={eGamesColumns}
-            data={eGamesData}
-            columnWidths={["250px", "250px", "250px", "250px", "250px"]}
-          />
-        </div> */}
-
-        {/* SportsBetting */}
-
-        {/* <div className="mb-10">
-          <TypographyH2 className="mb-4">Sports-Betting</TypographyH2>
-
-          <DataTable
-            columns={sportsbettingColumns}
-            data={sportsBettingData}
-            columnWidths={["250px", "250px", "250px", "250px", "250px"]}
-          />
-        </div> */}
       </div>
     </div>
   );

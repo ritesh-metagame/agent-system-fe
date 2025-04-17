@@ -10,6 +10,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ColumnDef } from "@tanstack/react-table";
+import { Edit } from "lucide-react";
+import Link from "next/link";
 
 // Define the shape of the data for the table.
 
@@ -193,6 +195,21 @@ export const partnerColumns: ColumnDef<Partners>[] = [
             </DialogClose>
           </DialogContent>
         </Dialog>
+      );
+    },
+  },
+  {
+    id: "actions",
+    header: "ACTIONS",
+    cell: ({ row }) => {
+      return (
+        <div className="flex gap-2">
+          <Link href={`/partner-management/update/${row.original.username}`}>
+            <Button variant="secondary">
+              <Edit />
+            </Button>
+          </Link>
+        </div>
       );
     },
   },

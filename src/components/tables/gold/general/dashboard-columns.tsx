@@ -1,6 +1,8 @@
 // tableColumns.ts
 "use client;gold";
 import { ColumnDef } from "@tanstack/react-table";
+import { formatCurrency } from "@/lib/utils";
+
 //TODO: Define TypeScript types instead of interfaces for each table
 // Define TypeScript interfaces for each table
 export type GoldNetworkOverview = {
@@ -52,16 +54,26 @@ export type GoldNetworkCommissionSettlement = {
   commissionSettled: string;
 };
 
+export type GoldFinancialOverview = {
+  item: string;
+  dailyOverview: string;
+  pendingSettlement: string;
+  previousSettled: string;
+};
+
 // Define column structure for the table
 export const goldnetworkCommissionSettlementColumns: ColumnDef<GoldNetworkCommissionSettlement>[] =
   [
     {
       accessorKey: "commissionPendingSettlement",
-      header: " COMMISSION PENDING SETTLEMENT",
+      header: "COMMISSION PENDING SETTLEMENT",
+      cell: ({ row }) =>
+        formatCurrency(row.getValue("commissionPendingSettlement")),
     },
     {
       accessorKey: "commissionSettled",
       header: "COMMISSION SETTLED",
+      cell: ({ row }) => formatCurrency(row.getValue("commissionSettled")),
     },
   ];
 
@@ -107,8 +119,13 @@ export const goldtopPerformersDepositsColumns: ColumnDef<GoldTopPerformersDeposi
     {
       accessorKey: "deposits",
       header: "DEPOSITS",
+      cell: ({ row }) => formatCurrency(row.getValue("deposits")),
     },
-    { accessorKey: "depositsToDate", header: "DEPOSITS TO DATE" },
+    {
+      accessorKey: "depositsToDate",
+      header: "DEPOSITS TO DATE",
+      cell: ({ row }) => formatCurrency(row.getValue("depositsToDate")),
+    },
   ];
 
 // TOP PERFORMERS - GGR TABLE
@@ -117,6 +134,38 @@ export const goldtopPerformersGgrColumns: ColumnDef<GoldTopPerformersGGR>[] = [
   {
     accessorKey: "ggr",
     header: "GGR",
+    cell: ({ row }) => formatCurrency(row.getValue("ggr")),
   },
-  { accessorKey: "ggrToDate", header: "GGR TO DATE" },
+  {
+    accessorKey: "ggrToDate",
+    header: "GGR TO DATE",
+    cell: ({ row }) => formatCurrency(row.getValue("ggrToDate")),
+  },
 ];
+
+// FINANCIAL OVERVIEW TABLE
+export const goldFinancialOverviewColumns: ColumnDef<GoldFinancialOverview>[] =
+  [
+    {
+      accessorKey: "item",
+      header: "ITEM",
+      cell: ({ row }) => (
+        <span className="font-bold">{row.getValue("item")}</span>
+      ),
+    },
+    {
+      accessorKey: "dailyOverview",
+      header: "DAILY OVERVIEW",
+      cell: ({ row }) => formatCurrency(row.getValue("dailyOverview")),
+    },
+    {
+      accessorKey: "pendingSettlement",
+      header: "PENDING SETTLEMENT",
+      cell: ({ row }) => formatCurrency(row.getValue("pendingSettlement")),
+    },
+    {
+      accessorKey: "previousSettled",
+      header: "PREVIOUS SETTLED",
+      cell: ({ row }) => formatCurrency(row.getValue("previousSettled")),
+    },
+  ];

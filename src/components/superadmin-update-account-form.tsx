@@ -60,7 +60,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import axios from "axios";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { format, addDays, addWeeks, addMonths } from "date-fns";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import {
   Tooltip,
@@ -92,58 +92,18 @@ const mobilePrefixes = [
 ];
 
 const createAccountFormSchema = z.object({
-  firstName: z
-    .string()
-    .min(2, { message: "First name must be at least 2 characters" })
-    .refine((value) => !value.endsWith(" "), {
-      message: "First name cannot end with a space",
-    }),
-  lastName: z
-    .string()
-    .min(2, { message: "Last name must be at least 2 characters" })
-    .refine((value) => !value.endsWith(" "), {
-      message: "Last name cannot end with a space",
-    }),
+  firstName: z.string(),
+  lastName: z.string(),
   mobileNumberPrefix: z.string(),
   mobileNumber: z
     .string()
-    .trim()
-    .regex(/^\d{9}$/, {
-      message: "Please enter 9 digits after the prefix",
-    }),
-  bankName: z
-    .string()
-    .min(2, { message: "Bank name is required" })
-    .refine((value) => !value.endsWith(" "), {
-      message: "Bank name cannot end with a space",
-    }),
+    .regex(/^\d{9}$/, { message: "Please enter 9 digits after the prefix" }),
+  bankName: z.string().min(2, { message: "Bank name is required" }),
   accountNumber: z
     .string()
-    .min(5, { message: "Account number must be at least 5 characters" })
     .regex(/^\d+$/, { message: "Account number must contain only digits" }),
-  username: z
-    .string()
-    .min(2, { message: "First name must be at least 2 characters" })
-    .refine((value) => !value.endsWith(" "), {
-      message: "Username cannot end with a space",
-    }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters long" })
-    .regex(/[A-Z]/, {
-      message: "Password must contain at least one uppercase letter",
-    })
-    .regex(/[a-z]/, {
-      message: "Password must contain at least one lowercase letter",
-    })
-    .regex(/\d/, { message: "Password must contain at least one number" })
-    .regex(/[!@#$%^&*]/, {
-      message:
-        "Password must contain at least one special character (!@#$%^&*)",
-    })
-    .refine((value) => !value.endsWith(" "), {
-      message: "Password cannot end with a space",
-    }),
+  username: z.string(),
+  password: z.string(),
   // Category-specific commission and commission computation details
   eGamesCommission: z
     .string()
@@ -186,7 +146,7 @@ type SiteType = {
   }>;
 };
 
-export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
+export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [csvPreview, setCsvPreview] = useState<string[][] | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -197,10 +157,166 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [settlementEndDate, setSettlementEndDate] = useState<Date | null>(null);
+  const [isDirty, setIsDirty] = useState(false);
+  const [initialFormValues, setInitialFormValues] = useState<any>(null);
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const router = useRouter();
+  const { username } = useParams();
 
-  console.log("NEXT_PUBLIC_BASE_URL:", BASE_URL);
+  // Form initialization with default values
+  const form = useForm<z.infer<typeof createAccountFormSchema>>({
+    resolver: zodResolver(createAccountFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      username: "",
+      mobileNumberPrefix: "09",
+      mobileNumber: "",
+      bankName: "",
+      accountNumber: "",
+      password: "",
+      eGamesCommission: "",
+      eGamesCommissionComputationPeriod: "BI_MONTHLY",
+      sportsBettingCommission: "",
+      sportsBettingCommissionComputationPeriod: "BI_MONTHLY",
+      specialityGamesCommission: "",
+      specialityGamesCommissionComputationPeriod: "BI_MONTHLY",
+      siteIds: [],
+    },
+  });
+
+  // Watch for form changes
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      if (initialFormValues) {
+        const hasChanged = Object.keys(value).some((key) => {
+          if (key === "password") return false; // Ignore password field
+          if (key === "siteIds") {
+            return (
+              JSON.stringify(value[key]) !==
+              JSON.stringify(initialFormValues[key])
+            );
+          }
+          return value[key] !== initialFormValues[key];
+        });
+        setIsDirty(hasChanged);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, initialFormValues]);
+
+  // Fetch user details
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (!username) return;
+
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/user/username/${username}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (data.code === "1014" && data.data?.user) {
+          const user = data.data.user;
+
+          // Extract commission percentages by category
+          const commissionsByCategory = {
+            eGames: "",
+            sportsBetting: "",
+            specialityGames: "",
+          };
+
+          const commissionComputationPeriods = {
+            eGames: "BI_MONTHLY",
+            sportsBetting: "BI_MONTHLY",
+            specialityGames: "BI_MONTHLY",
+          };
+
+          // Get unique commission percentages and periods per category
+          user.commissions.forEach((commission: any) => {
+            switch (commission.category.name) {
+              case "eGames":
+                commissionsByCategory.eGames =
+                  commission.commissionPercentage.toString();
+                commissionComputationPeriods.eGames =
+                  commission.commissionComputationPeriod;
+                break;
+              case "Sports-Betting":
+                commissionsByCategory.sportsBetting =
+                  commission.commissionPercentage.toString();
+                commissionComputationPeriods.sportsBetting =
+                  commission.commissionComputationPeriod;
+                break;
+              case "SpecialityGames":
+                commissionsByCategory.specialityGames =
+                  commission.commissionPercentage.toString();
+                commissionComputationPeriods.specialityGames =
+                  commission.commissionComputationPeriod;
+                break;
+            }
+          });
+
+          const userSiteIds = user.userSites.map((site: any) => site.siteId);
+          setSelectedSiteIds(userSiteIds);
+
+          // Extract prefix and remaining digits from mobile number
+          let prefix = "09"; // default prefix
+          let remainingDigits = user.mobileNumber || "";
+
+          // Check for different prefix patterns
+          const prefixPatterns = ["+639", "639", "09"];
+          for (const pattern of prefixPatterns) {
+            if (user.mobileNumber?.startsWith(pattern)) {
+              prefix = pattern;
+              remainingDigits = user.mobileNumber.substring(pattern.length);
+              break;
+            }
+          }
+
+          const formValues = {
+            firstName: user.firstName || "",
+            lastName: user.lastName || "",
+            username: user.username || "",
+            mobileNumberPrefix: prefix,
+            mobileNumber: remainingDigits,
+            bankName: user.bankName || "",
+            accountNumber: user.accountNumber || "",
+            password: "",
+            eGamesCommission: commissionsByCategory.eGames,
+            eGamesCommissionComputationPeriod:
+              commissionComputationPeriods.eGames as "BI_MONTHLY" | "MONTHLY",
+            sportsBettingCommission: commissionsByCategory.sportsBetting,
+            sportsBettingCommissionComputationPeriod:
+              commissionComputationPeriods.sportsBetting as
+                | "BI_MONTHLY"
+                | "MONTHLY",
+            specialityGamesCommission: commissionsByCategory.specialityGames,
+            specialityGamesCommissionComputationPeriod:
+              commissionComputationPeriods.specialityGames as
+                | "BI_MONTHLY"
+                | "MONTHLY",
+            siteIds: userSiteIds,
+          };
+
+          // Store initial values for change detection
+          setInitialFormValues(formValues);
+          form.reset(formValues);
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+        toast.error("Error fetching user details");
+      }
+    };
+
+    fetchUserDetails();
+  }, [username, form]);
 
   // Fetch sites on component mount
   useEffect(() => {
@@ -249,34 +365,11 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
     description: site.url,
   }));
 
-  const router = useRouter();
-
   // Handle site selection changes
   const handleSiteSelectionChange = (selectedValues: string[]) => {
     setSelectedSiteIds(selectedValues);
     form.setValue("siteIds", selectedValues);
   };
-
-  const form = useForm<z.infer<typeof createAccountFormSchema>>({
-    resolver: zodResolver(createAccountFormSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      username: "",
-      mobileNumberPrefix: mobilePrefixes[0].value, // Default to first prefix
-      mobileNumber: "",
-      bankName: "",
-      accountNumber: "",
-      password: "",
-      eGamesCommission: "",
-      eGamesCommissionComputationPeriod: "BI_MONTHLY", // Default to bIBI_MONTHLY
-      sportsBettingCommission: "",
-      sportsBettingCommissionComputationPeriod: "BI_MONTHLY", // Default to bIBI_MONTHLY
-      specialityGamesCommission: "",
-      specialityGamesCommissionComputationPeriod: "BI_MONTHLY", // Default to monthly
-      siteIds: [],
-    },
-  });
 
   // Handle site selection
   const toggleSite = (siteId: string) => {
@@ -322,40 +415,35 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
     };
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/user/create`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const url = username
+        ? `${process.env.NEXT_PUBLIC_BASE_URL}/user/username/${username}`
+        : `${process.env.NEXT_PUBLIC_BASE_URL}/user/create`;
+
+      const method = username ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
       if (!response.ok) {
-        // Handle error response
         const errorData = await response.json();
-        console.error("Error creating account:", errorData);
-        // Optionally, show a message to the user
+        console.error("Error:", errorData);
+        toast.error(errorData.message || "Something went wrong");
       } else {
         const data = await response.json();
-
-        if (data.code === "2005") {
-          toast(data.message ?? "Something went wrong");
-          return;
-        }
-
-        if (data.code === "1004") {
-          toast(data.message ?? "Something went wrong");
+        if (data.code === "1004" || data.code === "1014") {
+          toast.success(data.message || "Operation successful");
           router.push("/partner-management");
         }
-        // Optionally, perform further actions on success (e.g., navigate away)
       }
     } catch (error) {
       console.error("Network error:", error);
-      // Optionally, show a network error message to the user
+      toast.error("Network error occurred");
     }
   }
 
@@ -528,7 +616,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="johndoe" {...field} />
+                    <Input placeholder="johndoe" disabled {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -543,7 +631,12 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="********"
+                      disabled
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
