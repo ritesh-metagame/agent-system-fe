@@ -55,10 +55,10 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
     },
   },
   {
-    accessorKey: "totalGrossCommissions",
+    accessorKey: "grossCommissions",
     header: "TOTAL GROSS COMMISSIONS",
     cell: ({ row }) => {
-      const value = row.getValue("totalGrossCommissions") as number | string;
+      const value = row.getValue("grossCommissions") as number | string;
       return formatCurrency(value)?.toLocaleString() ?? "";
     },
   },
@@ -71,10 +71,10 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
     },
   },
   {
-    accessorKey: "totalNetCommissions",
+    accessorKey: "netCommissions",
     header: "TOTAL NET COMMISSIONS FOR SETTLEMENT",
     cell: ({ row }) => {
-      const value = row.getValue("totalNetCommissions") as number | string;
+      const value = row.getValue("netCommissions") as number | string;
       return formatCurrency(value)?.toLocaleString() ?? "";
     },
   },
