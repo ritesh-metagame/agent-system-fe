@@ -101,37 +101,37 @@ export const defaultCommissionAvailableForSettlementData: CommissionAvailableFor
 export const defaultCommissionPayoutsBreakdown: TotalCommissionPayoutsBreakdown[] =
   [
     {
-      metric: "Total Deposits",
+      label: "Total Deposits",
       amountPendingSettlement: "",
       settledAllTime: "",
     },
     {
-      metric: "Total Withdrawals",
+      label: "Total Withdrawals",
       amountPendingSettlement: "",
       settledAllTime: "",
     },
     {
-      metric: "Total Bet Amount(Turnover)",
+      label: "Total Bet Amount(Turnover)",
       amountPendingSettlement: "",
       settledAllTime: "",
     },
     {
-      metric: "Net GGR",
+      label: "Net GGR",
       amountPendingSettlement: "",
       settledAllTime: "",
     },
     {
-      metric: "Gross Commission (% of Net GGR)",
+      label: "Gross Commission (% of Net GGR)",
       amountPendingSettlement: "",
       settledAllTime: "",
     },
     {
-      metric: "Payment Gateway Fees",
+      label: "Payment Gateway Fees",
       amountPendingSettlement: "",
       settledAllTime: "",
     },
     {
-      metric: "Net Commission Available for Payout",
+      label: "Net Commission Available for Payout",
       amountPendingSettlement: "",
       settledAllTime: "",
     },
@@ -332,7 +332,7 @@ export default function Dashboard({}) {
         });
       }
 
-      setTotalCommissionPayoutsBreakdownData(data.data?.overview);
+      setTotalCommissionPayoutsBreakdownData(data.data?.rows);
       setEGamesTotalCommissionPayoutsBreakdownData(
         data.data?.breakdownPerGame.eGames
       );
@@ -697,21 +697,6 @@ export default function Dashboard({}) {
               }}
             />
           </div>
-          {/* <div className="mb-4">
-            <div className="flex items-center gap-2 mb-2">
-              <TypographyH2 className="">Payment Gateway Fees</TypographyH2>
-            </div>
-          </div>
-          <div className="mb-4">
-            <DataTable
-              columns={paymentGatewayFeesColumns}
-              data={paymentGatewayFeesData}
-              columnWidths={["250px", "250px", "250px", "250px", "150px"]}
-              tooltips={{
-                pendingCommission: "As of Available cutoff period",
-              }}
-            />
-          </div> */}
         </div>
       </div>
     </div>

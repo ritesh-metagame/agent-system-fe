@@ -103,7 +103,7 @@ export const commissionOverviewColumns: ColumnDef<CommissionOverview>[] = [
 ];
 
 export type TotalCommissionPayoutsBreakdown = {
-  metric: string; // Total Deposits, Total Withdrawals, etc.
+  label: string; // Total Deposits, Total Withdrawals, etc.
   amountPendingSettlement: number | string; // Amount based on latest completed commission periods pending settlement
   settledAllTime: number | string; // Settled All Time
 };
@@ -111,10 +111,10 @@ export type TotalCommissionPayoutsBreakdown = {
 export const totalCommissionPayoutsBreakdownColumns: ColumnDef<TotalCommissionPayoutsBreakdown>[] =
   [
     {
-      accessorKey: "metric",
+      accessorKey: "label",
       header: "",
       cell: ({ row }) => (
-        <span className="font-bold">{row.getValue("metric")}</span>
+        <span className="font-bold">{row.getValue("label")}</span>
       ),
     },
     {

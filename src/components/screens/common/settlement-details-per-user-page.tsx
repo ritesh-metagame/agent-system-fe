@@ -13,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { TypographyH2 } from "@/components/ui/typographyh2";
 import { TypographyH4 } from "@/components/ui/typographyh4";
+import { UserRole } from "@/lib/constants";
 import { RootState, useSelector } from "@/redux/store";
 import axios from "axios";
 import { formatDate } from "date-fns";
@@ -251,34 +252,39 @@ export default function SettlementDetailsPerUser({}: Props) {
           />
         </div>
       </div>
-      <div>
-        <div className="flex items-center gap-2 mb-2">
-          <h6 className=" font-bold text-sm">BREAKDOWN PER PARTNER</h6>
-          <Badge variant="outline" className="text-xs">
-            {payoutsDateRange.from} - {payoutsDateRange.to}
-          </Badge>
-        </div>
-      </div>
-
-      <div className="mb-8 mt-4">
-        <h6 className=" font-bold text-sm">PLATINUM PARTNERS</h6>
-        <DataTable
-          columns={partnerBreakdownColumnDefs}
-          data={platinumPartnerBreakdownData}
-        />
-        <h6 className="font-medium">
-          PLATINUM PARTNER TOTAL: ₱{platinumPartnerTotal}
-        </h6>
-      </div>
-      <div className="mb-4 mt-4">
-        <h6 className=" font-bold text-sm">GOLD PARTNERS</h6>
-        <DataTable
-          columns={partnerBreakdownColumnDefs}
-          data={goldPartnerBreakdownData}
-        />
-        {/* <h6>PLATINUM PARTNER TOTAL: ${platinumPartnerTotal}</h6> */}
-        <h6 className="font-medium">GOLD PARTNER TOTAL: ₱{goldPartnerTotal}</h6>
-      </div>
+      {role !== UserRole.PLATINUM ? (
+        <>
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <h6 className=" font-bold text-sm">BREAKDOWN PER PARTNER</h6>
+              <Badge variant="outline" className="text-xs">
+                {payoutsDateRange.from} - {payoutsDateRange.to}
+              </Badge>
+            </div>
+          </div>
+          <div className="mb-8 mt-4">
+            <h6 className=" font-bold text-sm">PLATINUM PARTNERS</h6>
+            <DataTable
+              columns={partnerBreakdownColumnDefs}
+              data={platinumPartnerBreakdownData}
+            />
+            <h6 className="font-medium">
+              PLATINUM PARTNER TOTAL: ₱{platinumPartnerTotal}
+            </h6>
+          </div>
+          <div className="mb-4 mt-4">
+            <h6 className=" font-bold text-sm">GOLD PARTNERS</h6>
+            <DataTable
+              columns={partnerBreakdownColumnDefs}
+              data={goldPartnerBreakdownData}
+            />
+            {/* <h6>PLATINUM PARTNER TOTAL: ${platinumPartnerTotal}</h6> */}
+            <h6 className="font-medium">
+              GOLD PARTNER TOTAL: ₱{goldPartnerTotal}
+            </h6>
+          </div>{" "}
+        </>
+      ) : null}
     </div>
   );
 }

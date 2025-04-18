@@ -34,6 +34,7 @@ import {
   OperatorCreatePlatinumAccount,
   AllUser,
   SuperAdminCommissionSettlementQueue,
+  OperatorCommissionSettlementQueue,
 } from "@/components/screens";
 import CommissionRecentCutsOff from "@/components/screens/operator/commission-recent-cutoff";
 import PartnerManagement from "@/components/screens/operator/partner-management";
@@ -383,6 +384,7 @@ export const RolePageComponentMap: RolePageMap = {
     [Pages.TRANSACTIONS]: () => <PlatinumTransactions />,
     [Pages.COMMISSIONS]: () => <PlatinumCommissions />,
     [Pages.SETTLEMENT_HISTORY]: () => <PlatinumSettlementHistory />,
+    [Pages.SETTLEMENT_QUEUE]: () => <OperatorCommissionSettlementQueue />,
   },
 
   [UserRole.GOLD]: {
@@ -403,6 +405,7 @@ export const RolePageComponentMap: RolePageMap = {
     [Pages.PARTNER_MANAGEMENT]: () => <PartnerManagement />,
     [Pages.COMMISSION_RECENT_CUTOFF]: () => <CommissionRecentCutsOff />,
     [Pages.HISTORICAL_CUTOFFS]: () => <OperatorAllCommissionCutoff />,
+    [Pages.SETTLEMENT_QUEUE]: () => <OperatorCommissionSettlementQueue />,
 
     [Pages.TRANSACTIONS]: () => <OperatorTransactions />,
     [Pages.COMMISSIONS]: () => <OperatorCommissions />,

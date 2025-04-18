@@ -48,3 +48,5 @@ export { default as GoldenAllCommissionCutoff } from "./gold/all-commission-cuto
 export { default as GoldenCommissionRecentCutoff } from "./gold/commission-recent-cutoff";
 export { default as GoldenCreateOperatorAccount } from "./gold/create-operator-account";
 export { default as GoldenPartnerManagement } from "./gold/partner-management";
+
+export { default as OperatorCommissionSettlementQueue } from "./superadmin/commission-settlement-queue";
