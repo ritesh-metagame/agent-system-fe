@@ -75,7 +75,8 @@ export default function CommonDashboard({
   referralLink,
   networkOverviewData,
   userRole,
-}: any) {
+  userId,
+}: any): React.ReactNode {
   const [eGamesData, setEGamesData] = useState([]);
   const [sportsBettingData, setSportsBettingData] = useState([]);
 
@@ -351,6 +352,40 @@ export default function CommonDashboard({
     }
   };
 
+  const fetchTotalCommissionByUser = async () => {
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/getTotalCommissionByUser?userId=${userId}`,
+
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = response.data;
+
+      console.log("Fetched total commission by user data:", userId);
+
+      setCommissionAvailableForSettlementData([
+        {
+          item: userRole === "operator" ? "ALL PLATINUM" : "ALL GOLD",
+          availableForPayout: data.totalPending || 0,
+          settledAllTime: data.totalSettled || 0,
+        },
+      ]);
+      console.log("Fetched commission settlement data:", data);
+
+      // Set date range from periodInfo
+    } catch (error) {
+      console.error("Error fetching commission overview data:", error);
+    }
+  };
+
   const fetchPaymentGatewayFeesData = async () => {
     try {
       const accessToken = localStorage.getItem("token");
@@ -365,6 +400,7 @@ export default function CommonDashboard({
           },
         }
       );
+
       const data = response.data; // Use response.data instead of response.json()
       console.log("Fetched all time top performers data:", data);
 
@@ -463,8 +499,9 @@ export default function CommonDashboard({
     } catch (error) {
       console.error("Error fetching license breakdown data:", error);
     }
-  };
 
+    console.log("networkOverviewData:", networkOverviewData);
+  };
   useEffect(() => {
     const fetchTransactions = async (category: string, agent: string) => {
       try {
@@ -587,6 +624,7 @@ export default function CommonDashboard({
       fetchOperatorStatisticsData();
       fetchCommissionRunningTallyData();
       fetchCommissionBreakdownData();
+      fetchTotalCommissionByUser();
 
       // fetchCommissionBreakdownData();
       fetchPaymentGatewayFeesData();
@@ -601,14 +639,11 @@ export default function CommonDashboard({
 
     loadData();
   }, [token, userRole]);
-
-  console.log("networkOverviewData:", networkOverviewData);
-
   return (
     <div>
       {/* QR Code and Referral Link */}
       {/* <Card> */}
-      <CardContent className="p-4  flex items-center justify-between">
+      {/* <CardContent className="p-4  flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <QRCodeSVG value={referralLink} size={80} />
           <p className="text-sm text-black-900">Download QR Code</p>
@@ -624,25 +659,25 @@ export default function CommonDashboard({
         <p className="text-md  text-black-900">
           Share this QR code and copy to onboard {welcomeTierName}
         </p>
-      </div>
+      </div> */}
       {/* </Card> */}
       <div className="container mb-10">
         {/* <div className="mb-10">
-          <div className="flex items-center gap-4">
-            <TypographyH2 className="mb-4">
-              Cutoff Period Available For Settlement :
-            </TypographyH2>
-            <p className="text-md font-medium text-gray-700">
-              Feb 1 - Feb 15, 2025
-            </p>
-          </div>
+        <div className="flex items-center gap-4">
+          <TypographyH2 className="mb-4">
+            Cutoff Period Available For Settlement :
+          </TypographyH2>
+          <p className="text-md font-medium text-gray-700">
+            Feb 1 - Feb 15, 2025
+          </p>
+        </div>
 
-          <DataTable
-            columns={cutoffPeriodColumns}
-            data={[]}
-            columnWidths={["250px", "250px"]}
-          />
-        </div> */}
+        <DataTable
+          columns={cutoffPeriodColumns}
+          data={[]}
+          columnWidths={["250px", "250px"]}
+        />
+      </div> */}
 
         <div className="mb-10">
           <TypographyH2 className="mb-4">Network Overview</TypographyH2>
@@ -666,9 +701,9 @@ export default function CommonDashboard({
                 </Badge>
               </div>
               {/* <p>
-            Cutoff period available for settlement:{" "}
-            <span>Feb1 - Feb 15, 2025</span>
-          </p> */}
+          Cutoff period available for settlement:{" "}
+          <span>Feb1 - Feb 15, 2025</span>
+        </p> */}
             </div>
           ) : (
             <></>
@@ -695,9 +730,9 @@ export default function CommonDashboard({
                     Commission Available for Settlement
                   </TypographyH2>
                   {/* <p>
-            Cutoff period available for settlement:{" "}
-            <span>Feb1 - Feb 15, 2025</span>
-          </p> */}
+          Cutoff period available for settlement:{" "}
+          <span>Feb1 - Feb 15, 2025</span>
+        </p> */}
                 </div>
               </>
             ) : (
@@ -743,26 +778,26 @@ export default function CommonDashboard({
               />
             </div>
             {/* <div className="mb-4">
-              <div className="flex items-center gap-2 mb-2">
-                <TypographyH2 className="">Payment Gateway Fees</TypographyH2>
-              </div>
+            <div className="flex items-center gap-2 mb-2">
+              <TypographyH2 className="">Payment Gateway Fees</TypographyH2>
             </div>
-            <div className="mb-4">
-              <DataTable
-                columns={paymentGatewayFeesColumns}
-                data={paymentGatewayFeesData}
-                columnWidths={["250px", "250px", "250px", "250px", "150px"]}
-                tooltips={{
-                  pendingCommission: "As of Available cutoff period",
-                }}
-              />
-            </div> */}
+          </div>
+          <div className="mb-4">
+            <DataTable
+              columns={paymentGatewayFeesColumns}
+              data={paymentGatewayFeesData}
+              columnWidths={["250px", "250px", "250px", "250px", "150px"]}
+              tooltips={{
+                pendingCommission: "As of Available cutoff period",
+              }}
+            />
+          </div> */}
             <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
                 <TypographyH2 className="">Breakdown Per License</TypographyH2>
                 {/* <Badge variant="outline" className="text-xs">
-                            {payoutsDateRange.from} - {payoutsDateRange.to}
-                          </Badge> */}
+                          {payoutsDateRange.from} - {payoutsDateRange.to}
+                        </Badge> */}
               </div>
             </div>
             <div className="mb-4">

@@ -126,10 +126,10 @@ export const totalCommissionPayoutsBreakdownColumns: ColumnDef<TotalCommissionPa
       },
     },
     {
-      accessorKey: "allTime",
+      accessorKey: "settledAllTime",
       header: "SETTLED ALL TIME",
       cell: ({ row }) => {
-        const value = row.getValue("allTime");
+        const value = row.getValue("settledAllTime");
         return typeof value === "number" ? value.toLocaleString() : value;
       },
     },

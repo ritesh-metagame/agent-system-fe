@@ -177,6 +177,8 @@ export default function Dashboard({}: Props) {
         welcomeTierName="Platinum Partners"
         referralLink={user?.affiliateLink}
         networkOverviewData={networkOverviewData}
+        userRole={user.role.name}
+        userId={user.id}
       />
 
       {/* Top Performers All Time */}

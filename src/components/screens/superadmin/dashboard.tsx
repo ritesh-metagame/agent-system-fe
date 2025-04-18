@@ -429,6 +429,36 @@ export default function Dashboard({}) {
     }
   };
 
+  const fetchTotalCommissionByUser = async () => {
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/getTotalCommissionByUser?userId=${user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data;
+
+      setCommissionAvailableForSettlementData([
+        {
+          item: "ALL OPERATORS",
+          availableForPayout: data.totalPending,
+          settledAllTime: data.totalSettled,
+        },
+      ]);
+      console.log("Fetched commission settlement data:", data);
+
+      // Set date range from periodInfo
+    } catch (error) {
+      console.error("Error fetching commission overview data:", error);
+    }
+  };
+
   const [eGamesCommissionRate, setEGamesCommissionRate] =
     React.useState<number>(0);
   const [sportsBettingCommissionRate, setSportsBettingCommissionRate] =
@@ -518,6 +548,7 @@ export default function Dashboard({}) {
   };
 
   useEffect(() => {
+    fetchTotalCommissionByUser();
     // fetchAllTimeTopPerformersData();
     fetchOperatorStatisticsData();
     fetchCommissionRunningTallyData();
