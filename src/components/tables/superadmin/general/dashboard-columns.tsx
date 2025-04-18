@@ -102,13 +102,46 @@ export const commissionOverviewColumns: ColumnDef<CommissionOverview>[] = [
   },
 ];
 
-export type TotalCommissionPayoutsBreakdown = {
+export type TotalCommissionPayoutsBreakdown2 = {
+  label: string; // Total Deposits, Total Withdrawals, etc.
+  amountPendingSettlement: number | string; // Amount based on latest completed commission periods pending settlement
+  settledAllTime: number | string; // Settled All Time
+};
+
+export const totalCommissionPayoutsBreakdownColumns2: ColumnDef<TotalCommissionPayoutsBreakdown2>[] =
+  [
+    {
+      accessorKey: "label",
+      header: "",
+      cell: ({ row }) => (
+        <span className="font-bold">{row.getValue("label")}</span>
+      ),
+    },
+    {
+      accessorKey: "pendingSettlement",
+      header: "AMOUNT",
+      cell: ({ row }) => {
+        const value = row.getValue("pendingSettlement");
+        return typeof value === "number" ? value.toLocaleString() : value;
+      },
+    },
+    {
+      accessorKey: "settledAllTime",
+      header: "SETTLED ALL TIME",
+      cell: ({ row }) => {
+        const value = row.getValue("settledAllTime");
+        return typeof value === "number" ? value.toLocaleString() : value;
+      },
+    },
+  ];
+
+export type TotalCommissionPayoutsBreakdown1 = {
   label: string; // Total Deposits, Total Withdrawals, etc.
   amountPendingSettlement: number | string; // Amount based on latest completed commission periods pending settlement
   allTime: number | string; // Settled All Time
 };
 
-export const totalCommissionPayoutsBreakdownColumns: ColumnDef<TotalCommissionPayoutsBreakdown>[] =
+export const totalCommissionPayoutsBreakdownColumns1: ColumnDef<TotalCommissionPayoutsBreakdown1>[] =
   [
     {
       accessorKey: "label",

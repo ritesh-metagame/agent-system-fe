@@ -36,8 +36,10 @@ import {
   NetworkStatistics,
   PaymentGatewayFees,
   paymentGatewayFeesColumns,
-  TotalCommissionPayoutsBreakdown,
-  totalCommissionPayoutsBreakdownColumns,
+  TotalCommissionPayoutsBreakdown2,
+  totalCommissionPayoutsBreakdownColumns2,
+  // TotalCommissionPayoutsBreakdown,
+  // totalCommissionPayoutsBreakdownColumns,
 } from "../../superadmin/general/dashboard-columns";
 import {
   defaultCommissionAvailableForSettlementData,
@@ -98,17 +100,17 @@ export default function CommonDashboard({
   const [
     totalCommissionPayoutsBreakdownData,
     setTotalCommissionPayoutsBreakdownData,
-  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([]);
+  ] = React.useState<TotalCommissionPayoutsBreakdown2[]>([]);
 
   const [
     eGamesTotalCommissionPayoutsBreakdownData,
     setEGamesTotalCommissionPayoutsBreakdownData,
-  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([]);
+  ] = React.useState<TotalCommissionPayoutsBreakdown2[]>([]);
 
   const [
     sportsBettingTotalCommissionPayoutsBreakdownData,
     setSportsBettingTotalCommissionPayoutsBreakdownData,
-  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([]);
+  ] = React.useState<TotalCommissionPayoutsBreakdown2[]>([]);
 
   const [
     commissionAvailableForSettlementData,
@@ -195,28 +197,28 @@ export default function CommonDashboard({
     }));
   }
 
-  function formatCommissionDataForTable(
-    data: any
-  ): TotalCommissionPayoutsBreakdown[] {
-    if (!data?.data?.overview) return [];
+  // function formatCommissionDataForTable(
+  //   data: any
+  // ): TotalCommissionPayoutsBreakdown[] {
+  //   if (!data?.data?.overview) return [];
 
-    return data.data?.overview.map((entry: any) => {
-      let item = entry.metric;
+  //   return data.data?.overview.map((entry: any) => {
+  //     let item = entry.metric;
 
-      // Add subtext for Net Commission
-      if (item === "Net Commission Available for Payout") {
-        item =
-          "Net Commission Available for Payout\n(Gross Commission less Payment Gateway Fees)";
-      }
+  //     // Add subtext for Net Commission
+  //     if (item === "Net Commission Available for Payout") {
+  //       item =
+  //         "Net Commission Available for Payout\n(Gross Commission less Payment Gateway Fees)";
+  //     }
 
-      return {
-        item,
-        amountPendingSettlement:
-          entry.pendingSettlement !== undefined ? entry.pendingSettlement : "",
-        settledAllTime: entry.allTime !== undefined ? entry.allTime : "",
-      };
-    });
-  }
+  //     return {
+  //       item,
+  //       amountPendingSettlement:
+  //         entry.pendingSettlement !== undefined ? entry.pendingSettlement : "",
+  //       settledAllTime: entry.allTime !== undefined ? entry.allTime : "",
+  //     };
+  //   });
+  // }
 
   const fetchCommissionRunningTallyData = async () => {
     try {
@@ -769,7 +771,7 @@ export default function CommonDashboard({
             </div>
             <div className="mb-4">
               <DataTable
-                columns={totalCommissionPayoutsBreakdownColumns}
+                columns={totalCommissionPayoutsBreakdownColumns2}
                 data={totalCommissionPayoutsBreakdownData}
                 columnWidths={["250px", "250px", "250px", "250px", "150px"]}
                 tooltips={{
