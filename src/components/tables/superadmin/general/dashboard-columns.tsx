@@ -105,7 +105,7 @@ export const commissionOverviewColumns: ColumnDef<CommissionOverview>[] = [
 export type TotalCommissionPayoutsBreakdown = {
   label: string; // Total Deposits, Total Withdrawals, etc.
   amountPendingSettlement: number | string; // Amount based on latest completed commission periods pending settlement
-  settledAllTime: number | string; // Settled All Time
+  allTime: number | string; // Settled All Time
 };
 
 export const totalCommissionPayoutsBreakdownColumns: ColumnDef<TotalCommissionPayoutsBreakdown>[] =
@@ -126,10 +126,10 @@ export const totalCommissionPayoutsBreakdownColumns: ColumnDef<TotalCommissionPa
       },
     },
     {
-      accessorKey: "settledAllTime",
+      accessorKey: "allTime",
       header: "SETTLED ALL TIME",
       cell: ({ row }) => {
-        const value = row.getValue("settledAllTime");
+        const value = row.getValue("allTime");
         return typeof value === "number" ? value.toLocaleString() : value;
       },
     },
