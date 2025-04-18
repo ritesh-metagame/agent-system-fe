@@ -181,23 +181,23 @@ export const roleWiseLinks: RoleWiseLinkMap = {
         },
       ],
     },
-    {
-      category: "DOWNLOAD REPORTS",
-      links: [
-        {
-          title: Pages.PLAYER_TRANSACTIONS,
-          url: Paths.PLAYER_TRANSACTIONS,
-        },
-        {
-          title: Pages.SETTLED_COMMISSIONS,
-          url: Paths.SETTLED_COMMISSIONS,
-        },
-        {
-          title: Pages.SETTLEMENT_TRANSACTIONS,
-          url: Paths.SETTLEMENT_TRANSACTIONS,
-        },
-      ],
-    },
+    // {
+    //   category: "DOWNLOAD REPORTS",
+    //   links: [
+    //     {
+    //       title: Pages.PLAYER_TRANSACTIONS,
+    //       url: Paths.PLAYER_TRANSACTIONS,
+    //     },
+    //     {
+    //       title: Pages.SETTLED_COMMISSIONS,
+    //       url: Paths.SETTLED_COMMISSIONS,
+    //     },
+    //     {
+    //       title: Pages.SETTLEMENT_TRANSACTIONS,
+    //       url: Paths.SETTLEMENT_TRANSACTIONS,
+    //     },
+    //   ],
+    // },
   ],
 
   [UserRole.OPERATOR]: [
@@ -232,19 +232,19 @@ export const roleWiseLinks: RoleWiseLinkMap = {
         },
       ],
     },
-    {
-      category: "DOWNLOAD REPORTS",
-      links: [
-        {
-          title: Pages.SETTLED_COMMISSIONS,
-          url: Paths.SETTLED_COMMISSIONS,
-        },
-        {
-          title: Pages.SETTLEMENT_TRANSACTIONS,
-          url: Paths.SETTLEMENT_TRANSACTIONS,
-        },
-      ],
-    },
+    // {
+    //   category: "DOWNLOAD REPORTS",
+    //   links: [
+    //     {
+    //       title: Pages.SETTLED_COMMISSIONS,
+    //       url: Paths.SETTLED_COMMISSIONS,
+    //     },
+    //     {
+    //       title: Pages.SETTLEMENT_TRANSACTIONS,
+    //       url: Paths.SETTLEMENT_TRANSACTIONS,
+    //     },
+    //   ],
+    // },
   ],
   [UserRole.PLATINUM]: [
     {
@@ -278,19 +278,19 @@ export const roleWiseLinks: RoleWiseLinkMap = {
         },
       ],
     },
-    {
-      category: "DOWNLOAD REPORTS",
-      links: [
-        {
-          title: Pages.SETTLED_COMMISSIONS,
-          url: Paths.SETTLED_COMMISSIONS,
-        },
-        {
-          title: Pages.SETTLEMENT_TRANSACTIONS,
-          url: Paths.SETTLEMENT_TRANSACTIONS,
-        },
-      ],
-    },
+    // {
+    //   category: "DOWNLOAD REPORTS",
+    //   links: [
+    //     {
+    //       title: Pages.SETTLED_COMMISSIONS,
+    //       url: Paths.SETTLED_COMMISSIONS,
+    //     },
+    //     {
+    //       title: Pages.SETTLEMENT_TRANSACTIONS,
+    //       url: Paths.SETTLEMENT_TRANSACTIONS,
+    //     },
+    //   ],
+    // },
   ],
 
   [UserRole.GOLD]: [
@@ -303,16 +303,16 @@ export const roleWiseLinks: RoleWiseLinkMap = {
         },
       ],
     },
-    {
-      category: "DOWNLOAD REPORTS",
-      links: [
-        {
-          title: Pages.SETTLED_COMMISSIONS,
-          url: Paths.SETTLED_COMMISSIONS,
-          isActive: true,
-        },
-      ],
-    },
+    // {
+    //   category: "DOWNLOAD REPORTS",
+    //   links: [
+    //     {
+    //       title: Pages.SETTLED_COMMISSIONS,
+    //       url: Paths.SETTLED_COMMISSIONS,
+    //       isActive: true,
+    //     },
+    //   ],
+    // },
   ],
 };
 
