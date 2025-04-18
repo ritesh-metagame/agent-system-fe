@@ -15,11 +15,12 @@ import { toast } from "sonner";
 
 export type PendingSettlement = {
   network: string;
+  category: string;
   totalDeposits: number | string;
   totalWithdrawals: number | string;
-  totalGrossCommissions: number | string;
+  grossCommissions: number | string;
   paymentGatewayFees: number | string;
-  totalNetCommissions: number | string;
+  netCommissions: number | string;
   id: string;
   //   breakdown: string; // could be a button or link
   //   releaseCommissions: string; // could be a button or status
@@ -116,7 +117,7 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
             </div>
             <div className="flex justify-between">
               <span className="font-medium">Total Gross Commissions:</span>
-              <span>{formatCurrency(row.original.totalGrossCommissions)}</span>
+              <span>{formatCurrency(row.original.grossCommissions)}</span>
             </div>
             <div className="flex justify-between">
               <span className="font-medium">Payment Gateway Fees:</span>
@@ -124,7 +125,7 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
             </div>
             <div className="flex justify-between font-semibold">
               <span>Total Net Commissions:</span>
-              <span>{formatCurrency(row.original.totalNetCommissions)}</span>
+              <span>{formatCurrency(row.original.netCommissions)}</span>
             </div>
           </div>
 
