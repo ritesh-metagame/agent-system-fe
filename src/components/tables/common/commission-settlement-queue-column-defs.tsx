@@ -14,68 +14,69 @@ export type PendingSettlement = {
   //   releaseCommissions: string; // could be a button or status
 };
 
-export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
-  {
-    accessorKey: "network",
-    header: "NETWORK",
-  },
-  {
-    accessorKey: "totalDeposits",
-    header: "TOTAL DEPOSITS",
-    cell: ({ row }) => {
-      const value = row.getValue("totalDeposits") as number | string;
-      return formatCurrency(value)?.toLocaleString() ?? "";
+export function pendingSettlementColumnDefs(
+  handleRelease: (row: PendingSettlement) => void
+): ColumnDef<PendingSettlement>[] {
+  return [
+    {
+      accessorKey: "network",
+      header: "NETWORK",
     },
-  },
-  {
-    accessorKey: "totalWithdrawals",
-    header: "TOTAL WITHDRAWALS",
-    cell: ({ row }) => {
-      const value = row.getValue("totalWithdrawals") as number | string;
-      return formatCurrency(value)?.toLocaleString() ?? "";
+    {
+      accessorKey: "totalDeposits",
+      header: "TOTAL DEPOSITS",
+      cell: ({ row }) => {
+        const value = row.getValue("totalDeposits") as number | string;
+        return formatCurrency(value)?.toLocaleString() ?? "";
+      },
     },
-  },
-  {
-    accessorKey: "totalGrossCommissions",
-    header: "TOTAL GROSS COMMISSIONS",
-    cell: ({ row }) => {
-      const value = row.getValue("totalGrossCommissions") as number | string;
-      return formatCurrency(value)?.toLocaleString() ?? "";
+    {
+      accessorKey: "totalWithdrawals",
+      header: "TOTAL WITHDRAWALS",
+      cell: ({ row }) => {
+        const value = row.getValue("totalWithdrawals") as number | string;
+        return formatCurrency(value)?.toLocaleString() ?? "";
+      },
     },
-  },
-  {
-    accessorKey: "paymentGatewayFees",
-    header: "LESS: PAYMENT GATEWAY FEES",
-    cell: ({ row }) => {
-      const value = row.getValue("paymentGatewayFees") as number | string;
-      return formatCurrency(value)?.toLocaleString() ?? "";
+    {
+      accessorKey: "totalGrossCommissions",
+      header: "TOTAL GROSS COMMISSIONS",
+      cell: ({ row }) => {
+        const value = row.getValue("totalGrossCommissions") as number | string;
+        return formatCurrency(value)?.toLocaleString() ?? "";
+      },
     },
-  },
-  {
-    accessorKey: "totalNetCommissions",
-    header: "TOTAL NET COMMISSIONS FOR SETTLEMENT",
-    cell: ({ row }) => {
-      const value = row.getValue("totalNetCommissions") as number | string;
-      return formatCurrency(value)?.toLocaleString() ?? "";
+    {
+      accessorKey: "paymentGatewayFees",
+      header: "LESS: PAYMENT GATEWAY FEES",
+      cell: ({ row }) => {
+        const value = row.getValue("paymentGatewayFees") as number | string;
+        return formatCurrency(value)?.toLocaleString() ?? "";
+      },
     },
-  },
-  {
-    id: "action1",
-    header: "BREAKDOWN",
-    cell: ({ row }) => {
-      return (
+    {
+      accessorKey: "totalNetCommissions",
+      header: "TOTAL NET COMMISSIONS FOR SETTLEMENT",
+      cell: ({ row }) => {
+        const value = row.getValue("totalNetCommissions") as number | string;
+        return formatCurrency(value)?.toLocaleString() ?? "";
+      },
+    },
+    {
+      id: "action1",
+      header: "BREAKDOWN",
+      cell: ({ row }) => (
         <Link href={`/commission-settlement-queue/${row.original.network}`}>
-          {" "}
           <Button>View</Button>
         </Link>
-      );
+      ),
     },
-  },
-  {
-    id: "action2",
-    header: "RELEASE COMMISSIONS",
-    cell: ({ row }) => {
-      return <Button>Release</Button>;
+    {
+      id: "action2",
+      header: "RELEASE COMMISSIONS",
+      cell: ({ row }) => (
+        <Button onClick={() => handleRelease(row.original)}>Release</Button>
+      ),
     },
-  },
-];
+  ];
+}
