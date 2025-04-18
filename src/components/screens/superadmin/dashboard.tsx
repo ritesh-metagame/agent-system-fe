@@ -103,37 +103,37 @@ export const defaultCommissionPayoutsBreakdown: TotalCommissionPayoutsBreakdown[
     {
       label: "Total Deposits",
       amountPendingSettlement: "",
-      settledAllTime: "",
+      allTime: "",
     },
     {
       label: "Total Withdrawals",
       amountPendingSettlement: "",
-      settledAllTime: "",
+      allTime: "",
     },
     {
       label: "Total Bet Amount(Turnover)",
       amountPendingSettlement: "",
-      settledAllTime: "",
+      allTime: "",
     },
     {
       label: "Net GGR",
       amountPendingSettlement: "",
-      settledAllTime: "",
+      allTime: "",
     },
     {
       label: "Gross Commission (% of Net GGR)",
       amountPendingSettlement: "",
-      settledAllTime: "",
+      allTime: "",
     },
     {
       label: "Payment Gateway Fees",
       amountPendingSettlement: "",
-      settledAllTime: "",
+      allTime: "",
     },
     {
       label: "Net Commission Available for Payout",
       amountPendingSettlement: "",
-      settledAllTime: "",
+      allTime: "",
     },
   ];
 
