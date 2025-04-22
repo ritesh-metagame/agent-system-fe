@@ -31,6 +31,11 @@ export type NetworkOverviewData = {
   summary: number | string;
 };
 
+export type PayoutAndWalletCommissionData = {
+  payout: number | string;
+  wallet: number | string;
+};
+
 export const networkOverviewColumns: ColumnDef<NetworkOverviewData>[] = [
   {
     accessorKey: "network",
@@ -46,6 +51,12 @@ export const networkOverviewColumns: ColumnDef<NetworkOverviewData>[] = [
   { accessorKey: "suspended", header: "SUSPENDED" },
   { accessorKey: "summary", header: "SUMMARY" },
 ];
+
+export const payoutAndWalletColumns: ColumnDef<PayoutAndWalletCommissionData>[] =
+  [
+    { accessorKey: "payout", header: "PAYOUT" },
+    { accessorKey: "wallet", header: "WALLET" },
+  ];
 
 /**
  * Overall Summary (E-Games & Sportsbetting) Table

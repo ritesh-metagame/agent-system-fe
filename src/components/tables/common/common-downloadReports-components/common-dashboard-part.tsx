@@ -7,6 +7,7 @@ import {
   overallSummaryColumns,
   eGamesColumns,
   sportsbettingColumns,
+  payoutAndWalletColumns,
 } from "../common-column-defs/common-dashboard-part-column";
 
 import type {
@@ -15,6 +16,7 @@ import type {
   EGamesData,
   SportsbettingData,
   OverallSummaryData,
+  PayoutAndWalletCommissionData,
 } from "../common-column-defs/common-dashboard-part-column";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -79,6 +81,10 @@ export default function CommonDashboard({
 }: any): React.ReactNode {
   const [eGamesData, setEGamesData] = useState([]);
   const [sportsBettingData, setSportsBettingData] = useState([]);
+  const [payoutAndWalletCommissionData, setPayoutAndWalletCommissionData] =
+    React.useState<PayoutAndWalletCommissionData[]>([]);
+
+  console.log("payoutAndWalletCommissionData", payoutAndWalletCommissionData);
 
   const role = useSelector((state) => state.authReducer.user.role.name);
 
@@ -217,6 +223,36 @@ export default function CommonDashboard({
       };
     });
   }
+
+  const fetchPayoutAndWalletCommissionData = async () => {
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      //
+      // Fetch data from the API or perform any other async operation
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/user/payoutAndWalletBalance`,
+
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data; // Use response.data instead of response.json()
+      console.log(
+        "Fetched commission running tally data------------------------:",
+        data
+      );
+
+      if (data) {
+        setPayoutAndWalletCommissionData([data.data]);
+      }
+    } catch (error) {
+      console.error("Error fetching commission running tally data:", error);
+    }
+  };
 
   const fetchCommissionRunningTallyData = async () => {
     try {
@@ -622,6 +658,7 @@ export default function CommonDashboard({
       const sports = await fetchTransactions("Sports-Betting", userRole);
 
       fetchOperatorStatisticsData();
+      fetchPayoutAndWalletCommissionData();
       fetchCommissionRunningTallyData();
       fetchCommissionBreakdownData();
       fetchTotalCommissionByUser();
@@ -643,7 +680,7 @@ export default function CommonDashboard({
     <div>
       {/* QR Code and Referral Link */}
       {/* <Card> */}
-      {/* <CardContent className="p-4  flex items-center justify-between">
+      <CardContent className="p-4  flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <QRCodeSVG value={referralLink} size={80} />
           <p className="text-sm text-black-900">Download QR Code</p>
@@ -654,12 +691,13 @@ export default function CommonDashboard({
           Referral Link:{" "}
           <a href="#" className="text-blue-500">
             {referralLink}
+            {userId}
           </a>
         </p>
         <p className="text-md  text-black-900">
           Share this QR code and copy to onboard {welcomeTierName}
         </p>
-      </div> */}
+      </div>
       {/* </Card> */}
       <div className="container mb-10">
         {/* <div className="mb-10">
@@ -690,6 +728,16 @@ export default function CommonDashboard({
         </div>
 
         <div className="mb-10">
+          {/* <TypographyH2 className="mb-4">Network Overview</TypographyH2> */}
+
+          <DataTable
+            columns={payoutAndWalletColumns}
+            data={payoutAndWalletCommissionData}
+            columnWidths={["250px", "250px"]}
+          />
+        </div>
+
+        <div className="mb-10">
           {role !== UserRole.GOLD ? (
             <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
@@ -708,6 +756,7 @@ export default function CommonDashboard({
           ) : (
             <></>
           )}
+
           <div className="mb-4">
             {role !== UserRole.GOLD ? (
               <>
