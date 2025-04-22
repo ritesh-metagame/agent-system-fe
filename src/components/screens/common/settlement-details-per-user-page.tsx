@@ -7,8 +7,9 @@ import {
 } from "@/components/tables/common/partner-breakdown-column-defs";
 import { DataTable } from "@/components/tables/data-table";
 import {
-  TotalCommissionPayoutsBreakdown,
-  totalCommissionPayoutsBreakdownColumns,
+  TotalCommissionPayoutsBreakdown1,
+  // totalCommissionPayoutsBreakdownColumns,
+  totalCommissionPayoutsBreakdownColumns1,
 } from "@/components/tables/superadmin/general/dashboard-columns";
 import { Badge } from "@/components/ui/badge";
 import { TypographyH2 } from "@/components/ui/typographyh2";
@@ -30,11 +31,11 @@ export default function SettlementDetailsPerUser({}: Props) {
   const [
     eGamesTotalCommissionPayoutsBreakdownData,
     setEGamesTotalCommissionPayoutsBreakdownData,
-  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([]);
+  ] = React.useState<TotalCommissionPayoutsBreakdown1[]>([]);
   const [
     sportsBettingTotalCommissionPayoutsBreakdownData,
     setSportsBettingTotalCommissionPayoutsBreakdownData,
-  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([]);
+  ] = React.useState<TotalCommissionPayoutsBreakdown1[]>([]);
 
   const [platinumPartnerBreakdownData, setPlatinumPartnerBreakdownData] =
     React.useState<PartnerBreakdown[]>([]);
@@ -240,14 +241,14 @@ export default function SettlementDetailsPerUser({}: Props) {
         <div className="mb-4 mt-4">
           <h6 className=" font-bold text-sm">E-Games</h6>
           <DataTable
-            columns={totalCommissionPayoutsBreakdownColumns}
+            columns={totalCommissionPayoutsBreakdownColumns1}
             data={eGamesTotalCommissionPayoutsBreakdownData}
           />
         </div>
         <div className="mb-4 mt-4">
           <h6 className=" font-bold text-sm">Sports Betting</h6>
           <DataTable
-            columns={totalCommissionPayoutsBreakdownColumns}
+            columns={totalCommissionPayoutsBreakdownColumns1}
             data={sportsBettingTotalCommissionPayoutsBreakdownData}
           />
         </div>

@@ -26,8 +26,8 @@ import {
   TopPlayersDepositsOverview,
   topPlayersGGRColumns,
   TopPlayersGGROverview,
-  TotalCommissionPayoutsBreakdown,
-  totalCommissionPayoutsBreakdownColumns,
+  TotalCommissionPayoutsBreakdown2,
+  totalCommissionPayoutsBreakdownColumns2,
 } from "@/components/tables/superadmin/general/dashboard-columns";
 import { TypographyH2 } from "@/components/ui/typographyh2";
 import { TypographyH4 } from "@/components/ui/typographyh4";
@@ -98,42 +98,42 @@ export const defaultCommissionAvailableForSettlementData: CommissionAvailableFor
     },
   ];
 
-export const defaultCommissionPayoutsBreakdown: TotalCommissionPayoutsBreakdown[] =
+export const defaultCommissionPayoutsBreakdown: TotalCommissionPayoutsBreakdown2[] =
   [
     {
       label: "Total Deposits",
       amountPendingSettlement: "",
-      allTime: "",
+      settledAllTime: "",
     },
     {
       label: "Total Withdrawals",
       amountPendingSettlement: "",
-      allTime: "",
+      settledAllTime: "",
     },
     {
       label: "Total Bet Amount(Turnover)",
       amountPendingSettlement: "",
-      allTime: "",
+      settledAllTime: "",
     },
     {
       label: "Net GGR",
       amountPendingSettlement: "",
-      allTime: "",
+      settledAllTime: "",
     },
     {
       label: "Gross Commission (% of Net GGR)",
       amountPendingSettlement: "",
-      allTime: "",
+      settledAllTime: "",
     },
     {
       label: "Payment Gateway Fees",
       amountPendingSettlement: "",
-      allTime: "",
+      settledAllTime: "",
     },
     {
       label: "Net Commission Available for Payout",
       amountPendingSettlement: "",
-      allTime: "",
+      settledAllTime: "",
     },
   ];
 
@@ -176,17 +176,17 @@ export default function Dashboard({}) {
   const [
     totalCommissionPayoutsBreakdownData,
     setTotalCommissionPayoutsBreakdownData,
-  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([]);
+  ] = React.useState<TotalCommissionPayoutsBreakdown2[]>([]);
 
   const [
     eGamesTotalCommissionPayoutsBreakdownData,
     setEGamesTotalCommissionPayoutsBreakdownData,
-  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([]);
+  ] = React.useState<TotalCommissionPayoutsBreakdown2[]>([]);
 
   const [
     sportsBettingTotalCommissionPayoutsBreakdownData,
     setSportsBettingTotalCommissionPayoutsBreakdownData,
-  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([]);
+  ] = React.useState<TotalCommissionPayoutsBreakdown2[]>([]);
 
   const [
     commissionAvailableForSettlementData,
@@ -241,7 +241,7 @@ export default function Dashboard({}) {
 
   function formatCommissionDataForTable(
     data: any
-  ): TotalCommissionPayoutsBreakdown[] {
+  ): TotalCommissionPayoutsBreakdown2[] {
     if (!data?.data?.overview) return [];
 
     return data.data?.overview.map((entry: any) => {
@@ -626,7 +626,7 @@ export default function Dashboard({}) {
           </div>
           <div className="mb-4">
             <DataTable
-              columns={totalCommissionPayoutsBreakdownColumns}
+              columns={totalCommissionPayoutsBreakdownColumns2}
               data={totalCommissionPayoutsBreakdownData}
               columnWidths={["250px", "250px", "250px", "250px", "150px"]}
               tooltips={{
