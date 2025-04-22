@@ -78,6 +78,8 @@ export default function Dashboard({}: Props) {
 
   const { user } = useSelector((state) => state.authReducer);
 
+  console.log("userDate-", user);
+
   const [allTimeTopPerformersData, setAllTimeTopPerformersData] =
     React.useState<OperatorTopPerformersAllTime[]>([]);
 
