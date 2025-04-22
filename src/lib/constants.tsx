@@ -36,6 +36,7 @@ import {
   SuperAdminCommissionSettlementQueue,
   OperatorCommissionSettlementQueue,
 } from "@/components/screens";
+import PlayerTransactionsPage from "@/components/screens/common/player-transactions-page";
 import CommissionRecentCutsOff from "@/components/screens/operator/commission-recent-cutoff";
 import PartnerManagement from "@/components/screens/operator/partner-management";
 import SuperAdminUpdateAccountForm from "@/components/superadmin-update-account-form";
@@ -64,7 +65,7 @@ export enum UserRole {
   OPERATOR = "operator",
   PLATINUM = "platinum",
   GOLD = "gold",
-  DEFAULT = "default",
+  // DEFAULT = "default",
 }
 
 export enum Pages {
@@ -181,23 +182,23 @@ export const roleWiseLinks: RoleWiseLinkMap = {
         },
       ],
     },
-    // {
-    //   category: "DOWNLOAD REPORTS",
-    //   links: [
-    //     {
-    //       title: Pages.PLAYER_TRANSACTIONS,
-    //       url: Paths.PLAYER_TRANSACTIONS,
-    //     },
-    //     {
-    //       title: Pages.SETTLED_COMMISSIONS,
-    //       url: Paths.SETTLED_COMMISSIONS,
-    //     },
-    //     {
-    //       title: Pages.SETTLEMENT_TRANSACTIONS,
-    //       url: Paths.SETTLEMENT_TRANSACTIONS,
-    //     },
-    //   ],
-    // },
+    {
+      category: "DOWNLOAD REPORTS",
+      links: [
+        {
+          title: Pages.PLAYER_TRANSACTIONS,
+          url: Paths.PLAYER_TRANSACTIONS,
+        },
+        {
+          title: Pages.SETTLED_COMMISSIONS,
+          url: Paths.SETTLED_COMMISSIONS,
+        },
+        // {
+        //   title: Pages.SETTLEMENT_TRANSACTIONS,
+        //   url: Paths.SETTLEMENT_TRANSACTIONS,
+        // },
+      ],
+    },
   ],
 
   [UserRole.OPERATOR]: [
@@ -232,19 +233,19 @@ export const roleWiseLinks: RoleWiseLinkMap = {
         },
       ],
     },
-    // {
-    //   category: "DOWNLOAD REPORTS",
-    //   links: [
-    //     {
-    //       title: Pages.SETTLED_COMMISSIONS,
-    //       url: Paths.SETTLED_COMMISSIONS,
-    //     },
-    //     {
-    //       title: Pages.SETTLEMENT_TRANSACTIONS,
-    //       url: Paths.SETTLEMENT_TRANSACTIONS,
-    //     },
-    //   ],
-    // },
+    {
+      category: "DOWNLOAD REPORTS",
+      links: [
+        {
+          title: Pages.SETTLED_COMMISSIONS,
+          url: Paths.SETTLED_COMMISSIONS,
+        },
+        // {
+        //   title: Pages.SETTLEMENT_TRANSACTIONS,
+        //   url: Paths.SETTLEMENT_TRANSACTIONS,
+        // },
+      ],
+    },
   ],
   [UserRole.PLATINUM]: [
     {
@@ -278,19 +279,19 @@ export const roleWiseLinks: RoleWiseLinkMap = {
         },
       ],
     },
-    // {
-    //   category: "DOWNLOAD REPORTS",
-    //   links: [
-    //     {
-    //       title: Pages.SETTLED_COMMISSIONS,
-    //       url: Paths.SETTLED_COMMISSIONS,
-    //     },
-    //     {
-    //       title: Pages.SETTLEMENT_TRANSACTIONS,
-    //       url: Paths.SETTLEMENT_TRANSACTIONS,
-    //     },
-    //   ],
-    // },
+    {
+      category: "DOWNLOAD REPORTS",
+      links: [
+        {
+          title: Pages.SETTLED_COMMISSIONS,
+          url: Paths.SETTLED_COMMISSIONS,
+        },
+        // {
+        //   title: Pages.SETTLEMENT_TRANSACTIONS,
+        //   url: Paths.SETTLEMENT_TRANSACTIONS,
+        // },
+      ],
+    },
   ],
 
   [UserRole.GOLD]: [
@@ -341,12 +342,12 @@ export const users = [
     role: UserRole.GOLD,
     password: "password",
   },
-  {
-    id: "5",
-    username: "example4",
-    role: UserRole.DEFAULT,
-    password: "password",
-  },
+  // {
+  //   id: "5",
+  //   username: "example4",
+  //   role: UserRole.DEFAULT,
+  //   password: "password",
+  // },
 ];
 
 export type RolePageMap = {
@@ -364,6 +365,7 @@ export const RolePageComponentMap: RolePageMap = {
     [Pages.CREATE_OPERATOR_ACCOUNT]: () => <SuperAdminCreateAccountForm />,
     [Pages.UPDATE_PARTNER]: () => <SuperAdminUpdateAccountForm />,
     [Pages.PARTNER_MANAGEMENT]: () => <SuperAdminPartnerManagement />,
+    [Pages.PLAYER_TRANSACTIONS]: () => <PlayerTransactionsPage />,
     [Pages.COMMISSION_RECENT_CUTOFF]: () => (
       <SuperAdminCommissionRecentCutoff />
     ),
@@ -411,14 +413,14 @@ export const RolePageComponentMap: RolePageMap = {
     [Pages.COMMISSIONS]: () => <OperatorCommissions />,
     [Pages.SETTLEMENT_HISTORY]: () => <OperatorSettlementHistory />,
   },
-  [UserRole.DEFAULT]: {
-    [Pages.DASHBOARD]: () => <></>,
-    [Pages.CREATE_OPERATOR_ACCOUNT]: () => <></>,
-    [Pages.PARTNER_MANAGEMENT]: () => <></>,
-    [Pages.COMMISSION_RECENT_CUTOFF]: () => <></>,
-    [Pages.HISTORICAL_CUTOFFS]: () => <></>,
-    [Pages.TRANSACTIONS]: () => <></>,
-    [Pages.COMMISSIONS]: () => <></>,
-    [Pages.SETTLEMENT_HISTORY]: () => <></>,
-  },
+  // [UserRole.DEFAULT]: {
+  //   [Pages.DASHBOARD]: () => <></>,
+  //   [Pages.CREATE_OPERATOR_ACCOUNT]: () => <></>,
+  //   [Pages.PARTNER_MANAGEMENT]: () => <></>,
+  //   [Pages.COMMISSION_RECENT_CUTOFF]: () => <></>,
+  //   [Pages.HISTORICAL_CUTOFFS]: () => <></>,
+  //   [Pages.TRANSACTIONS]: () => <></>,
+  //   [Pages.COMMISSIONS]: () => <></>,
+  //   [Pages.SETTLEMENT_HISTORY]: () => <></>,
+  // },
 };

@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 // Define the shape of the data for the table.
 export type SettlementReportData = {
   id: number;
-  start: string;
-  end: string;
+  fromDate: string;
+  toDate: string;
   status: string;
   action: string;
+  downlineName: string;
 };
 
 // Column definitions for the Reports List table
@@ -19,12 +20,26 @@ export const settlementListColumns: ColumnDef<SettlementReportData>[] = [
     header: "ID",
   },
   {
-    accessorKey: "start",
-    header: "START",
+    accessorKey: "fromDate",
+    header: "FROM DATE",
   },
   {
-    accessorKey: "end",
-    header: "END",
+    accessorKey: "toDate",
+    header: "TO DATE",
+  },
+  {
+    accessorKey: "downlineName",
+    header: () => {
+      const role = localStorage.getItem("role");
+
+      if (role === "superadmin") {
+        return "OPERATOR NAME";
+      } else if (role === "operator") {
+        return "PLATINUM NAME";
+      } else if (role === "platinum") {
+        return "GOLD NAME";
+      }
+    },
   },
   {
     accessorKey: "status",

@@ -9,7 +9,7 @@ type Props = {};
 export default function PartnerManagementPage({}: Props) {
   return (
     <div>
-      <RoleBasedContent page={Pages.PARTNER_MANAGEMENT} />
+      <RoleBasedContent page={Pages.PLAYER_TRANSACTIONS} />
     </div>
   );
 }
