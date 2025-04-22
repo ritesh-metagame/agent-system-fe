@@ -171,7 +171,7 @@ export default function CreateAccountFormWithCommissionPeriod({
     fetchSites();
   }, [BASE_URL]);
 
-  const siteOptions = sites.map((site: any) => ({
+  const siteOptions = sites?.map((site: any) => ({
     label: site.site.name,
     value: site.site.id,
     description: site.site.url,
@@ -316,7 +316,7 @@ export default function CreateAccountFormWithCommissionPeriod({
                             <SelectValue placeholder="Prefix" />
                           </SelectTrigger>
                           <SelectContent>
-                            {mobilePrefixes.map((prefix) => (
+                            {mobilePrefixes?.map((prefix) => (
                               <SelectItem
                                 key={prefix.value}
                                 value={prefix.value}

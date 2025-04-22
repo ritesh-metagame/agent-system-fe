@@ -232,7 +232,7 @@ export default function Dashboard({}) {
       });
     }
 
-    return tallyData.map((entry: any) => ({
+    return tallyData?.map((entry: any) => ({
       item: response.data.roleLabel,
       eGames: entry.eGames,
       sportsBetting: entry.sportsBetting,
@@ -244,7 +244,7 @@ export default function Dashboard({}) {
   ): TotalCommissionPayoutsBreakdown2[] {
     if (!data?.data?.overview) return [];
 
-    return data.data?.overview.map((entry: any) => {
+    return data.data?.overview?.map((entry: any) => {
       let item = entry.metric;
 
       // Add subtext for Net Commission
@@ -286,7 +286,7 @@ export default function Dashboard({}) {
 
         // console.log({ formatted });
 
-        // const formattedData = data.map((statistic: any) => ({
+        // const formattedData = data?.map((statistic: any) => ({
         //   item: statistic.role || "",
         //   eGames: statistic.eGames || 0,
         //   sportsBetting: statistic.sportsBetting || 0,
@@ -386,7 +386,7 @@ export default function Dashboard({}) {
 
       // Transform API response to match our NetworkStatistics type
       if (data && Array.isArray(data)) {
-        // const formattedData = data.map((statistic: any) => ({
+        // const formattedData = data?.map((statistic: any) => ({
         //   networkName: statistic.role || "",
         //   totalDeposits: statistic.totalDeposits || 0,
         //   totalGGR: statistic.totalGGR || 0,

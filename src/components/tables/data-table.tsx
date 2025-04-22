@@ -56,9 +56,9 @@ export function DataTable<TData, TValue>({
       >
         <Table className="w-max border rounded-md">
           <TableHeader className="bg-table-header">
-            {table.getHeaderGroups().map((headerGroup) => (
+            {table.getHeaderGroups()?.map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header, index) => {
+                {headerGroup.headers?.map((header, index) => {
                   const tooltip = tooltips[header.id];
                   return (
                     <TableHead
@@ -91,12 +91,12 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows?.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell, index) => (
+                  {row.getVisibleCells()?.map((cell, index) => (
                     <TableCell
                       key={cell.id}
                       style={{ width: columnWidths[index] || "auto" }} // Apply column width

@@ -194,7 +194,7 @@ export const MultiSelect = React.forwardRef<
       if (selectedValues.length === options.length) {
         handleClear();
       } else {
-        const allValues = options.map((option) => option.value);
+        const allValues = options?.map((option) => option.value);
         setSelectedValues(allValues);
         onValueChange(allValues);
       }
@@ -219,7 +219,7 @@ export const MultiSelect = React.forwardRef<
             {selectedValues.length > 0 ? (
               <div className="flex justify-between items-center w-full">
                 <div className="flex flex-wrap items-center">
-                  {selectedValues.slice(0, maxCount).map((value) => {
+                  {selectedValues.slice(0, maxCount)?.map((value) => {
                     const option = options.find((o) => o.value === value);
                     const IconComponent = option?.icon;
                     return (
@@ -320,8 +320,8 @@ export const MultiSelect = React.forwardRef<
                   </div>
                   <span>(Select All)</span>
                 </CommandItem>
-                {options.map((option) => {
-                  const isSelected = selectedValues.includes(option.value);
+                {options?.map((option) => {
+                  const isSelected = selectedValues.includes(option?.value);
                   return (
                     <CommandItem
                       key={option.value}

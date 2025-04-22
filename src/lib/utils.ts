@@ -38,10 +38,10 @@ export function generateSidebarMenusBasedOnRole(role: UserRole) {
       email: "m@example.com",
       avatar: "/avatars/shadcn.jpg",
     },
-    navMain: roleWiseLinks[role].map((link: LinkCategory) => ({
+    navMain: roleWiseLinks[role]?.map((link: LinkCategory) => ({
       title: link.category,
       url: "#",
-      items: link.links.map((l: Link) => ({
+      items: link.links?.map((l: Link) => ({
         title: l.title,
         url: l.url,
       })),

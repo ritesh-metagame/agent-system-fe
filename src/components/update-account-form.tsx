@@ -173,7 +173,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
             }
           });
 
-          const userSiteIds = user.userSites.map((site: any) => site.siteId);
+          const userSiteIds = user.userSites?.map((site: any) => site.siteId);
           setSelectedSiteIds(userSiteIds);
 
           // Extract prefix and remaining digits from mobile number
@@ -254,7 +254,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
     fetchSites();
   }, [BASE_URL]);
 
-  const siteOptions = sites.map((site: any) => ({
+  const siteOptions = sites?.map((site: any) => ({
     label: site.site.name,
     value: site.site.id,
     description: site.site.url,
@@ -391,7 +391,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
                               <SelectValue placeholder="Prefix" />
                             </SelectTrigger>
                             <SelectContent>
-                              {mobilePrefixes.map((prefix) => (
+                              {mobilePrefixes?.map((prefix) => (
                                 <SelectItem
                                   key={prefix.value}
                                   value={prefix.value}

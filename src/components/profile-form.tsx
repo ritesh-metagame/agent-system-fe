@@ -335,7 +335,7 @@ export default function ProfileForm() {
                 <AccordionContent>
                   <div className="grid gap-4">
                     {userDetails.commissions?.length > 0 ? (
-                      userDetails.commissions.map(
+                      userDetails.commissions?.map(
                         (commission: any, index: number) => (
                           <div key={index} className="p-4 border rounded-lg">
                             <div className="flex justify-between items-start">

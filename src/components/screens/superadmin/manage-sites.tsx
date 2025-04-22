@@ -43,7 +43,7 @@ export default function SuperAdminManageSites() {
 
       console.log("Fetched sites:", data.data);
 
-      const sitesList = data.data.map((site: any) => ({
+      const sitesList = data.data?.map((site: any) => ({
         id: site.id,
         name: site.name,
         url: site.url,

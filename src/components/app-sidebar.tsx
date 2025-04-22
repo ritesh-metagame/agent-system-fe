@@ -50,7 +50,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             {/* <SearchForm /> */}
           </SidebarHeader>
           <SidebarContent className="gap-0">
-            {generateSidebarMenusBasedOnRole(role as UserRole).navMain.map(
+            {generateSidebarMenusBasedOnRole(role as UserRole).navMain?.map(
               (item) => (
                 <Collapsible
                   key={item.title}
@@ -71,7 +71,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <CollapsibleContent>
                       <SidebarGroupContent>
                         <SidebarMenu>
-                          {item.items.map((item) => (
+                          {item.items?.map((item) => (
                             <SidebarMenuItem key={item.title}>
                               <SidebarMenuButton
                                 className={`text-foreground `}

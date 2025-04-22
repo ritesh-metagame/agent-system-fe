@@ -75,7 +75,7 @@ export default function PartnerManagement({}: Props) {
 
       console.log("Fetched partners:", data.data);
 
-      const partnersList = data.data.map((p: any) => ({
+      const partnersList = data.data?.map((p: any) => ({
         username: p.username,
         role: p.role.name,
         mobileNumber: p.mobileNumber,

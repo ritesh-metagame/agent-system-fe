@@ -243,7 +243,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
   }, [BASE_URL]);
 
   // Transform sites data for MultiSelect component
-  const siteOptions = sites.map((site) => ({
+  const siteOptions = sites?.map((site) => ({
     label: site.name,
     value: site.id,
     description: site.url,
@@ -367,7 +367,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const text = e.target?.result as string;
-        const rows = text.split("\n").map((row) => row.split(","));
+        const rows = text.split("\n")?.map((row) => row.split(","));
         setCsvPreview(rows);
       };
       reader.readAsText(file);
@@ -461,7 +461,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                             <SelectValue placeholder="Prefix" />
                           </SelectTrigger>
                           <SelectContent>
-                            {mobilePrefixes.map((prefix) => (
+                            {mobilePrefixes?.map((prefix) => (
                               <SelectItem
                                 key={prefix.value}
                                 value={prefix.value}

@@ -133,56 +133,62 @@ export const partnerColumns: ColumnDef<Partners>[] = [
                       </tr>
                     </thead>
                     <tbody>
-                      {Object.keys(commissionsBySite).map((siteName, index) => (
-                        <tr key={index} className="hover:bg-gray-50">
-                          <td className="border p-2 font-medium">{siteName}</td>
-                          <td className="border p-2 text-center">
-                            {commissionsBySite[siteName]["eGames"] ? (
-                              <div className="flex flex-col gap-1">
-                                {commissionsBySite[siteName]["eGames"].map(
-                                  (comm, i) => (
+                      {Object.keys(commissionsBySite)?.map(
+                        (siteName, index) => (
+                          <tr key={index} className="hover:bg-gray-50">
+                            <td className="border p-2 font-medium">
+                              {siteName}
+                            </td>
+                            <td className="border p-2 text-center">
+                              {commissionsBySite[siteName]["eGames"] ? (
+                                <div className="flex flex-col gap-1">
+                                  {commissionsBySite[siteName]["eGames"]?.map(
+                                    (comm, i) => (
+                                      <div key={i} className="text-sm">
+                                        {comm.percentage}%
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              ) : (
+                                "-"
+                              )}
+                            </td>
+                            <td className="border p-2 text-center">
+                              {commissionsBySite[siteName]["Sports-Betting"] ? (
+                                <div className="flex flex-col gap-1">
+                                  {commissionsBySite[siteName][
+                                    "Sports-Betting"
+                                  ]?.map((comm, i) => (
                                     <div key={i} className="text-sm">
                                       {comm.percentage}%
                                     </div>
-                                  )
-                                )}
-                              </div>
-                            ) : (
-                              "-"
-                            )}
-                          </td>
-                          <td className="border p-2 text-center">
-                            {commissionsBySite[siteName]["Sports-Betting"] ? (
-                              <div className="flex flex-col gap-1">
-                                {commissionsBySite[siteName][
-                                  "Sports-Betting"
-                                ].map((comm, i) => (
-                                  <div key={i} className="text-sm">
-                                    {comm.percentage}%
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              "-"
-                            )}
-                          </td>
-                          <td className="border p-2 text-center">
-                            {commissionsBySite[siteName]["SpecialityGames"] ? (
-                              <div className="flex flex-col gap-1">
-                                {commissionsBySite[siteName][
-                                  "SpecialityGames"
-                                ].map((comm, i) => (
-                                  <div key={i} className="text-sm">
-                                    {comm.percentage}%
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              "-"
-                            )}
-                          </td>
-                        </tr>
-                      ))}
+                                  ))}
+                                </div>
+                              ) : (
+                                "-"
+                              )}
+                            </td>
+                            <td className="border p-2 text-center">
+                              {commissionsBySite[siteName][
+                                "SpecialityGames"
+                              ] ? (
+                                <div className="flex flex-col gap-1">
+                                  {commissionsBySite[siteName][
+                                    "SpecialityGames"
+                                  ]?.map((comm, i) => (
+                                    <div key={i} className="text-sm">
+                                      {comm.percentage}%
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                "-"
+                              )}
+                            </td>
+                          </tr>
+                        )
+                      )}
                     </tbody>
                   </table>
                 </div>

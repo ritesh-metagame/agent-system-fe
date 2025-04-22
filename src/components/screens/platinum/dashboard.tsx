@@ -106,7 +106,7 @@ export default function Dashboard({}: Props) {
 
       // Transform API response to match our PlatinumTopPerformersAllTimeData type
       if (data && data.topPerformers && Array.isArray(data.topPerformers)) {
-        const formattedData = data.topPerformers.map((performer: any) => ({
+        const formattedData = data.topPerformers?.map((performer: any) => ({
           goldenName: performer.name || "",
           pendingCommission: performer.pendingCommission || 0,
           released: performer.released || 0,
