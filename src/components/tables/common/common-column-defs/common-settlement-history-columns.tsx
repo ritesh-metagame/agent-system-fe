@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
+import { UserRole } from "@/lib/constants";
 
 // Define the shape of the data for the table.
 export type SettlementReportData = {
@@ -32,12 +33,12 @@ export const settlementListColumns: ColumnDef<SettlementReportData>[] = [
     header: () => {
       const role = localStorage.getItem("role");
 
-      if (role === "superadmin") {
+      if (role === UserRole.SUPER_ADMIN) {
         return "OPERATOR NAME";
-      } else if (role === "operator") {
+      } else if (role === UserRole.OPERATOR) {
         return "PLATINUM NAME";
-      } else if (role === "platinum") {
-        return "GOLD NAME";
+      } else if (role === UserRole.PLATINUM) {
+        return "GOLDEN NAME";
       }
     },
   },

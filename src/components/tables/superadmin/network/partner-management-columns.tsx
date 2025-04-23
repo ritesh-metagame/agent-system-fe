@@ -123,12 +123,15 @@ export const partnerColumns: ColumnDef<Partners>[] = [
                     <thead className="bg-gray-100">
                       <tr>
                         <th className="border p-2 text-left">Site</th>
-                        <th className="border p-2 text-center">eGames</th>
+                        <th className="border p-2 text-center">E-Games</th>
                         <th className="border p-2 text-center">
-                          Sports-Betting
+                          Sports Betting
                         </th>
                         <th className="border p-2 text-center">
-                          SpecialityGames
+                          Speciality Games - RNG
+                        </th>
+                        <th className="border p-2 text-center">
+                          Speciality Games - Tote
                         </th>
                       </tr>
                     </thead>
@@ -140,9 +143,9 @@ export const partnerColumns: ColumnDef<Partners>[] = [
                               {siteName}
                             </td>
                             <td className="border p-2 text-center">
-                              {commissionsBySite[siteName]["eGames"] ? (
+                              {commissionsBySite[siteName]["E-Games"] ? (
                                 <div className="flex flex-col gap-1">
-                                  {commissionsBySite[siteName]["eGames"]?.map(
+                                  {commissionsBySite[siteName]["E-Games"]?.map(
                                     (comm, i) => (
                                       <div key={i} className="text-sm">
                                         {comm.percentage}%
@@ -155,10 +158,10 @@ export const partnerColumns: ColumnDef<Partners>[] = [
                               )}
                             </td>
                             <td className="border p-2 text-center">
-                              {commissionsBySite[siteName]["Sports-Betting"] ? (
+                              {commissionsBySite[siteName]["Sports Betting"] ? (
                                 <div className="flex flex-col gap-1">
                                   {commissionsBySite[siteName][
-                                    "Sports-Betting"
+                                    "Sports Betting"
                                   ]?.map((comm, i) => (
                                     <div key={i} className="text-sm">
                                       {comm.percentage}%
@@ -171,11 +174,28 @@ export const partnerColumns: ColumnDef<Partners>[] = [
                             </td>
                             <td className="border p-2 text-center">
                               {commissionsBySite[siteName][
-                                "SpecialityGames"
+                                "Speciality Games - RNG"
                               ] ? (
                                 <div className="flex flex-col gap-1">
                                   {commissionsBySite[siteName][
-                                    "SpecialityGames"
+                                    "Speciality Games - RNG"
+                                  ]?.map((comm, i) => (
+                                    <div key={i} className="text-sm">
+                                      {comm.percentage}%
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                "-"
+                              )}
+                            </td>
+                            <td className="border p-2 text-center">
+                              {commissionsBySite[siteName][
+                                "Speciality Games - Tote"
+                              ] ? (
+                                <div className="flex flex-col gap-1">
+                                  {commissionsBySite[siteName][
+                                    "Speciality Games - Tote"
                                   ]?.map((comm, i) => (
                                     <div key={i} className="text-sm">
                                       {comm.percentage}%

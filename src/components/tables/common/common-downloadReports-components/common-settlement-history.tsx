@@ -160,6 +160,12 @@ export default function SettlementHistory({}: Props) {
     }
   }, [dateRange.from, dateRange.to]);
 
+  useEffect(() => {
+    if (selectedPartner !== "all" && selectedPartner !== "") {
+      setBtnDisabled(false);
+    }
+  }, [selectedPartner]);
+
   return (
     <div>
       <div className="container mb-10">

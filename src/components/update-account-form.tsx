@@ -58,7 +58,8 @@ const createAccountFormSchema = z.object({
   password: z.string(),
   eGamesCommission: z.string(),
   sportsBettingCommission: z.string(),
-  specialityGamesCommission: z.string(),
+  specialityGamesRngCommission: z.string(),
+  specialityGamesToteCommission: z.string(),
   siteIds: z.array(z.string()),
 });
 
@@ -103,7 +104,8 @@ export default function UpdateAccountFormWithCommissionPeriod() {
       password: "",
       eGamesCommission: "",
       sportsBettingCommission: "",
-      specialityGamesCommission: "",
+      specialityGamesRngCommission: "",
+      specialityGamesToteCommission: "",
       siteIds: [],
     },
   });
@@ -152,22 +154,27 @@ export default function UpdateAccountFormWithCommissionPeriod() {
           const commissionsByCategory = {
             eGames: "",
             sportsBetting: "",
-            specialtyGames: "",
+            specialtyGamesRng: "",
+            specialtyGamesTote: "",
           };
 
           // Get unique commission percentages per category
           user.commissions.forEach((commission: any) => {
             switch (commission.category.name) {
-              case "eGames":
+              case "E-Games":
                 commissionsByCategory.eGames =
                   commission.commissionPercentage.toString();
                 break;
-              case "Sports-Betting":
+              case "Sports Betting":
                 commissionsByCategory.sportsBetting =
                   commission.commissionPercentage.toString();
                 break;
-              case "SpecialityGames":
-                commissionsByCategory.specialtyGames =
+              case "Speciality Games - RNG":
+                commissionsByCategory.specialtyGamesRng =
+                  commission.commissionPercentage.toString();
+                break;
+              case "Speciality Games - Tote":
+                commissionsByCategory.specialtyGamesTote =
                   commission.commissionPercentage.toString();
                 break;
             }
@@ -201,7 +208,10 @@ export default function UpdateAccountFormWithCommissionPeriod() {
             password: "",
             eGamesCommission: commissionsByCategory.eGames,
             sportsBettingCommission: commissionsByCategory.sportsBetting,
-            specialityGamesCommission: commissionsByCategory.specialtyGames,
+            specialityGamesRngCommission:
+              commissionsByCategory.specialtyGamesRng,
+            specialityGamesToteCommission:
+              commissionsByCategory.specialtyGamesTote,
             siteIds: userSiteIds,
           };
 
@@ -283,7 +293,8 @@ export default function UpdateAccountFormWithCommissionPeriod() {
       commissions: {
         eGames: values.eGamesCommission || undefined,
         sportsBetting: values.sportsBettingCommission || undefined,
-        specialityGames: values.specialityGamesCommission || undefined,
+        specialityGamesRng: values.specialityGamesRngCommission || undefined,
+        specialityGamesTote: values.specialityGamesToteCommission || undefined,
       },
       siteIds: selectedSiteIds,
     };
@@ -588,11 +599,31 @@ export default function UpdateAccountFormWithCommissionPeriod() {
 
               <FormField
                 control={form.control}
-                name="specialityGamesCommission"
+                name="specialityGamesRngCommission"
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormLabel className="text-sm md:text-base">
-                      SpecialityGames Commission (%)
+                      Speciality Games - RNG Commission (%)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="w-full"
+                        placeholder="Enter commission percentage"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="specialityGamesToteCommission"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-sm md:text-base">
+                      Speciality Games - Tote Commission (%)
                     </FormLabel>
                     <FormControl>
                       <Input
