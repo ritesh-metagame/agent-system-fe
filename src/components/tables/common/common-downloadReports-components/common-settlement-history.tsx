@@ -72,6 +72,8 @@ export default function SettlementHistory({}: Props) {
     SettlementReportData[]
   >([]);
 
+  console.log("commissionsData", commissionsData);
+
   const [btnDisabled, setBtnDisabled] = React.useState<boolean>(true);
 
   const [partners, setPartners] = React.useState<any[]>([]);

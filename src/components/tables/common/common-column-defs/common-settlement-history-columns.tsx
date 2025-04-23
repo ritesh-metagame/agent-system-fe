@@ -60,6 +60,54 @@ export const settlementListColumns: ColumnDef<SettlementReportData>[] = [
 ];
 
 // Function to handle download action
-const handleDownload = (report: SettlementReportData) => {
-  console.log("Downloading report:", report);
+const handleDownload = async (rowData: any) => {
+  const accessToken = localStorage.getItem("token");
+
+  console.log("Row data for download:", rowData);
+  const downlineId = rowData._metadata?.downlineId;
+  const fromDateISO = rowData._metadata?.fromDateISO;
+  const toDateISO = rowData._metadata?.toDateISO;
+
+  if (!downlineId) {
+    console.error("Downline ID not found");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/user/download-report`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          downlineId,
+          fromDateISO,
+          toDateISO,
+        }),
+      }
+    );
+
+    console.log("Download response------------------:", response);
+
+    if (!response.ok) {
+      throw new Error("Failed to download CSV");
+    }
+
+    const blob = await response.blob();
+
+    // Create a temporary URL and trigger download
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `commission-report-${downlineId}.xlsx`; // correct extension
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading file:", error);
+  }
 };
