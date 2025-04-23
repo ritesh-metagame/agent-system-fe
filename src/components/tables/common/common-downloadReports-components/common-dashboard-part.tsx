@@ -411,7 +411,7 @@ export default function CommonDashboard({
 
       setCommissionAvailableForSettlementData([
         {
-          item: userRole === "operator" ? "ALL PLATINUM" : "ALL GOLD",
+          item: userRole === UserRole.OPERATOR ? "ALL PLATINUM" : "ALL GOLDEN",
           availableForPayout: data.totalPending || 0,
           settledAllTime: data.totalSettled || 0,
         },

@@ -161,13 +161,27 @@ const createAccountFormSchema = z.object({
     }),
   sportsBettingCommissionComputationPeriod: z.enum(["BI_MONTHLY", "MONTHLY"]),
 
-  specialityGamesCommission: z
+  specialityGamesRngCommission: z
     .string()
     .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-  specialityGamesCommissionComputationPeriod: z.enum(["BI_MONTHLY", "MONTHLY"]),
+  specialityGamesRngCommissionComputationPeriod: z.enum([
+    "BI_MONTHLY",
+    "MONTHLY",
+  ]),
+
+  specialityGamesToteCommission: z
+    .string()
+    .optional()
+    .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
+      message: "Commission percentage must be between 0 and 100",
+    }),
+  specialityGamesToteCommissionComputationPeriod: z.enum([
+    "BI_MONTHLY",
+    "MONTHLY",
+  ]),
 
   siteIds: z.array(z.string()),
 });
@@ -272,8 +286,11 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
       eGamesCommissionComputationPeriod: "BI_MONTHLY", // Default to bIBI_MONTHLY
       sportsBettingCommission: "",
       sportsBettingCommissionComputationPeriod: "BI_MONTHLY", // Default to bIBI_MONTHLY
-      specialityGamesCommission: "",
-      specialityGamesCommissionComputationPeriod: "BI_MONTHLY", // Default to monthly
+      specialityGamesRngCommission: "",
+      specialityGamesRngCommissionComputationPeriod: "BI_MONTHLY", // Default to monthly
+      specialityGamesToteCommission: "",
+      specialityGamesToteCommissionComputationPeriod: "BI_MONTHLY",
+
       siteIds: [],
     },
   });
@@ -310,15 +327,18 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
       commissions: {
         eGames: values.eGamesCommission || undefined,
         sportsBetting: values.sportsBettingCommission || undefined,
-        specialityGames: values.specialityGamesCommission || undefined,
+        specialityGamesTote: values.specialityGamesToteCommission || undefined,
+        specialityGamesRng: values.specialityGamesRngCommission || undefined,
       },
       siteIds: selectedSiteIds,
       eGamesCommissionComputationPeriod:
         values.eGamesCommissionComputationPeriod,
       sportsBettingCommissionComputationPeriod:
         values.sportsBettingCommissionComputationPeriod,
-      specialityGamesCommissionComputationPeriod:
-        values.specialityGamesCommissionComputationPeriod,
+      specialityGamesRngCommissionComputationPeriod:
+        values.specialityGamesRngCommissionComputationPeriod,
+      specialityGamesToteCommissionComputationPeriod:
+        values.specialityGamesToteCommissionComputationPeriod,
     };
 
     try {
@@ -590,7 +610,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                 {/* eGames Category */}
                 <AccordionItem value="egames">
                   <AccordionTrigger className="text-xl">
-                    eGames
+                    E-Games
                   </AccordionTrigger>
                   <AccordionContent className="flex items-center gap-2 justify-center w-full">
                     <FormField
@@ -732,14 +752,14 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                 </AccordionItem>
 
                 {/* Specialty Games Category */}
-                <AccordionItem value="specialtygames">
+                <AccordionItem value="specialtygamesrng">
                   <AccordionTrigger className="text-xl">
-                    Specialty Games
+                    Specialty Games - RNG
                   </AccordionTrigger>
                   <AccordionContent className="flex items-center gap-2 justify-center w-full">
                     <FormField
                       control={form.control}
-                      name="specialityGamesCommission"
+                      name="specialityGamesRngCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <FormLabel>Commission (%)</FormLabel>
@@ -755,7 +775,78 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                     />
                     <FormField
                       control={form.control}
-                      name="specialityGamesCommissionComputationPeriod"
+                      name="specialityGamesRngCommissionComputationPeriod"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>
+                            Commission Computation Period
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="ml-1 text-gray-500 cursor-pointer">
+                                    ?
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>
+                                    <strong>Bi-Monthly:</strong> Settlement
+                                    occurs twice a month (1st-15th and
+                                    16th-31st).
+                                    <br />
+                                    <strong>Monthly:</strong> Settlement occurs
+                                    once at the end of each month.
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </FormLabel>
+                          <FormControl>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select period" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="BI_MONTHLY">
+                                  Bi-Monthly
+                                </SelectItem>
+                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="specialtygamestote">
+                  <AccordionTrigger className="text-xl">
+                    Specialty Games - RNG
+                  </AccordionTrigger>
+                  <AccordionContent className="flex items-center gap-2 justify-center w-full">
+                    <FormField
+                      control={form.control}
+                      name="specialityGamesToteCommission"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>Commission (%)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Enter commission percentage"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="specialityGamesToteCommissionComputationPeriod"
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <FormLabel>

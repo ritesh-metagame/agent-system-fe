@@ -12,9 +12,7 @@ const RoleBasedContent = ({ page }: RoleBasedContentProps) => {
   // const role = getCookie("role") || UserRole.DEFAULT;
   const role = useSelector((state) => state.authReducer.role);
 
-  const Component =
-    RolePageComponentMap[role]?.[page] ||
-    RolePageComponentMap[UserRole.DEFAULT]?.[page];
+  const Component = RolePageComponentMap[role]?.[page];
 
   return Component ? <Component /> : <p>Unauthorized Access</p>;
 };

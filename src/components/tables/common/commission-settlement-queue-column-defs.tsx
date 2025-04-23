@@ -14,14 +14,16 @@ import Link from "next/link";
 import { toast } from "sonner";
 
 export type PendingSettlement = {
+  ids: string[];
   network: string;
-  category: string;
-  totalDeposits: number | string;
-  totalWithdrawals: number | string;
-  grossCommissions: number | string;
-  paymentGatewayFees: number | string;
-  netCommissions: number | string;
-  id: string;
+  totalEgamesCommissions: number;
+  totalSportsBettingCommissions: number;
+  totalSpecialtyGamesCommissions: number;
+  grossCommissions: number;
+  paymentGatewayFees: number;
+  netCommissions: number;
+  // breakdownAction: "view";
+  // releaseAction: "release_comms";
   //   breakdown: string; // could be a button or link
   //   releaseCommissions: string; // could be a button or status
 };
@@ -31,27 +33,39 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
     accessorKey: "network",
     header: "NETWORK",
   },
+  // {
+  //   accessorKey: "category",
+  //   header: "CATEGORY",
+  //   cell: ({ row }) => {
+  //     const value = row.getValue("category") as string;
+  //     return value.charAt(0).toUpperCase() + value.slice(1);
+  //   },
+  // },
   {
-    accessorKey: "category",
-    header: "CATEGORY",
+    accessorKey: "totalEgamesCommissions",
+    header: "TOTAL EGAMES COMMISSIONS",
     cell: ({ row }) => {
-      const value = row.getValue("category") as string;
-      return value.charAt(0).toUpperCase() + value.slice(1);
-    },
-  },
-  {
-    accessorKey: "totalDeposits",
-    header: "TOTAL DEPOSITS",
-    cell: ({ row }) => {
-      const value = row.getValue("totalDeposits") as number | string;
+      const value = row.getValue("totalEgamesCommissions") as number | string;
       return formatCurrency(value)?.toLocaleString() ?? "";
     },
   },
   {
-    accessorKey: "totalWithdrawals",
-    header: "TOTAL WITHDRAWALS",
+    accessorKey: "totalSportsBettingCommissions",
+    header: "TOTAL SPORTS BETTING COMMISSIONS",
     cell: ({ row }) => {
-      const value = row.getValue("totalWithdrawals") as number | string;
+      const value = row.getValue("totalSportsBettingCommissions") as
+        | number
+        | string;
+      return formatCurrency(value)?.toLocaleString() ?? "";
+    },
+  },
+  {
+    accessorKey: "totalSpecialtyGamesCommissions",
+    header: "TOTAL SPECIALITY GAMES COMMISSIONS",
+    cell: ({ row }) => {
+      const value = row.getValue("totalSpecialtyGamesCommissions") as
+        | number
+        | string;
       return formatCurrency(value)?.toLocaleString() ?? "";
     },
   },
@@ -107,14 +121,14 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
             </p>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="flex justify-between">
+            {/* <div className="flex justify-between">
               <span className="font-medium">Total Deposits:</span>
               <span>{formatCurrency(row.original.totalDeposits)}</span>
             </div>
             <div className="flex justify-between">
               <span className="font-medium">Total Withdrawals:</span>
               <span>{formatCurrency(row.original.totalWithdrawals)}</span>
-            </div>
+            </div> */}
             <div className="flex justify-between">
               <span className="font-medium">Total Gross Commissions:</span>
               <span>{formatCurrency(row.original.grossCommissions)}</span>
@@ -141,7 +155,7 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
                 onClick={async () => {
                   try {
                     const res = await fetch(
-                      `${process.env.NEXT_PUBLIC_BASE_URL}/commission/update-unsettled-commission?id=${row.original.id}`,
+                      `${process.env.NEXT_PUBLIC_BASE_URL}/commission/update-unsettled-commission`,
                       {
                         method: "PUT",
                         headers: {
@@ -152,6 +166,7 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
                         },
                         body: JSON.stringify({
                           network: row.original.network,
+                          ids: row.original.ids,
                         }),
                       }
                     );

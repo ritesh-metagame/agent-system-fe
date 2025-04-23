@@ -121,13 +121,27 @@ const createAccountFormSchema = z.object({
     }),
   sportsBettingCommissionComputationPeriod: z.enum(["BI_MONTHLY", "MONTHLY"]),
 
-  specialityGamesCommission: z
+  specialityGamesRngCommission: z
     .string()
     .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-  specialityGamesCommissionComputationPeriod: z.enum(["BI_MONTHLY", "MONTHLY"]),
+  specialityGamesRngCommissionComputationPeriod: z.enum([
+    "BI_MONTHLY",
+    "MONTHLY",
+  ]),
+
+  specialityGamesToteCommission: z
+    .string()
+    .optional()
+    .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
+      message: "Commission percentage must be between 0 and 100",
+    }),
+  specialityGamesToteCommissionComputationPeriod: z.enum([
+    "BI_MONTHLY",
+    "MONTHLY",
+  ]),
 
   siteIds: z.array(z.string()),
 });
@@ -171,17 +185,20 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
       firstName: "",
       lastName: "",
       username: "",
-      mobileNumberPrefix: "09",
+      mobileNumberPrefix: mobilePrefixes[0].value, // Default to first prefix
       mobileNumber: "",
       bankName: "",
       accountNumber: "",
       password: "",
       eGamesCommission: "",
-      eGamesCommissionComputationPeriod: "BI_MONTHLY",
+      eGamesCommissionComputationPeriod: "BI_MONTHLY", // Default to bIBI_MONTHLY
       sportsBettingCommission: "",
-      sportsBettingCommissionComputationPeriod: "BI_MONTHLY",
-      specialityGamesCommission: "",
-      specialityGamesCommissionComputationPeriod: "BI_MONTHLY",
+      sportsBettingCommissionComputationPeriod: "BI_MONTHLY", // Default to bIBI_MONTHLY
+      specialityGamesRngCommission: "",
+      specialityGamesRngCommissionComputationPeriod: "BI_MONTHLY", // Default to monthly
+      specialityGamesToteCommission: "",
+      specialityGamesToteCommissionComputationPeriod: "BI_MONTHLY",
+
       siteIds: [],
     },
   });
@@ -230,34 +247,41 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
           const commissionsByCategory = {
             eGames: "",
             sportsBetting: "",
-            specialityGames: "",
+            specialityGamesRng: "",
+            specialityGamesTote: "",
           };
 
           const commissionComputationPeriods = {
             eGames: "BI_MONTHLY",
             sportsBetting: "BI_MONTHLY",
-            specialityGames: "BI_MONTHLY",
+            specialityGamesRNG: "BI_MONTHLY",
+            specialityGamesTote: "BI_MONTHLY",
           };
 
           // Get unique commission percentages and periods per category
           user.commissions.forEach((commission: any) => {
             switch (commission.category.name) {
-              case "eGames":
+              case "E-Games":
                 commissionsByCategory.eGames =
                   commission.commissionPercentage.toString();
                 commissionComputationPeriods.eGames =
                   commission.commissionComputationPeriod;
                 break;
-              case "Sports-Betting":
+              case "Sports Betting":
                 commissionsByCategory.sportsBetting =
                   commission.commissionPercentage.toString();
                 commissionComputationPeriods.sportsBetting =
                   commission.commissionComputationPeriod;
                 break;
-              case "SpecialityGames":
-                commissionsByCategory.specialityGames =
+              case "Speciality Games - RNG":
+                commissionsByCategory.specialityGamesRng =
                   commission.commissionPercentage.toString();
-                commissionComputationPeriods.specialityGames =
+                commissionComputationPeriods.specialityGamesRNG =
+                  commission.commissionComputationPeriod;
+              case "Speciality Games - Tote":
+                commissionsByCategory.specialityGamesTote =
+                  commission.commissionPercentage.toString();
+                commissionComputationPeriods.specialityGamesTote =
                   commission.commissionComputationPeriod;
                 break;
             }
@@ -297,9 +321,16 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
               commissionComputationPeriods.sportsBetting as
                 | "BI_MONTHLY"
                 | "MONTHLY",
-            specialityGamesCommission: commissionsByCategory.specialityGames,
-            specialityGamesCommissionComputationPeriod:
-              commissionComputationPeriods.specialityGames as
+            specialityGamesToteCommission:
+              commissionsByCategory.specialityGamesTote,
+            specialityGamesToteCommissionComputationPeriod:
+              commissionComputationPeriods.specialityGamesTote as
+                | "BI_MONTHLY"
+                | "MONTHLY",
+            specialityGamesRngCommission:
+              commissionsByCategory.specialityGamesRng,
+            specialityGamesRngCommissionComputationPeriod:
+              commissionComputationPeriods.specialityGamesRNG as
                 | "BI_MONTHLY"
                 | "MONTHLY",
             siteIds: userSiteIds,
@@ -403,15 +434,18 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
       commissions: {
         eGames: values.eGamesCommission || undefined,
         sportsBetting: values.sportsBettingCommission || undefined,
-        specialityGames: values.specialityGamesCommission || undefined,
+        specialityGamesRng: values.specialityGamesRngCommission || undefined,
+        specialityGamesTote: values.specialityGamesToteCommission || undefined,
       },
       siteIds: selectedSiteIds,
       eGamesCommissionComputationPeriod:
         values.eGamesCommissionComputationPeriod,
       sportsBettingCommissionComputationPeriod:
         values.sportsBettingCommissionComputationPeriod,
-      specialityGamesCommissionComputationPeriod:
-        values.specialityGamesCommissionComputationPeriod,
+      specialityGamesRngCommissionComputationPeriod:
+        values.specialityGamesRngCommissionComputationPeriod,
+      specialityGamesToteCommissionComputationPeriod:
+        values.specialityGamesToteCommissionComputationPeriod,
     };
 
     try {
@@ -445,36 +479,6 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
       console.error("Network error:", error);
       toast.error("Network error occurred");
     }
-  }
-
-  function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0] || null;
-    setUploadedFile(file);
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const text = e.target?.result as string;
-        const rows = text.split("\n")?.map((row) => row.split(","));
-        setCsvPreview(rows);
-      };
-      reader.readAsText(file);
-    } else {
-      setCsvPreview(null);
-    }
-  }
-
-  function handleRemoveFile() {
-    setUploadedFile(null);
-    setCsvPreview(null);
-  }
-
-  function handlePreview() {
-    setIsDialogOpen(true);
-  }
-
-  function closeDialog() {
-    setIsDialogOpen(false);
   }
 
   const options = ["Site 1", "Site 2", "Site 3"]; // Replace with real data
@@ -825,14 +829,14 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                 </AccordionItem>
 
                 {/* Specialty Games Category */}
-                <AccordionItem value="specialtygames">
+                <AccordionItem value="specialtygamesrng">
                   <AccordionTrigger className="text-xl">
-                    Specialty Games
+                    Specialty Games - RNG
                   </AccordionTrigger>
                   <AccordionContent className="flex items-center gap-2 justify-center w-full">
                     <FormField
                       control={form.control}
-                      name="specialityGamesCommission"
+                      name="specialityGamesRngCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <FormLabel>Commission (%)</FormLabel>
@@ -848,7 +852,78 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                     />
                     <FormField
                       control={form.control}
-                      name="specialityGamesCommissionComputationPeriod"
+                      name="specialityGamesRngCommissionComputationPeriod"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>
+                            Commission Computation Period
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="ml-1 text-gray-500 cursor-pointer">
+                                    ?
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>
+                                    <strong>Bi-Monthly:</strong> Settlement
+                                    occurs twice a month (1st-15th and
+                                    16th-31st).
+                                    <br />
+                                    <strong>Monthly:</strong> Settlement occurs
+                                    once at the end of each month.
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </FormLabel>
+                          <FormControl>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select period" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="BI_MONTHLY">
+                                  Bi-Monthly
+                                </SelectItem>
+                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="specialtygamestote">
+                  <AccordionTrigger className="text-xl">
+                    Specialty Games - Tote
+                  </AccordionTrigger>
+                  <AccordionContent className="flex items-center gap-2 justify-center w-full">
+                    <FormField
+                      control={form.control}
+                      name="specialityGamesToteCommission"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>Commission (%)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Enter commission percentage"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="specialityGamesToteCommissionComputationPeriod"
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <FormLabel>

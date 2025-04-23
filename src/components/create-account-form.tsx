@@ -96,7 +96,13 @@ const createAccountFormSchema = z.object({
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-  specialtyGamesCommission: z
+  specialtyGamesToteCommission: z
+    .string()
+    .optional()
+    .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
+      message: "Commission percentage must be between 0 and 100",
+    }),
+  specialtyGamesRngCommission: z
     .string()
     .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
@@ -193,7 +199,8 @@ export default function CreateAccountFormWithCommissionPeriod({
       password: "",
       eGamesCommission: "",
       sportsBettingCommission: "",
-      specialtyGamesCommission: "",
+      specialtyGamesRngCommission: "",
+      specialtyGamesToteCommission: "",
       siteIds: [],
     },
   });
@@ -217,7 +224,8 @@ export default function CreateAccountFormWithCommissionPeriod({
       commissions: {
         eGames: values.eGamesCommission || undefined,
         sportsBetting: values.sportsBettingCommission || undefined,
-        specialtyGames: values.specialtyGamesCommission || undefined,
+        specialityGamesRng: values.specialtyGamesRngCommission || undefined,
+        specialityGamesTote: values.specialtyGamesToteCommission || undefined,
       },
       siteIds: selectedSiteIds,
     };
@@ -483,10 +491,10 @@ export default function CreateAccountFormWithCommissionPeriod({
             {/* <div className="grid grid-cols-2 col-span-2 gap-4"> */}
             <FormField
               control={form.control}
-              name="specialtyGamesCommission"
+              name="specialtyGamesRngCommission"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>SpecialityGames Commission (%)</FormLabel>
+                  <FormLabel>Speciality Games - RNG Commission (%)</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter commission percentage"
@@ -498,6 +506,23 @@ export default function CreateAccountFormWithCommissionPeriod({
               )}
             />
             {/* </div> */}
+
+            <FormField
+              control={form.control}
+              name="specialtyGamesToteCommission"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Speciality Games - Tote Commission (%)</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter commission percentage"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* Submit Button */}
             <div className="col-span-2 flex justify-end">

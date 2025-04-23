@@ -7,6 +7,10 @@ import {
 } from "@/components/tables/common/partner-breakdown-column-defs";
 import { DataTable } from "@/components/tables/data-table";
 import {
+  LicenseCommissionBreakdown,
+  licenseCommissionBreakdownColumns,
+  PaymentGatewayFees,
+  paymentGatewayFeesColumns,
   TotalCommissionPayoutsBreakdown1,
   // totalCommissionPayoutsBreakdownColumns,
   totalCommissionPayoutsBreakdownColumns1,
@@ -53,6 +57,39 @@ export default function SettlementDetailsPerUser({}: Props) {
     to: "",
   });
 
+  const [paymentGatewayFeesData, setPaymentGatewayFeesData] = React.useState<
+    PaymentGatewayFees[]
+  >([]);
+
+  const [eGamesLicenseBreakdownData, setEGamesLicenseBreakdownData] =
+    React.useState<LicenseCommissionBreakdown[]>([]);
+  const [
+    sportsBettingLicenseBreakdownData,
+    setSportsBettingLicenseBreakdownData,
+  ] = React.useState<LicenseCommissionBreakdown[]>([]);
+  const [
+    specialityGamesToteLicenseBreakdownData,
+    setSpecialityGamesToteLicenseBreakdownData,
+  ] = React.useState<LicenseCommissionBreakdown[]>([]);
+  const [
+    specialityGamesRNGLicenseBreakdownData,
+    setSpecialityGamesRNGLicenseBreakdownData,
+  ] = React.useState<LicenseCommissionBreakdown[]>([]);
+
+  const [eGamesCommissionRate, setEGamesCommissionRate] =
+    React.useState<number>(0);
+  const [sportsBettingCommissionRate, setSportsBettingCommissionRate] =
+    React.useState<number>(0);
+  const [
+    specialityGamesToteCommissionRate,
+    setSpecialityGamesToteCommissionRate,
+  ] = React.useState<number>(0);
+
+  const [
+    specialityGamesRNGCommissionRate,
+    setSpecialityGamesRNGCommissionRate,
+  ] = React.useState<number>(0);
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
@@ -62,9 +99,9 @@ export default function SettlementDetailsPerUser({}: Props) {
   };
 
   const getTitle = () => {
-    if (role === "superadmin") return "Operator Name";
-    if (role === "operator") return "Platinum Name";
-    if (role === "platinum") return "Gold Name";
+    if (role === UserRole.SUPER_ADMIN) return "Operator Name";
+    if (role === UserRole.OPERATOR) return "Platinum Name";
+    if (role === UserRole.PLATINUM) return "Golden Name";
     // if (role === "user") return "User";
     return "Unknown Role";
   };
@@ -102,6 +139,8 @@ export default function SettlementDetailsPerUser({}: Props) {
       console.log(user, "==================");
       fetchCommissionPayoutReport(user);
       fetchPartnerBreakdownReport(user);
+      fetchPaymentGatewayFeesData(user);
+      fetchLicenseBreakdownData(user);
     });
   }, [username]);
 
@@ -174,12 +213,12 @@ export default function SettlementDetailsPerUser({}: Props) {
       const platinumData = data.data?.data?.platinum.filter(
         (item) => item.name !== "PLATINUM PARTNER TOTAL"
       );
+      setPlatinumPartnerBreakdownData(platinumData);
 
-      const goldData = data.data?.data?.gold.filter(
-        (item) => item.name !== "GOLD PARTNER TOTAL"
+      const goldData = data.data?.data?.golden.filter(
+        (item) => item.name !== "GOLDEN PARTNER TOTAL"
       );
 
-      setPlatinumPartnerBreakdownData(platinumData);
       setGoldPartnerBreakdownData(goldData);
 
       const platinumPartnerTotal = data.data?.data?.platinum.find(
@@ -190,6 +229,7 @@ export default function SettlementDetailsPerUser({}: Props) {
         "Fetched platinum partner total:_______________________",
         platinumPartnerTotal
       );
+      setPlatinumPartnerTotal(platinumPartnerTotal);
 
       const goldPartnerTotal = data.data?.data?.gold.find(
         (item) => item.isGoldTotal === true
@@ -200,7 +240,6 @@ export default function SettlementDetailsPerUser({}: Props) {
         goldPartnerTotal
       );
 
-      setPlatinumPartnerTotal(platinumPartnerTotal);
       setGoldPartnerTotal(goldPartnerTotal);
 
       // setEGamesTotalCommissionPayoutsBreakdownData(
@@ -213,6 +252,109 @@ export default function SettlementDetailsPerUser({}: Props) {
       // }
     } catch (error) {
       console.error("Error fetching commission overview data:", error);
+    }
+  };
+
+  const fetchPaymentGatewayFeesData = async (user) => {
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      // Fetch data from the API or perform any other async operation
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/payment-gateway-fees`,
+        {
+          params: {
+            userId: user?.id,
+          },
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data; // Use response.data instead of response.json()
+      console.log("Fetched all time top performers data:", data);
+
+      if (data.code == "2005") {
+        setPaymentGatewayFeesData(data.data?.fees);
+        return;
+      }
+    } catch (error) {
+      console.error("Error fetching all time top performers data:", error);
+    }
+  };
+
+  const fetchLicenseBreakdownData = async (user) => {
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      // Fetch data from the API or perform any other async operation
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/license-breakdown?userId=${user?.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data; // Use response.data instead of response.json()
+      console.log("Fetched license breakdown data:", data);
+
+      if (data.code === "2010") {
+        data.data.data.forEach((d) => {
+          switch (d.license) {
+            case "E-Games":
+              setEGamesCommissionRate(
+                parseFloat(
+                  d.fields.find((field) => field.label === "Commission Rate")
+                    ?.value || "0"
+                )
+              );
+              setEGamesLicenseBreakdownData(
+                d.fields.filter((field) => field.label !== "Commission Rate")
+              );
+              break;
+            case "Sports Betting":
+              setSportsBettingCommissionRate(
+                parseFloat(
+                  d.fields.find((field) => field.label === "Commission Rate")
+                    ?.value || "0"
+                )
+              );
+              setSportsBettingLicenseBreakdownData(
+                d.fields.filter((field) => field.label !== "Commission Rate")
+              );
+              break;
+            case "Speciality Games - Tote":
+              setSpecialityGamesToteCommissionRate(
+                parseFloat(
+                  d.fields.find((field) => field.label === "Commission Rate")
+                    ?.value || "0"
+                )
+              );
+              setSpecialityGamesToteLicenseBreakdownData(
+                d.fields.filter((field) => field.label !== "Commission Rate")
+              );
+              break;
+            case "Speciality Games - RNG":
+              setSpecialityGamesRNGCommissionRate(
+                parseFloat(
+                  d.fields.find((field) => field.label === "Commission Rate")
+                    ?.value || "0"
+                )
+              );
+              setSpecialityGamesRNGLicenseBreakdownData(
+                d.fields.filter((field) => field.label !== "Commission Rate")
+              );
+              break;
+            default:
+              break;
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching license breakdown data:", error);
     }
   };
 
@@ -231,7 +373,97 @@ export default function SettlementDetailsPerUser({}: Props) {
           </TypographyH4>
         </TypographyH2>
       </div>
-      <div>
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <TypographyH2 className="">Payment Gateway Fees</TypographyH2>
+          {/* <Badge variant="outline" className="text-xs">
+                {payoutsDateRange.from} - {payoutsDateRange.to}
+              </Badge> */}
+        </div>
+      </div>
+      <div className="mb-4">
+        <DataTable
+          columns={paymentGatewayFeesColumns}
+          data={paymentGatewayFeesData}
+          columnWidths={["250px", "250px", "250px", "250px", "150px"]}
+          tooltips={{
+            pendingCommission: "As of Available cutoff period",
+          }}
+        />
+      </div>
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <TypographyH2 className="">Breakdown Per License</TypographyH2>
+          {/* <Badge variant="outline" className="text-xs">
+                      {payoutsDateRange.from} - {payoutsDateRange.to}
+                    </Badge> */}
+        </div>
+      </div>
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <TypographyH4 className="mb-2">E-Games</TypographyH4>
+          <Badge variant="outline" className="text-xs">
+            Commission Rate: {eGamesCommissionRate} %
+          </Badge>
+        </div>
+        <DataTable
+          columns={licenseCommissionBreakdownColumns}
+          data={eGamesLicenseBreakdownData}
+          columnWidths={["250px", "250px", "250px", "250px", "150px"]}
+          tooltips={{
+            pendingCommission: "As of Available cutoff period",
+          }}
+        />
+      </div>
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <TypographyH4 className="mb-2">Sports Betting</TypographyH4>
+          <Badge variant="outline" className="text-xs">
+            Commission Rate: {sportsBettingCommissionRate} %
+          </Badge>
+        </div>
+        <DataTable
+          columns={licenseCommissionBreakdownColumns}
+          data={sportsBettingLicenseBreakdownData}
+          columnWidths={["250px", "250px", "250px", "250px", "150px"]}
+          tooltips={{
+            pendingCommission: "As of Available cutoff period",
+          }}
+        />
+      </div>
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <TypographyH4 className="mb-2">Specialty Games - Tote</TypographyH4>
+          <Badge variant="outline" className="text-xs">
+            Commission Rate: {specialityGamesToteCommissionRate} %
+          </Badge>
+        </div>
+        <DataTable
+          columns={licenseCommissionBreakdownColumns}
+          data={specialityGamesToteLicenseBreakdownData}
+          columnWidths={["250px", "250px", "250px", "250px", "150px"]}
+          tooltips={{
+            pendingCommission: "As of Available cutoff period",
+          }}
+        />
+      </div>
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <TypographyH4 className="mb-2">Specialty Games - RNG</TypographyH4>
+          <Badge variant="outline" className="text-xs">
+            Commission Rate: {specialityGamesRNGCommissionRate} %
+          </Badge>
+        </div>
+        <DataTable
+          columns={licenseCommissionBreakdownColumns}
+          data={specialityGamesRNGLicenseBreakdownData}
+          columnWidths={["250px", "250px", "250px", "250px", "150px"]}
+          tooltips={{
+            pendingCommission: "As of Available cutoff period",
+          }}
+        />
+      </div>
+      {/* <div>
         <div className="flex items-center gap-2 mb-2">
           <h6 className=" font-bold text-sm">BREAKDOWN PER GAME TYPE</h6>
           <Badge variant="outline" className="text-xs">
@@ -279,13 +511,10 @@ export default function SettlementDetailsPerUser({}: Props) {
               columns={partnerBreakdownColumnDefs}
               data={goldPartnerBreakdownData}
             />
-            {/* <h6>PLATINUM PARTNER TOTAL: ${platinumPartnerTotal}</h6> */}
             <h6 className="font-medium">
               GOLD PARTNER TOTAL: ₱{goldPartnerTotal}
             </h6>
-          </div>{" "}
-        </>
-      ) : null}
+          </div> */}
     </div>
   );
 }

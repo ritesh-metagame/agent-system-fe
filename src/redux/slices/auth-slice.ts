@@ -47,7 +47,7 @@ interface AuthState {
 // Initial state
 const initialState: AuthState = {
   authLoading: true,
-  role: UserRole?.DEFAULT ?? "defaultOperator",
+  role: "defaultOperator",
   username: null,
   user: null,
 };

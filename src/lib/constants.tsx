@@ -64,7 +64,7 @@ export enum UserRole {
   SUPER_ADMIN = "superadmin",
   OPERATOR = "operator",
   PLATINUM = "platinum",
-  GOLD = "gold",
+  GOLD = "golden",
   // DEFAULT = "default",
 }
 

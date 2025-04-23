@@ -122,7 +122,9 @@ export const totalCommissionPayoutsBreakdownColumns2: ColumnDef<TotalCommissionP
       header: "AMOUNT",
       cell: ({ row }) => {
         const value = row.getValue("pendingSettlement");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -130,7 +132,9 @@ export const totalCommissionPayoutsBreakdownColumns2: ColumnDef<TotalCommissionP
       header: "SETTLED ALL TIME",
       cell: ({ row }) => {
         const value = row.getValue("settledAllTime");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
   ];
@@ -194,7 +198,7 @@ export const paymentGatewayFeesColumns: ColumnDef<PaymentGatewayFees>[] = [
     cell: ({ row }) => {
       const value = row.getValue("amount");
       return typeof value === "number"
-        ? value.toLocaleString()
+        ? formatCurrency(value as any)
         : formatCurrency(value as any);
     },
   },
@@ -220,7 +224,9 @@ export const licenseCommissionBreakdownColumns: ColumnDef<LicenseCommissionBreak
       header: "AMOUNT PENDING SETTLEMENT",
       cell: ({ row }) => {
         const value = row.getValue("pendingSettlement");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -228,7 +234,9 @@ export const licenseCommissionBreakdownColumns: ColumnDef<LicenseCommissionBreak
       header: "SETTLED ALL TIME",
       cell: ({ row }) => {
         const value = row.getValue("settledAllTime");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
   ];
@@ -277,7 +285,9 @@ export const financialOverviewColumns: ColumnDef<FinancialOverview>[] = [
     header: "PENDING COMMISSION",
     cell: ({ row }) => {
       const value = row.getValue("pendingCommission");
-      return typeof value === "number" ? value.toLocaleString() : value;
+      return typeof value === "number"
+        ? formatCurrency(value as any)
+        : formatCurrency(value as any);
     },
   },
   {
@@ -285,7 +295,9 @@ export const financialOverviewColumns: ColumnDef<FinancialOverview>[] = [
     header: "RELEASED ALL TIME",
     cell: ({ row }) => {
       const value = row.getValue("releasedAllTime");
-      return typeof value === "number" ? value.toLocaleString() : value;
+      return typeof value === "number"
+        ? formatCurrency(value as any)
+        : formatCurrency(value as any);
     },
   },
   {
@@ -329,7 +341,9 @@ export const categoryFinancialOverviewColumns: ColumnDef<CategoryFinancialOvervi
       header: "PENDING COMMISSION",
       cell: ({ row }) => {
         const value = row.getValue("pendingCommission");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -337,7 +351,9 @@ export const categoryFinancialOverviewColumns: ColumnDef<CategoryFinancialOvervi
       header: "RELEASED ALL TIME",
       cell: ({ row }) => {
         const value = row.getValue("releasedAllTime");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -345,7 +361,9 @@ export const categoryFinancialOverviewColumns: ColumnDef<CategoryFinancialOvervi
       header: "SUMMARY",
       cell: ({ row }) => {
         const value = row.getValue("totalSummary");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
   ];
@@ -381,7 +399,9 @@ export const sportsBettingOverviewColumns: ColumnDef<SportsBettingOverview>[] =
       header: "PENDING COMMISSION",
       cell: ({ row }) => {
         const value = row.getValue("pendingCommission");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -389,7 +409,9 @@ export const sportsBettingOverviewColumns: ColumnDef<SportsBettingOverview>[] =
       header: "RELEASED ALL TIME",
       cell: ({ row }) => {
         const value = row.getValue("releasedAllTime");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -439,7 +461,9 @@ export const topPerformersColumns: ColumnDef<TopPerformersOverview>[] = [
     header: "BASED ON PREVIOUSLY COMPLETED MONTH",
     cell: ({ row }) => {
       const value = row.getValue("basedOnPreviouslyCompletedMonth");
-      return typeof value === "number" ? value.toLocaleString() : value;
+      return typeof value === "number"
+        ? formatCurrency(value as any)
+        : formatCurrency(value as any);
     },
   },
   {
@@ -447,7 +471,9 @@ export const topPerformersColumns: ColumnDef<TopPerformersOverview>[] = [
     header: "ALL TIME",
     cell: ({ row }) => {
       const value = row.getValue("allTime");
-      return typeof value === "number" ? value.toLocaleString() : value;
+      return typeof value === "number"
+        ? formatCurrency(value as any)
+        : formatCurrency(value as any);
     },
   },
 ];
@@ -473,7 +499,9 @@ export const topPlayersDepositsColumns: ColumnDef<TopPlayersDepositsOverview>[] 
       header: "DEPOSITS MADE AS OF AVAILABLE CUTOFF PERIOD",
       cell: ({ row }) => {
         const value = row.getValue("depositsMade");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -481,7 +509,9 @@ export const topPlayersDepositsColumns: ColumnDef<TopPlayersDepositsOverview>[] 
       header: "TOTAL DEPOSITS TO DATE",
       cell: ({ row }) => {
         const value = row.getValue("totalDeposits");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -512,7 +542,9 @@ export const topPlayersGGRColumns: ColumnDef<TopPlayersGGROverview>[] = [
     header: "GGR MADE AS OF AVAILABLE CUTOFF PERIOD",
     cell: ({ row }) => {
       const value = row.getValue("ggrMade");
-      return typeof value === "number" ? value.toLocaleString() : value;
+      return typeof value === "number"
+        ? formatCurrency(value as any)
+        : formatCurrency(value as any);
     },
   },
   {
@@ -520,7 +552,9 @@ export const topPlayersGGRColumns: ColumnDef<TopPlayersGGROverview>[] = [
     header: "TOTAL GGR TO DATE",
     cell: ({ row }) => {
       const value = row.getValue("totalGGR");
-      return typeof value === "number" ? value.toLocaleString() : value;
+      return typeof value === "number"
+        ? formatCurrency(value)
+        : formatCurrency(value as any);
     },
   },
   {
