@@ -454,7 +454,7 @@ export default function CreateAccountFormWithCommissionPeriod({
               name="eGamesCommission"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>eGames Commission (%)</FormLabel>
+                  <FormLabel>E-Games Commission (% of GGR)</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter commission percentage"
@@ -474,7 +474,9 @@ export default function CreateAccountFormWithCommissionPeriod({
               name="sportsBettingCommission"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Sports-Betting Commission (%)</FormLabel>
+                  <FormLabel>
+                    Sports-Betting Commission (% of Total Bets)
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter commission percentage"
@@ -494,7 +496,9 @@ export default function CreateAccountFormWithCommissionPeriod({
               name="specialtyGamesRngCommission"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Speciality Games - RNG Commission (%)</FormLabel>
+                  <FormLabel>
+                    Speciality Games - RNG Commission (% of GGR)
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter commission percentage"
@@ -512,7 +516,9 @@ export default function CreateAccountFormWithCommissionPeriod({
               name="specialtyGamesToteCommission"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Speciality Games - Tote Commission (%)</FormLabel>
+                  <FormLabel>
+                    Speciality Games - Tote Commission (% of Total Bets)
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter commission percentage"
@@ -526,6 +532,15 @@ export default function CreateAccountFormWithCommissionPeriod({
 
             {/* Submit Button */}
             <div className="col-span-2 flex justify-end">
+              <Button
+                variant="secondary"
+                onClick={() => router.push("/dashboard")}
+                type="button"
+                // type="submit"
+                // className="bg-red text-white"
+              >
+                Cancel
+              </Button>
               <Button
                 variant="default"
                 type="submit"

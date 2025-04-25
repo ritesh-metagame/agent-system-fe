@@ -641,6 +641,15 @@ export default function UpdateAccountFormWithCommissionPeriod() {
             {/* Submit/Update Button */}
             <div className="flex justify-end pt-4 md:pt-6">
               <Button
+                variant="secondary"
+                onClick={() => router.push("/partner-management")}
+                type="button"
+                // type="submit"
+                // className="bg-red text-white"
+              >
+                Cancel
+              </Button>
+              <Button
                 variant="default"
                 type="submit"
                 className="w-full md:w-auto bg-blue-500 text-white px-8"

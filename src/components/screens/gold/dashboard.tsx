@@ -43,7 +43,7 @@ export default function Dashboard({}: Props) {
         />
 
         {/* Top Performers All Time */}
-        <div className="mb-10">
+        {/* <div className="mb-10">
           <TypographyH2 className="mb-4">Top Performers </TypographyH2>
           <TypographyH4 className="mb-4">Depositors</TypographyH4>
           <DataTable
@@ -54,10 +54,10 @@ export default function Dashboard({}: Props) {
               deposits: "As of available cutoff period",
             }}
           />
-        </div>
+        </div> */}
 
         {/* Per Cut Off */}
-        <div className="mb-10">
+        {/* <div className="mb-10">
           <TypographyH4 className="mb-4">GGR</TypographyH4>
 
           <DataTable
@@ -68,7 +68,7 @@ export default function Dashboard({}: Props) {
               ggr: "As of available cutoff period",
             }}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

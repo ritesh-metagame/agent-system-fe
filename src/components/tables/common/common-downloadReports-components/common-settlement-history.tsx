@@ -152,7 +152,7 @@ export default function SettlementHistory({}: Props) {
   useEffect(() => {
     fetchSettledCommissions();
     fetchPartners();
-  }, []);
+  }, [selectedPartner, dateRange]);
 
   useEffect(() => {
     if (dateRange.from && dateRange.to) {
@@ -161,7 +161,7 @@ export default function SettlementHistory({}: Props) {
   }, [dateRange.from, dateRange.to]);
 
   useEffect(() => {
-    if (selectedPartner !== "all" && selectedPartner !== "") {
+    if (selectedPartner !== "all") {
       setBtnDisabled(false);
     }
   }, [selectedPartner]);
@@ -171,12 +171,12 @@ export default function SettlementHistory({}: Props) {
       <div className="container mb-10">
         <div className="flex gap-2 mb-4">
           <DatePickerWithRange date={dateRange} setDate={setDateRange} />
-          <Select>
+          <Select defaultValue="all" onValueChange={setSelectedPartner}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Filter By" />
             </SelectTrigger>
             <SelectContent className="w-48">
-              <SelectItem value="all">Select</SelectItem>
+              <SelectItem value="all">ALL</SelectItem>
               {partners?.map((partner) => (
                 <SelectItem
                   key={partner.id}

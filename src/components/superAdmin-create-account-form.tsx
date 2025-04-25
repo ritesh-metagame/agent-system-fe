@@ -618,7 +618,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                       name="eGamesCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Commission (%)</FormLabel>
+                          <FormLabel>Commission (% of GGR)</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter commission percentage"
@@ -668,7 +668,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                                 <SelectItem value="BI_MONTHLY">
                                   Bi-Monthly
                                 </SelectItem>
-                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                <SelectItem value="Weekly">Weekly</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -690,7 +690,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                       name="sportsBettingCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Commission (%)</FormLabel>
+                          <FormLabel>Commission (% of Total Bets)</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter commission percentage"
@@ -740,7 +740,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                                 <SelectItem value="BI_MONTHLY">
                                   Bi-Monthly
                                 </SelectItem>
-                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                <SelectItem value="Weekly">Weekly</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -762,7 +762,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                       name="specialityGamesRngCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Commission (%)</FormLabel>
+                          <FormLabel>Commission (% of GGR)</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter commission percentage"
@@ -812,7 +812,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                                 <SelectItem value="BI_MONTHLY">
                                   Bi-Monthly
                                 </SelectItem>
-                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                <SelectItem value="WEEKLY">Weekly</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -825,7 +825,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
 
                 <AccordionItem value="specialtygamestote">
                   <AccordionTrigger className="text-xl">
-                    Specialty Games - RNG
+                    Specialty Games - Tote
                   </AccordionTrigger>
                   <AccordionContent className="flex items-center gap-2 justify-center w-full">
                     <FormField
@@ -833,7 +833,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                       name="specialityGamesToteCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Commission (%)</FormLabel>
+                          <FormLabel>Commission (% of Total Bets)</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter commission percentage"
@@ -883,7 +883,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                                 <SelectItem value="BI_MONTHLY">
                                   Bi-Monthly
                                 </SelectItem>
-                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                <SelectItem value="Weekly">Weekly</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -898,6 +898,15 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
 
             {/* Submit Button */}
             <div className="col-span-2 flex justify-end">
+              <Button
+                variant="secondary"
+                onClick={() => router.push("/dashboard")}
+                type="button"
+                // type="submit"
+                // className="bg-red text-white"
+              >
+                Cancel
+              </Button>
               <Button
                 variant="default"
                 type="submit"

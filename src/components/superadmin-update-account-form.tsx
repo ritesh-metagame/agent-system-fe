@@ -82,7 +82,7 @@ type Props = {
 // Define commission computation period options with only monthly and bi-monthly
 const settlementPeriods = [
   { value: "BI_MONTHLY", label: "Bi-Monthly" },
-  { value: "MONTHLY", label: "Monthly" },
+  { value: "WEEKLY", label: "Weekly" },
 ];
 
 const mobilePrefixes = [
@@ -111,7 +111,7 @@ const createAccountFormSchema = z.object({
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-  eGamesCommissionComputationPeriod: z.enum(["BI_MONTHLY", "MONTHLY"]),
+  eGamesCommissionComputationPeriod: z.enum(["BI_MONTHLY", "WEEKLY"]),
 
   sportsBettingCommission: z
     .string()
@@ -119,7 +119,7 @@ const createAccountFormSchema = z.object({
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-  sportsBettingCommissionComputationPeriod: z.enum(["BI_MONTHLY", "MONTHLY"]),
+  sportsBettingCommissionComputationPeriod: z.enum(["BI_MONTHLY", "WEEKLY"]),
 
   specialityGamesRngCommission: z
     .string()
@@ -129,7 +129,7 @@ const createAccountFormSchema = z.object({
     }),
   specialityGamesRngCommissionComputationPeriod: z.enum([
     "BI_MONTHLY",
-    "MONTHLY",
+    "WEEKLY",
   ]),
 
   specialityGamesToteCommission: z
@@ -140,7 +140,7 @@ const createAccountFormSchema = z.object({
     }),
   specialityGamesToteCommissionComputationPeriod: z.enum([
     "BI_MONTHLY",
-    "MONTHLY",
+    "WEEKLY",
   ]),
 
   siteIds: z.array(z.string()),
@@ -315,24 +315,24 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
             password: "",
             eGamesCommission: commissionsByCategory.eGames,
             eGamesCommissionComputationPeriod:
-              commissionComputationPeriods.eGames as "BI_MONTHLY" | "MONTHLY",
+              commissionComputationPeriods.eGames as "BI_MONTHLY" | "WEEKLY",
             sportsBettingCommission: commissionsByCategory.sportsBetting,
             sportsBettingCommissionComputationPeriod:
               commissionComputationPeriods.sportsBetting as
                 | "BI_MONTHLY"
-                | "MONTHLY",
+                | "WEEKLY",
             specialityGamesToteCommission:
               commissionsByCategory.specialityGamesTote,
             specialityGamesToteCommissionComputationPeriod:
               commissionComputationPeriods.specialityGamesTote as
                 | "BI_MONTHLY"
-                | "MONTHLY",
+                | "WEEKLY",
             specialityGamesRngCommission:
               commissionsByCategory.specialityGamesRng,
             specialityGamesRngCommissionComputationPeriod:
               commissionComputationPeriods.specialityGamesRNG as
                 | "BI_MONTHLY"
-                | "MONTHLY",
+                | "WEEKLY",
             siteIds: userSiteIds,
           };
 
@@ -687,7 +687,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                 {/* eGames Category */}
                 <AccordionItem value="egames">
                   <AccordionTrigger className="text-xl">
-                    eGames
+                    E-Games
                   </AccordionTrigger>
                   <AccordionContent className="flex items-center gap-2 justify-center w-full">
                     <FormField
@@ -695,7 +695,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                       name="eGamesCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Commission (%)</FormLabel>
+                          <FormLabel>Commission (% of GGR)</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter commission percentage"
@@ -726,7 +726,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                                     occurs twice a month (1st-15th and
                                     16th-31st).
                                     <br />
-                                    <strong>Monthly:</strong> Settlement occurs
+                                    <strong>Weekly:</strong> Settlement occurs
                                     once at the end of each month.
                                   </p>
                                 </TooltipContent>
@@ -745,7 +745,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                                 <SelectItem value="BI_MONTHLY">
                                   Bi-Monthly
                                 </SelectItem>
-                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                <SelectItem value="WEEKLY">Weekly</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -767,7 +767,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                       name="sportsBettingCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Commission (%)</FormLabel>
+                          <FormLabel>Commission (% of Total Bets)</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter commission percentage"
@@ -798,7 +798,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                                     occurs twice a month (1st-15th and
                                     16th-31st).
                                     <br />
-                                    <strong>Monthly:</strong> Settlement occurs
+                                    <strong>Weekly:</strong> Settlement occurs
                                     once at the end of each month.
                                   </p>
                                 </TooltipContent>
@@ -817,7 +817,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                                 <SelectItem value="BI_MONTHLY">
                                   Bi-Monthly
                                 </SelectItem>
-                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                <SelectItem value="WEEKLY">Weekly</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -839,7 +839,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                       name="specialityGamesRngCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Commission (%)</FormLabel>
+                          <FormLabel>Commission (% of GGR)</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter commission percentage"
@@ -870,7 +870,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                                     occurs twice a month (1st-15th and
                                     16th-31st).
                                     <br />
-                                    <strong>Monthly:</strong> Settlement occurs
+                                    <strong>Weekly:</strong> Settlement occurs
                                     once at the end of each month.
                                   </p>
                                 </TooltipContent>
@@ -889,7 +889,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                                 <SelectItem value="BI_MONTHLY">
                                   Bi-Monthly
                                 </SelectItem>
-                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                <SelectItem value="WEEKLY">Weekly</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -910,7 +910,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                       name="specialityGamesToteCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Commission (%)</FormLabel>
+                          <FormLabel>Commission (% of Total Bets)</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter commission percentage"
@@ -941,7 +941,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                                     occurs twice a month (1st-15th and
                                     16th-31st).
                                     <br />
-                                    <strong>Monthly:</strong> Settlement occurs
+                                    <strong>Weekly:</strong> Settlement occurs
                                     once at the end of each month.
                                   </p>
                                 </TooltipContent>
@@ -960,7 +960,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                                 <SelectItem value="BI_MONTHLY">
                                   Bi-Monthly
                                 </SelectItem>
-                                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                <SelectItem value="WEEKLY">Weekly</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -974,7 +974,16 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
             </div>
 
             {/* Submit Button */}
-            <div className="col-span-2 flex justify-end">
+            <div className="col-span-2 gap-2 flex justify-end">
+              <Button
+                variant="secondary"
+                onClick={() => router.push("/partner-management")}
+                type="button"
+                // type="submit"
+                // className="bg-red text-white"
+              >
+                Cancel
+              </Button>
               <Button
                 variant="default"
                 type="submit"

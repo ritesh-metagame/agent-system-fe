@@ -54,8 +54,22 @@ export const networkOverviewColumns: ColumnDef<NetworkOverviewData>[] = [
 
 export const payoutAndWalletColumns: ColumnDef<PayoutAndWalletCommissionData>[] =
   [
-    { accessorKey: "payout", header: "PAYOUT" },
-    { accessorKey: "wallet", header: "WALLET" },
+    {
+      accessorKey: "payout",
+      header: "PAYOUT",
+      cell: ({ row }) => {
+        const value = row.getValue("payout");
+        return value ? formatCurrency(value as any) : "-";
+      },
+    },
+    {
+      accessorKey: "wallet",
+      header: "WALLET",
+      cell: ({ row }) => {
+        const value = row.getValue("wallet");
+        return value ? formatCurrency(value as any) : "-";
+      },
+    },
   ];
 
 /**

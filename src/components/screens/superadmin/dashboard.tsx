@@ -570,9 +570,9 @@ export default function Dashboard({}) {
         <div className="mb-4">
           <div className="flex items-center gap-2 mb-2">
             <TypographyH2 className="">Commission Running Tally</TypographyH2>
-            <Badge variant="outline" className="text-xs">
-              {commissionDateRange.from} - {commissionDateRange.to}
-            </Badge>
+            <p className="text-sm text-gray-500">
+              (As of {commissionDateRange.to})
+            </p>
           </div>
         </div>
         <div className="mb-4">
@@ -619,9 +619,12 @@ export default function Dashboard({}) {
               <TypographyH2 className="">
                 Total Commission Payouts Breakdown
               </TypographyH2>
-              <Badge variant="outline" className="text-xs">
+              <p className="text-sm text-gray-500">
+                (As of {payoutsDateRange.to})
+              </p>
+              {/* <Badge variant="outline" className="text-xs">
                 {payoutsDateRange.from} - {payoutsDateRange.to}
-              </Badge>
+              </Badge> */}
             </div>
           </div>
           <div className="mb-4">
@@ -637,6 +640,9 @@ export default function Dashboard({}) {
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-2">
               <TypographyH2 className="">Payment Gateway Fees</TypographyH2>
+              <p className="text-sm text-gray-500">
+                (As of {payoutsDateRange.to})
+              </p>
               {/* <Badge variant="outline" className="text-xs">
                 {payoutsDateRange.from} - {payoutsDateRange.to}
               </Badge> */}
@@ -655,6 +661,9 @@ export default function Dashboard({}) {
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-2">
               <TypographyH2 className="">Breakdown Per License</TypographyH2>
+              <p className="text-sm text-gray-500">
+                (As of {payoutsDateRange.to})
+              </p>
               {/* <Badge variant="outline" className="text-xs">
                 {payoutsDateRange.from} - {payoutsDateRange.to}
               </Badge> */}

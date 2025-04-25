@@ -89,6 +89,7 @@ export default function PartnerManagement({}: Props) {
               "200px",
               "150px",
             ]}
+            filterRequired={true}
           />
         </div>
       </div>

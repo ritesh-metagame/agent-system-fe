@@ -744,11 +744,17 @@ export default function CommonDashboard({
             <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
                 <TypographyH2 className="">
-                  Commission Running Tally
+                  Commission Running Tally{" "}
+                  <span className="text-gray-400 text-sm">
+                    *Based on ongoing computation periods
+                  </span>
                 </TypographyH2>
-                <Badge variant="outline" className="text-xs">
+                <span className="text-gray-400 text-sm">
+                  As of {commissionDateRange.to}
+                </span>
+                {/* <Badge variant="outline" className="text-xs">
                   {commissionDateRange.from} - {commissionDateRange.to}
-                </Badge>
+                </Badge> */}
               </div>
               {/* <p>
           Cutoff period available for settlement:{" "}
@@ -813,9 +819,9 @@ export default function CommonDashboard({
                 <TypographyH2 className="">
                   Total Commission Payouts Breakdown
                 </TypographyH2>
-                <Badge variant="outline" className="text-xs">
-                  {payoutsDateRange.from} - {payoutsDateRange.to}
-                </Badge>
+                <span className="text-gray-400 text-sm">
+                  As of {commissionDateRange.to}
+                </span>
               </div>
             </div>
             <div className="mb-4">

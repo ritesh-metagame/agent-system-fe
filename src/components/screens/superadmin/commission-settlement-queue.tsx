@@ -62,9 +62,10 @@ export default function CommissionSettlementQueue({}: Props) {
       <div className="mb-10">
         <div className="flex items-center gap-2 mb-2">
           <TypographyH2 className="mb-4">Pending Settlements</TypographyH2>
-          <Badge variant="outline" className="text-xs">
+          <p className="text-sm text-gray-500">As of {period.to}</p>
+          {/* <Badge variant="outline" className="text-xs">
             {period.from} - {period.to}
-          </Badge>
+          </Badge> */}
         </div>
         <DataTable columns={pendingSettlementColumnDefs} data={settlements} />
       </div>
