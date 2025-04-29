@@ -494,7 +494,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
     <Card className="w-full max-w-3xl mx-auto p-6">
       <CardHeader>
         <CardTitle className="text-lg font-bold text-center">
-          Create Account
+          Update Operator Account
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -698,6 +698,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                           <FormLabel>Commission (% of GGR)</FormLabel>
                           <FormControl>
                             <Input
+                              disabled
                               placeholder="Enter commission percentage"
                               {...field}
                             />
@@ -735,6 +736,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                           </FormLabel>
                           <FormControl>
                             <Select
+                              disabled
                               onValueChange={field.onChange}
                               defaultValue={field.value}
                             >
@@ -770,6 +772,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                           <FormLabel>Commission (% of Total Bets)</FormLabel>
                           <FormControl>
                             <Input
+                              disabled
                               placeholder="Enter commission percentage"
                               {...field}
                             />
@@ -807,6 +810,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                           </FormLabel>
                           <FormControl>
                             <Select
+                              disabled
                               onValueChange={field.onChange}
                               defaultValue={field.value}
                             >
@@ -842,6 +846,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                           <FormLabel>Commission (% of GGR)</FormLabel>
                           <FormControl>
                             <Input
+                              disabled
                               placeholder="Enter commission percentage"
                               {...field}
                             />
@@ -879,6 +884,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                           </FormLabel>
                           <FormControl>
                             <Select
+                              disabled
                               onValueChange={field.onChange}
                               defaultValue={field.value}
                             >
@@ -913,6 +919,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                           <FormLabel>Commission (% of Total Bets)</FormLabel>
                           <FormControl>
                             <Input
+                              disabled
                               placeholder="Enter commission percentage"
                               {...field}
                             />
@@ -950,6 +957,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                           </FormLabel>
                           <FormControl>
                             <Select
+                              disabled
                               onValueChange={field.onChange}
                               defaultValue={field.value}
                             >

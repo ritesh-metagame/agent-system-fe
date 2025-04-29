@@ -133,7 +133,7 @@ export default function Dashboard({}: Props) {
     <div>
       <div className="container mb-10">
         <CommonDashboard
-          welcomeTierName="Platinum Partners"
+          welcomeTierName="Golden Partners"
           referralLink={user?.affiliateLink}
           networkOverviewData={networkOverviewData}
           userRole={user?.role.name}

@@ -37,6 +37,7 @@ import Data from "./superAdmin.json";
 import axios from "axios";
 import { useSelector } from "@/redux/store";
 import { Badge } from "@/components/ui/badge";
+import { UserRole } from "@/lib/constants";
 
 // type Props = {};
 
@@ -81,23 +82,6 @@ export const defaultTopPerformersData: TopPerformersOverview[] = [
   },
 ];
 
-export const defaultCommissionRunningTallyData: commissionRunningTally[] = [
-  {
-    item: "ALL OPERATORS",
-    eGames: "",
-    sportsBetting: "",
-  },
-];
-
-export const defaultCommissionAvailableForSettlementData: CommissionAvailableForSettlement[] =
-  [
-    {
-      item: "ALL OPERATORS",
-      availableForPayout: "",
-      settledAllTime: "",
-    },
-  ];
-
 export const defaultCommissionPayoutsBreakdown: TotalCommissionPayoutsBreakdown2[] =
   [
     {
@@ -137,6 +121,21 @@ export const defaultCommissionPayoutsBreakdown: TotalCommissionPayoutsBreakdown2
     },
   ];
 
+export const getRoleLabelForUser = (role: string): string => {
+  switch (role.toLowerCase()) {
+    case UserRole.SUPER_ADMIN:
+      return "ALL OPERATORS";
+    case UserRole.OPERATOR:
+      return "ALL PLATINUMS";
+    case UserRole.PLATINUM:
+      return "ALL GOLDENS";
+    case "agent":
+      return "SELF";
+    default:
+      return "";
+  }
+};
+
 export default function Dashboard({}) {
   const { user, role } = useSelector((state) => state.authReducer);
 
@@ -153,6 +152,25 @@ export default function Dashboard({}) {
   const [paymentGatewayFeesData, setPaymentGatewayFeesData] = React.useState<
     PaymentGatewayFees[]
   >([]);
+
+  // const {role} = useSelector((state) => state.authReducer);
+
+  const defaultCommissionRunningTallyData: commissionRunningTally[] = [
+    {
+      item: getRoleLabelForUser(role),
+      eGames: "",
+      sportsBetting: "",
+    },
+  ];
+
+  const defaultCommissionAvailableForSettlementData: CommissionAvailableForSettlement[] =
+    [
+      {
+        item: getRoleLabelForUser(role),
+        availableForPayout: "",
+        settledAllTime: "",
+      },
+    ];
 
   const [commissionDateRange, setCommissionDateRange] = React.useState({
     from: "",
@@ -559,7 +577,7 @@ export default function Dashboard({}) {
   return (
     <div>
       <div className="mb-10">
-        <TypographyH2 className="mb-4">Operator Statistics</TypographyH2>
+        <TypographyH2 className="mb-4">Network Overview</TypographyH2>
         <DataTable
           columns={networkStatisticsColumn}
           data={operatorStatisticsData}

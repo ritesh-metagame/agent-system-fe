@@ -44,9 +44,10 @@ import {
   // totalCommissionPayoutsBreakdownColumns,
 } from "../../superadmin/general/dashboard-columns";
 import {
-  defaultCommissionAvailableForSettlementData,
+  // defaultCommissionAvailableForSettlementData,
   defaultCommissionPayoutsBreakdown,
-  defaultCommissionRunningTallyData,
+  getRoleLabelForUser,
+  // defaultCommissionRunningTallyData,
 } from "@/components/screens/superadmin/dashboard";
 import { useSelector } from "@/redux/store";
 import { UserRole } from "@/lib/constants";
@@ -89,6 +90,23 @@ export default function CommonDashboard({
   console.log("payoutAndWalletCommissionData", payoutAndWalletCommissionData);
 
   const role = useSelector((state) => state.authReducer.user.role.name);
+
+  const defaultCommissionRunningTallyData: commissionRunningTally[] = [
+    {
+      item: getRoleLabelForUser(role),
+      eGames: "",
+      sportsBetting: "",
+    },
+  ];
+
+  const defaultCommissionAvailableForSettlementData: CommissionAvailableForSettlement[] =
+    [
+      {
+        item: getRoleLabelForUser(role),
+        availableForPayout: "",
+        settledAllTime: "",
+      },
+    ];
 
   console.log("eGamesData:", eGamesData);
   console.log("sportsBettingData:", sportsBettingData);

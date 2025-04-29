@@ -151,7 +151,7 @@ const createAccountFormSchema = z.object({
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-  eGamesCommissionComputationPeriod: z.enum(["BI_MONTHLY", "MONTHLY"]),
+  eGamesCommissionComputationPeriod: z.enum(["BI_MONTHLY", "WEEKLY"]),
 
   sportsBettingCommission: z
     .string()
@@ -159,7 +159,7 @@ const createAccountFormSchema = z.object({
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-  sportsBettingCommissionComputationPeriod: z.enum(["BI_MONTHLY", "MONTHLY"]),
+  sportsBettingCommissionComputationPeriod: z.enum(["BI_MONTHLY", "WEEKLY"]),
 
   specialityGamesRngCommission: z
     .string()
@@ -169,7 +169,7 @@ const createAccountFormSchema = z.object({
     }),
   specialityGamesRngCommissionComputationPeriod: z.enum([
     "BI_MONTHLY",
-    "MONTHLY",
+    "WEEKLY",
   ]),
 
   specialityGamesToteCommission: z
@@ -180,7 +180,7 @@ const createAccountFormSchema = z.object({
     }),
   specialityGamesToteCommissionComputationPeriod: z.enum([
     "BI_MONTHLY",
-    "MONTHLY",
+    "WEEKLY",
   ]),
 
   siteIds: z.array(z.string()),
@@ -285,11 +285,11 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
       eGamesCommission: "",
       eGamesCommissionComputationPeriod: "BI_MONTHLY", // Default to bIBI_MONTHLY
       sportsBettingCommission: "",
-      sportsBettingCommissionComputationPeriod: "BI_MONTHLY", // Default to bIBI_MONTHLY
+      sportsBettingCommissionComputationPeriod: "WEEKLY", // Default to bIBI_MONTHLY
       specialityGamesRngCommission: "",
       specialityGamesRngCommissionComputationPeriod: "BI_MONTHLY", // Default to monthly
       specialityGamesToteCommission: "",
-      specialityGamesToteCommissionComputationPeriod: "BI_MONTHLY",
+      specialityGamesToteCommissionComputationPeriod: "WEEKLY",
 
       siteIds: [],
     },
@@ -422,7 +422,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
     <Card className="w-full max-w-3xl mx-auto p-6">
       <CardHeader>
         <CardTitle className="text-lg font-bold text-center">
-          Create Account
+          Operator Account Creation
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -649,8 +649,8 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                                     occurs twice a month (1st-15th and
                                     16th-31st).
                                     <br />
-                                    <strong>Monthly:</strong> Settlement occurs
-                                    once at the end of each month.
+                                    <strong>Weekly:</strong> Settlement occurs
+                                    once at the end of each week.
                                   </p>
                                 </TooltipContent>
                               </Tooltip>
@@ -668,7 +668,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                                 <SelectItem value="BI_MONTHLY">
                                   Bi-Monthly
                                 </SelectItem>
-                                <SelectItem value="Weekly">Weekly</SelectItem>
+                                <SelectItem value="WEEKLY">Weekly</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -721,8 +721,8 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                                     occurs twice a month (1st-15th and
                                     16th-31st).
                                     <br />
-                                    <strong>Monthly:</strong> Settlement occurs
-                                    once at the end of each month.
+                                    <strong>Weekly:</strong> Settlement occurs
+                                    once at the end of each week.
                                   </p>
                                 </TooltipContent>
                               </Tooltip>
@@ -740,7 +740,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                                 <SelectItem value="BI_MONTHLY">
                                   Bi-Monthly
                                 </SelectItem>
-                                <SelectItem value="Weekly">Weekly</SelectItem>
+                                <SelectItem value="WEEKLY">Weekly</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -793,8 +793,8 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                                     occurs twice a month (1st-15th and
                                     16th-31st).
                                     <br />
-                                    <strong>Monthly:</strong> Settlement occurs
-                                    once at the end of each month.
+                                    <strong>Weekly:</strong> Settlement occurs
+                                    once at the end of each week.
                                   </p>
                                 </TooltipContent>
                               </Tooltip>
@@ -864,8 +864,8 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                                     occurs twice a month (1st-15th and
                                     16th-31st).
                                     <br />
-                                    <strong>Monthly:</strong> Settlement occurs
-                                    once at the end of each month.
+                                    <strong>Weekly:</strong> Settlement occurs
+                                    once at the end of each week.
                                   </p>
                                 </TooltipContent>
                               </Tooltip>
@@ -883,7 +883,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                                 <SelectItem value="BI_MONTHLY">
                                   Bi-Monthly
                                 </SelectItem>
-                                <SelectItem value="Weekly">Weekly</SelectItem>
+                                <SelectItem value="WEEKLY">Weekly</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>

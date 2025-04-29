@@ -567,6 +567,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        disabled
                         className="w-full"
                         placeholder="Enter commission percentage"
                         {...field}
@@ -587,6 +588,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        disabled
                         className="w-full"
                         placeholder="Enter commission percentage"
                         {...field}
@@ -607,6 +609,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        disabled
                         className="w-full"
                         placeholder="Enter commission percentage"
                         {...field}
@@ -627,6 +630,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        disabled
                         className="w-full"
                         placeholder="Enter commission percentage"
                         {...field}
