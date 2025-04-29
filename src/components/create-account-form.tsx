@@ -208,24 +208,24 @@ export default function CreateAccountFormWithCommissionPeriod({
     // Update the form values
     switch (categoryName) {
       case "eGames":
-        form.setValue("eGamesOwnCommission", remainingCommission.toString());
+        form.setValue("eGamesOwnCommission", remainingCommission?.toString());
         break;
       case "sportsBetting":
         form.setValue(
           "sportsBettingOwnCommission",
-          remainingCommission.toString()
+          remainingCommission?.toString()
         );
         break;
       case "specialtyGamesRng":
         form.setValue(
           "specialtyGamesRngOwnCommission",
-          remainingCommission.toString()
+          remainingCommission?.toString()
         );
         break;
       case "specialtyGamesTote":
         form.setValue(
           "specialtyGamesToteOwnCommission",
-          remainingCommission.toString()
+          remainingCommission?.toString()
         );
         break;
     }
@@ -268,13 +268,14 @@ export default function CreateAccountFormWithCommissionPeriod({
       sportsBettingCommission: "",
       specialtyGamesRngCommission: "",
       specialtyGamesToteCommission: "",
-      eGamesOwnCommission: totalAssignedCommissionPercentage.eGames.toString(),
+      eGamesOwnCommission:
+        totalAssignedCommissionPercentage?.eGames?.toString(),
       sportsBettingOwnCommission:
-        totalAssignedCommissionPercentage.sportsBetting.toString(),
+        totalAssignedCommissionPercentage?.sportsBetting?.toString(),
       specialtyGamesRngOwnCommission:
-        totalAssignedCommissionPercentage.specialtyGamesRng.toString(),
+        totalAssignedCommissionPercentage?.specialtyGamesRng?.toString(),
       specialtyGamesToteOwnCommission:
-        totalAssignedCommissionPercentage.specialtyGamesTote.toString(),
+        totalAssignedCommissionPercentage?.specialtyGamesTote?.toString(),
       siteIds: [],
     },
   });
