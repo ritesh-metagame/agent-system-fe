@@ -702,16 +702,16 @@ export default function CommonDashboard({
       {/* <Card> */}
       <CardContent className="p-4  flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <QRCodeSVG value={referralLink} size={80} />
+          <QRCodeSVG value={role === UserRole.GOLD ? `${referralLink}${userId}` : `${referralLink}`} size={80} />
           <p className="text-sm text-black-900">Download QR Code</p>
         </div>
       </CardContent>
       <div className="p-4 text-start">
         <p className="text-sm  font-bold">
           Referral Link:{" "}
-          <a href="#" className="text-blue-500">
+          <a href={role === UserRole.GOLD ? `${referralLink}${userId}` : `${referralLink}`} className="text-blue-500">
             {referralLink}
-            {userId}
+            {role === UserRole.GOLD ? userId : ""}
           </a>
         </p>
         <p className="text-md  text-black-900">
