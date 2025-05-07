@@ -86,6 +86,10 @@ export default function CommonDashboard({
   const [sportsBettingData, setSportsBettingData] = useState([]);
   const [payoutAndWalletCommissionData, setPayoutAndWalletCommissionData] =
     React.useState<PayoutAndWalletCommissionData[]>([]);
+  
+    const filteredColumns = userRole === "golden"
+    ? payoutAndWalletColumns.filter((col:any) => col.accessorKey !== "payout")
+    : payoutAndWalletColumns;
 
   console.log("payoutAndWalletCommissionData", payoutAndWalletCommissionData);
 
@@ -751,7 +755,7 @@ export default function CommonDashboard({
           {/* <TypographyH2 className="mb-4">Network Overview</TypographyH2> */}
 
           <DataTable
-            columns={payoutAndWalletColumns}
+            columns={filteredColumns}
             data={payoutAndWalletCommissionData}
             columnWidths={["250px", "250px"]}
           />
