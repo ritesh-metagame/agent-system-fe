@@ -32,8 +32,8 @@ const loginFormSchema = z.object({
   username: z
     .string()
     .regex(/^[a-zA-Z0-9_]*$/)
-    .min(3, {
-      message: "Username must be at least 3 characters long",
+    .min(2, {
+      message: "Username must be at least 2 characters long",
     }),
   password: z.string().min(8, {
     message: "Password must be at least 8 characters long",

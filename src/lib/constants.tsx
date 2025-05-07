@@ -222,6 +222,10 @@ export const roleWiseLinks: RoleWiseLinkMap = {
           title: Pages.PARTNER_MANAGEMENT,
           url: Paths.PARTNER_MANAGEMENT,
         },
+        {
+          title: Pages.APPROVE_AGENTS,
+          url: Paths.APPROVE_AGENTS,
+        }
       ],
     },
     {
@@ -268,6 +272,10 @@ export const roleWiseLinks: RoleWiseLinkMap = {
           title: Pages.PARTNER_MANAGEMENT,
           url: Paths.PARTNER_MANAGEMENT,
         },
+        {
+          title: Pages.APPROVE_AGENTS,
+          url: Paths.APPROVE_AGENTS,
+        }
       ],
     },
     {

@@ -202,8 +202,8 @@ export default function CreateAccountFormWithCommissionPeriod({
       return false;
     }
 
-    // Calculate remaining own commission
-    const remainingCommission = original - numValue;
+    // Calculate remaining own commission and round to 2 decimal places
+    const remainingCommission = parseFloat((original - numValue).toFixed(2));
 
     // Update the form values
     switch (categoryName) {
@@ -471,40 +471,82 @@ export default function CreateAccountFormWithCommissionPeriod({
           );
 
           setTotalAssignedCommissionPercentage({
-            eGames: eGamesCategoryCommission?.totalAssignedCommissionPercentage,
-            sportsBetting:
-              sportsBettingCategoryCommission?.totalAssignedCommissionPercentage,
-            specialtyGamesRng:
-              specialtyGamesRNGCategoryCommission?.totalAssignedCommissionPercentage,
-            specialtyGamesTote:
-              specialtyGamesToteCategoryCommission?.totalAssignedCommissionPercentage,
+            eGames: parseFloat(
+              eGamesCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+            sportsBetting: parseFloat(
+              sportsBettingCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+            specialtyGamesRng: parseFloat(
+              specialtyGamesRNGCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+            specialtyGamesTote: parseFloat(
+              specialtyGamesToteCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
           });
 
           setOriginalCommissions({
-            eGames: eGamesCategoryCommission?.totalAssignedCommissionPercentage,
-            sportsBetting:
-              sportsBettingCategoryCommission?.totalAssignedCommissionPercentage,
-            specialtyGamesRng:
-              specialtyGamesRNGCategoryCommission?.totalAssignedCommissionPercentage,
-            specialtyGamesTote:
-              specialtyGamesToteCategoryCommission?.totalAssignedCommissionPercentage,
+            eGames: parseFloat(
+              eGamesCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+            sportsBetting: parseFloat(
+              sportsBettingCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+            specialtyGamesRng: parseFloat(
+              specialtyGamesRNGCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+            specialtyGamesTote: parseFloat(
+              specialtyGamesToteCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
           });
 
           form.setValue(
             "eGamesOwnCommission",
-            eGamesCategoryCommission?.totalAssignedCommissionPercentage
+            parseFloat(
+              eGamesCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            )?.toString()
           );
           form.setValue(
             "sportsBettingOwnCommission",
-            sportsBettingCategoryCommission?.totalAssignedCommissionPercentage
+            parseFloat(
+              sportsBettingCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            )?.toString()
           );
           form.setValue(
             "specialtyGamesRngOwnCommission",
-            specialtyGamesRNGCategoryCommission?.totalAssignedCommissionPercentage
+            parseFloat(
+              specialtyGamesRNGCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            )?.toString()
           );
           form.setValue(
             "specialtyGamesToteOwnCommission",
-            specialtyGamesToteCategoryCommission?.totalAssignedCommissionPercentage
+            parseFloat(
+              specialtyGamesToteCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            )?.toString()
           );
 
           console.log(
