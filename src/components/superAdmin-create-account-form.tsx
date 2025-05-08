@@ -659,7 +659,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                           <FormControl>
                             <Select
                               onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              defaultValue={"BI_MONTHLY"}
                             >
                               <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select period" />
@@ -731,7 +731,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                           <FormControl>
                             <Select
                               onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              defaultValue={"WEEKLY"}
                             >
                               <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select period" />
@@ -803,7 +803,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                           <FormControl>
                             <Select
                               onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              defaultValue={"BI_MONTHLY"}
                             >
                               <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select period" />
@@ -874,7 +874,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                           <FormControl>
                             <Select
                               onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              defaultValue={"WEEKLY"}
                             >
                               <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select period" />
