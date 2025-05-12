@@ -193,11 +193,11 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
       eGamesCommission: "",
       eGamesCommissionComputationPeriod: "BI_MONTHLY", // Default to bIBI_MONTHLY
       sportsBettingCommission: "",
-      sportsBettingCommissionComputationPeriod: "BI_MONTHLY", // Default to bIBI_MONTHLY
+      sportsBettingCommissionComputationPeriod: "WEEKLY", // Default to bIBI_MONTHLY
       specialityGamesRngCommission: "",
       specialityGamesRngCommissionComputationPeriod: "BI_MONTHLY", // Default to monthly
       specialityGamesToteCommission: "",
-      specialityGamesToteCommissionComputationPeriod: "BI_MONTHLY",
+      specialityGamesToteCommissionComputationPeriod: "WEEKLY",
 
       siteIds: [],
     },
@@ -251,11 +251,18 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
             specialityGamesTote: "",
           };
 
+          const totalAssignedCommissionPercentageByCategory = {
+            eGames: 0,
+            sportsBetting: 0,
+            specialityGamesRng: 0,
+            specialityGamesTote: 0,
+          }
+
           const commissionComputationPeriods = {
             eGames: "BI_MONTHLY",
-            sportsBetting: "BI_MONTHLY",
+            sportsBetting: "WEEKLY",
             specialityGamesRNG: "BI_MONTHLY",
-            specialityGamesTote: "BI_MONTHLY",
+            specialityGamesTote: "WEEKLY",
           };
 
           // Get unique commission percentages and periods per category
@@ -266,23 +273,31 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                   commission.commissionPercentage.toString();
                 commissionComputationPeriods.eGames =
                   commission.commissionComputationPeriod;
+                totalAssignedCommissionPercentageByCategory.eGames = 
+                  commission.totalAssignedCommissionPercentage
                 break;
               case "Sports Betting":
                 commissionsByCategory.sportsBetting =
                   commission.commissionPercentage.toString();
                 commissionComputationPeriods.sportsBetting =
                   commission.commissionComputationPeriod;
+                totalAssignedCommissionPercentageByCategory.sportsBetting =
+                  commission.totalAssignedCommissionPercentage
                 break;
               case "Speciality Games - RNG":
                 commissionsByCategory.specialityGamesRng =
                   commission.commissionPercentage.toString();
                 commissionComputationPeriods.specialityGamesRNG =
                   commission.commissionComputationPeriod;
+                totalAssignedCommissionPercentageByCategory.specialityGamesRng =
+                  commission.totalAssignedCommissionPercentage
               case "Speciality Games - Tote":
                 commissionsByCategory.specialityGamesTote =
                   commission.commissionPercentage.toString();
                 commissionComputationPeriods.specialityGamesTote =
                   commission.commissionComputationPeriod;
+                totalAssignedCommissionPercentageByCategory.specialityGamesTote =
+                  commission.totalAssignedCommissionPercentage
                 break;
             }
           });
@@ -313,22 +328,22 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
             bankName: user.bankName || "",
             accountNumber: user.accountNumber || "",
             password: "",
-            eGamesCommission: commissionsByCategory.eGames,
+            eGamesCommission: parseInt(commissionsByCategory.eGames) > 0 ? commissionsByCategory.eGames : totalAssignedCommissionPercentageByCategory.eGames.toString(),
             eGamesCommissionComputationPeriod:
               commissionComputationPeriods.eGames as "BI_MONTHLY" | "WEEKLY",
-            sportsBettingCommission: commissionsByCategory.sportsBetting,
+            sportsBettingCommission: parseInt(commissionsByCategory.sportsBetting) > 0 ? commissionsByCategory.sportsBetting : totalAssignedCommissionPercentageByCategory.sportsBetting.toString(),
             sportsBettingCommissionComputationPeriod:
               commissionComputationPeriods.sportsBetting as
                 | "BI_MONTHLY"
                 | "WEEKLY",
             specialityGamesToteCommission:
-              commissionsByCategory.specialityGamesTote,
+              parseInt(commissionsByCategory.specialityGamesTote) > 0 ? commissionsByCategory.specialityGamesTote : totalAssignedCommissionPercentageByCategory.specialityGamesTote.toString(),
             specialityGamesToteCommissionComputationPeriod:
               commissionComputationPeriods.specialityGamesTote as
                 | "BI_MONTHLY"
                 | "WEEKLY",
             specialityGamesRngCommission:
-              commissionsByCategory.specialityGamesRng,
+              parseInt(commissionsByCategory.specialityGamesRng) > 0 ? commissionsByCategory.specialityGamesRng : totalAssignedCommissionPercentageByCategory.specialityGamesRng.toString(),
             specialityGamesRngCommissionComputationPeriod:
               commissionComputationPeriods.specialityGamesRNG as
                 | "BI_MONTHLY"
@@ -812,7 +827,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                             <Select
                               disabled
                               onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              defaultValue={"WEEKLY"}
                             >
                               <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select period" />
@@ -959,7 +974,7 @@ export default function SuperAdminUpdateAccountForm({ onSubmit }: Props) {
                             <Select
                               disabled
                               onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              defaultValue={"WEEKLY"}
                             >
                               <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select period" />

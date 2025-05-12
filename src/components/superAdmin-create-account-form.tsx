@@ -331,14 +331,16 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
         specialityGamesRng: values.specialityGamesRngCommission || undefined,
       },
       siteIds: selectedSiteIds,
-      eGamesCommissionComputationPeriod:
-        values.eGamesCommissionComputationPeriod,
-      sportsBettingCommissionComputationPeriod:
-        values.sportsBettingCommissionComputationPeriod,
-      specialityGamesRngCommissionComputationPeriod:
-        values.specialityGamesRngCommissionComputationPeriod,
-      specialityGamesToteCommissionComputationPeriod:
-        values.specialityGamesToteCommissionComputationPeriod,
+      // eGamesCommissionComputationPeriod:values.eGamesCommissionComputationPeriod,
+      eGamesCommissionComputationPeriod:"BI_MONTHLY",
+      // sportsBettingCommissionComputationPeriod:values.sportsBettingCommissionComputationPeriod,
+      sportsBettingCommissionComputationPeriod: "WEEKLY",
+
+      // specialityGamesRngCommissionComputationPeriod: values.specialityGamesRngCommissionComputationPeriod,
+      specialityGamesRngCommissionComputationPeriod: "BI_MONTHLY",
+      // specialityGamesToteCommissionComputationPeriod: values.specialityGamesToteCommissionComputationPeriod,
+      specialityGamesToteCommissionComputationPeriod: "WEEKLY",
+
     };
 
     try {
