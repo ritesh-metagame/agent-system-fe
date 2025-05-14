@@ -359,6 +359,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
 
           // Get unique commission percentages per category
           user.commissions.forEach((commission: any) => {
+            console.log("Commission", commission);
             switch (commission.category.name) {
               case "E-Games":
                 commissionsByCategory.eGames = commission.commissionPercentage.toString();
@@ -382,12 +383,14 @@ export default function UpdateAccountFormWithCommissionPeriod() {
           // Store original commission values for validation
           setOriginalCommissions(originalCommissionsData);
 
+          console.log({originalCommissionsData})
+
           // Calculate own commission values
           const ownCommissions = {
-            eGames: (originalCommissionsData.eGames - parseFloat(commissionsByCategory.eGames || "0")).toString(),
-            sportsBetting: (originalCommissionsData.sportsBetting - parseFloat(commissionsByCategory.sportsBetting || "0")).toString(),
-            specialtyGamesRng: (originalCommissionsData.specialtyGamesRng - parseFloat(commissionsByCategory.specialtyGamesRng || "0")).toString(),
-            specialtyGamesTote: (originalCommissionsData.specialtyGamesTote - parseFloat(commissionsByCategory.specialtyGamesTote || "0")).toString(),
+            eGames: originalCommissionsData.eGames.toString(),
+            sportsBetting: originalCommissionsData.sportsBetting.toString(),
+            specialtyGamesRng: originalCommissionsData.specialtyGamesRng.toString(),
+            specialtyGamesTote: originalCommissionsData.specialtyGamesTote.toString(),
           };
 
           const userSiteIds = user.userSites?.map((site: any) => site.siteId);
@@ -406,6 +409,8 @@ export default function UpdateAccountFormWithCommissionPeriod() {
               break;
             }
           }
+
+          console.log({ownCommissions})
 
           const formValues = {
             firstName: user.firstName || "",

@@ -130,8 +130,14 @@ export default function RegisterPartnerForm({}: Props) {
         toast.error(errorData.message || "Registration failed");
       } else {
         const data = await response.json();
-        toast.success("Registration successful!");
-        // router.push("/login");
+
+        if (data.code === "1004") {
+          toast.success("Registration successful!");
+          router.push("/login");
+        } else {
+          toast.error(data.message || "Registration failed");
+          router.refresh();
+        }
       }
     } catch (error) {
       console.error("Registration error:", error);
