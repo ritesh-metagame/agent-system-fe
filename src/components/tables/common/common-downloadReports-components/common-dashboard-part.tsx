@@ -8,6 +8,7 @@ import {
   eGamesColumns,
   sportsbettingColumns,
   payoutAndWalletColumns,
+  goldenNetworkOverviewColumns,
 } from "../common-column-defs/common-dashboard-part-column";
 
 import type {
@@ -100,6 +101,9 @@ export default function CommonDashboard({
       item: getRoleLabelForUser(role),
       eGames: "",
       sportsBetting: "",
+      specialityGamesRNG: "",
+      specialityGamesTote: "",
+      
     },
   ];
 
@@ -744,11 +748,20 @@ export default function CommonDashboard({
         <div className="mb-10">
           <TypographyH2 className="mb-4">Network Overview</TypographyH2>
 
+          {role === UserRole.GOLD ? (
+           <DataTable
+           columns={goldenNetworkOverviewColumns}
+           data={networkOverviewData}
+           columnWidths={["250px", "250px",]}
+         />
+          ) : (  
           <DataTable
-            columns={networkOverviewColumns}
+            columns={ networkOverviewColumns}
             data={networkOverviewData}
             columnWidths={["250px", "250px", "250px", "250px", "250px"]}
           />
+          )}
+
         </div>
 
         <div className="mb-10">

@@ -14,6 +14,8 @@ export type commissionRunningTally = {
   item: string;
   eGames: number | string;
   sportsBetting: number | string;
+  specialityGamesRNG: number | string;
+  specialityGamesTote: number | string;
 };
 
 export type CommissionAvailableForSettlement = {
@@ -73,6 +75,21 @@ export const commissionRunningTallyColumns: ColumnDef<commissionRunningTally>[] 
         const value = row.getValue("sportsBetting");
         return formatCurrency(value as any);
       },
+    },{
+      accessorKey: "specialityGamesRNG",
+      header: "SPECIALITY GAMES RNG",
+      cell: ({ row }) => {
+        const value = row.getValue("specialityGamesRNG");
+        return formatCurrency(value as any);
+      },
+    },
+    {
+      accessorKey: "specialityGamesTote",
+      header: "SPECIALITY GAMES TOTE",
+      cell: ({ row }) => {
+        const value = row.getValue("specialityGamesTote");
+        return formatCurrency(value as any);
+      },
     },
   ];
 
@@ -119,7 +136,7 @@ export const totalCommissionPayoutsBreakdownColumns2: ColumnDef<TotalCommissionP
     },
     {
       accessorKey: "pendingSettlement",
-      header: "AMOUNT",
+      header: "CURRENT",
       cell: ({ row }) => {
         const value = row.getValue("pendingSettlement");
         return typeof value === "number"
@@ -129,7 +146,7 @@ export const totalCommissionPayoutsBreakdownColumns2: ColumnDef<TotalCommissionP
     },
     {
       accessorKey: "settledAllTime",
-      header: "SETTLED ALL TIME",
+      header: "ALL TIME",
       cell: ({ row }) => {
         const value = row.getValue("settledAllTime");
         return typeof value === "number"
@@ -221,7 +238,7 @@ export const licenseCommissionBreakdownColumns: ColumnDef<LicenseCommissionBreak
     },
     {
       accessorKey: "pendingSettlement",
-      header: "AMOUNT PENDING SETTLEMENT",
+      header: "CURRENT",
       cell: ({ row }) => {
         const value = row.getValue("pendingSettlement");
         return typeof value === "number"
@@ -231,7 +248,7 @@ export const licenseCommissionBreakdownColumns: ColumnDef<LicenseCommissionBreak
     },
     {
       accessorKey: "settledAllTime",
-      header: "SETTLED ALL TIME",
+      header: "ALL TIME",
       cell: ({ row }) => {
         const value = row.getValue("settledAllTime");
         return typeof value === "number"

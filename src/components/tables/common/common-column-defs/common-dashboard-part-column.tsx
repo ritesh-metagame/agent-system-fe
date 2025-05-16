@@ -31,6 +31,11 @@ export type NetworkOverviewData = {
   summary: number | string;
 };
 
+export type GoldenNetworkOverviewData = {
+  network: string;
+  approved: number | string;
+}
+
 export type PayoutAndWalletCommissionData = {
   payout: number | string;
   wallet: number | string;
@@ -51,6 +56,20 @@ export const networkOverviewColumns: ColumnDef<NetworkOverviewData>[] = [
   { accessorKey: "suspended", header: "SUSPENDED" },
   { accessorKey: "summary", header: "SUMMARY" },
 ];
+
+export const goldenNetworkOverviewColumns: ColumnDef<GoldenNetworkOverviewData>[] =
+  [
+    {
+      accessorKey: "network",
+      header: "NETWORK",
+      cell: ({ row }) => (
+        <>
+          <h1 className="font-bold">{row.getValue("network")}</h1>
+        </>
+      ),
+    },
+    { accessorKey: "approved", header: "APPROVED" },
+  ];
 
 export const payoutAndWalletColumns: ColumnDef<PayoutAndWalletCommissionData>[] =
   [

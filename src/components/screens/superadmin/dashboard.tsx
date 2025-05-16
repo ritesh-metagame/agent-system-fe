@@ -160,6 +160,9 @@ export default function Dashboard({}) {
       item: getRoleLabelForUser(role),
       eGames: "",
       sportsBetting: "",
+      specialityGamesRNG: "",
+      specialityGamesTote: "",
+      
     },
   ];
 

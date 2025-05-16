@@ -26,13 +26,14 @@ import { toast } from "sonner";
 export type PendingSettlement = {
   ids: string[];
   network: string;
-  totalEgamesCommissions: number;
-  totalSportsBettingCommissions: number;
-  totalSpecialtyGamesCommissions: number;
+  // totalEgamesCommissions: number;
+  // totalSportsBettingCommissions: number;
+  // totalSpecialtyGamesCommissions: number;
   grossCommissions: number;
   paymentGatewayFees: number;
   netCommissions: number;
-  bankName: string;
+  ownCommission: number;
+  // bankName: string;
   // breakdownAction: "view";
   // releaseAction: "release_comms";
   //   breakdown: string; // could be a button or link
@@ -52,34 +53,34 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
   //     return value.charAt(0).toUpperCase() + value.slice(1);
   //   },
   // },
-  {
-    accessorKey: "totalEgamesCommissions",
-    header: "TOTAL EGAMES COMMISSIONS",
-    cell: ({ row }) => {
-      const value = row.getValue("totalEgamesCommissions") as number | string;
-      return formatCurrency(value)?.toLocaleString() ?? "";
-    },
-  },
-  {
-    accessorKey: "totalSportsBettingCommissions",
-    header: "TOTAL SPORTS BETTING COMMISSIONS",
-    cell: ({ row }) => {
-      const value = row.getValue("totalSportsBettingCommissions") as
-        | number
-        | string;
-      return formatCurrency(value)?.toLocaleString() ?? "";
-    },
-  },
-  {
-    accessorKey: "totalSpecialtyGamesCommissions",
-    header: "TOTAL SPECIALITY GAMES COMMISSIONS",
-    cell: ({ row }) => {
-      const value = row.getValue("totalSpecialtyGamesCommissions") as
-        | number
-        | string;
-      return formatCurrency(value)?.toLocaleString() ?? "";
-    },
-  },
+  // {
+  //   accessorKey: "totalEgamesCommissions",
+  //   header: "TOTAL EGAMES COMMISSIONS",
+  //   cell: ({ row }) => {
+  //     const value = row.getValue("totalEgamesCommissions") as number | string;
+  //     return formatCurrency(value)?.toLocaleString() ?? "";
+  //   },
+  // },
+  // {
+  //   accessorKey: "totalSportsBettingCommissions",
+  //   header: "TOTAL SPORTS BETTING COMMISSIONS",
+  //   cell: ({ row }) => {
+  //     const value = row.getValue("totalSportsBettingCommissions") as
+  //       | number
+  //       | string;
+  //     return formatCurrency(value)?.toLocaleString() ?? "";
+  //   },
+  // },
+  // {
+  //   accessorKey: "totalSpecialtyGamesCommissions",
+  //   header: "TOTAL SPECIALITY GAMES COMMISSIONS",
+  //   cell: ({ row }) => {
+  //     const value = row.getValue("totalSpecialtyGamesCommissions") as
+  //       | number
+  //       | string;
+  //     return formatCurrency(value)?.toLocaleString() ?? "";
+  //   },
+  // },
   {
     accessorKey: "grossCommissions",
     header: "TOTAL GROSS COMMISSIONS",
@@ -97,8 +98,16 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
     },
   },
   {
+    accessorKey: "ownCommission",
+    header: "LESS: OWN COMMISSIONS",
+    cell: ({ row }) => {
+      const value = row.getValue("ownCommission") as number | string;
+      return formatCurrency(value)?.toLocaleString() ?? "";
+    }
+  },
+  {
     accessorKey: "netCommissions",
-    header: "TOTAL NET COMMISSIONS FOR SETTLEMENT",
+    header: "NET COMMISSIONS FOR PAYOUT",
     cell: ({ row }) => {
       const value = row.getValue("netCommissions") as number | string;
       return formatCurrency(value)?.toLocaleString() ?? "";
@@ -115,7 +124,7 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
   },
   {
     id: "action2",
-    header: "RELEASE COMMISSIONS",
+    header: "SETTLE",
     cell: ({ row }) => {
       const [date, setDate] = useState<Date>(new Date(Date.now()));
 
@@ -155,10 +164,10 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
                 <span>Total Net Commissions:</span>
                 <span>{formatCurrency(row.original.netCommissions)}</span>
               </div>
-              <div className="flex justify-between font-semibold">
+              {/* <div className="flex justify-between font-semibold">
                 <span>Bank Name:</span>
                 <span>{row.original?.bankName}</span>
-              </div>
+              </div> */}
               <div className="flex justify-between font-semibold">
                 <span>Transaction Date</span>
                 <span>
