@@ -75,7 +75,8 @@ export const commissionRunningTallyColumns: ColumnDef<commissionRunningTally>[] 
         const value = row.getValue("sportsBetting");
         return formatCurrency(value as any);
       },
-    },{
+    },
+    {
       accessorKey: "specialityGamesRNG",
       header: "SPECIALITY GAMES RNG",
       cell: ({ row }) => {
@@ -144,16 +145,16 @@ export const totalCommissionPayoutsBreakdownColumns2: ColumnDef<TotalCommissionP
           : formatCurrency(value as any);
       },
     },
-    {
-      accessorKey: "settledAllTime",
-      header: "ALL TIME",
-      cell: ({ row }) => {
-        const value = row.getValue("settledAllTime");
-        return typeof value === "number"
-          ? formatCurrency(value as any)
-          : formatCurrency(value as any);
-      },
-    },
+    // {
+    //   accessorKey: "settledAllTime",
+    //   header: "ALL TIME",
+    //   cell: ({ row }) => {
+    //     const value = row.getValue("settledAllTime");
+    //     return typeof value === "number"
+    //       ? formatCurrency(value as any)
+    //       : formatCurrency(value as any);
+    //   },
+    // },
   ];
 
 export type TotalCommissionPayoutsBreakdown1 = {
@@ -246,16 +247,16 @@ export const licenseCommissionBreakdownColumns: ColumnDef<LicenseCommissionBreak
           : formatCurrency(value as any);
       },
     },
-    {
-      accessorKey: "settledAllTime",
-      header: "ALL TIME",
-      cell: ({ row }) => {
-        const value = row.getValue("settledAllTime");
-        return typeof value === "number"
-          ? formatCurrency(value as any)
-          : formatCurrency(value as any);
-      },
-    },
+    // {
+    //   accessorKey: "settledAllTime",
+    //   header: "ALL TIME",
+    //   cell: ({ row }) => {
+    //     const value = row.getValue("settledAllTime");
+    //     return typeof value === "number"
+    //       ? formatCurrency(value as any)
+    //       : formatCurrency(value as any);
+    //   },
+    // },
   ];
 
 export const networkStatisticsColumn: ColumnDef<NetworkStatistics>[] = [
@@ -483,16 +484,16 @@ export const topPerformersColumns: ColumnDef<TopPerformersOverview>[] = [
         : formatCurrency(value as any);
     },
   },
-  {
-    accessorKey: "allTime",
-    header: "ALL TIME",
-    cell: ({ row }) => {
-      const value = row.getValue("allTime");
-      return typeof value === "number"
-        ? formatCurrency(value as any)
-        : formatCurrency(value as any);
-    },
-  },
+  // {
+  //   accessorKey: "allTime",
+  //   header: "ALL TIME",
+  //   cell: ({ row }) => {
+  //     const value = row.getValue("allTime");
+  //     return typeof value === "number"
+  //       ? formatCurrency(value as any)
+  //       : formatCurrency(value as any);
+  //   },
+  // },
 ];
 
 export type TopPlayersDepositsOverview = {
