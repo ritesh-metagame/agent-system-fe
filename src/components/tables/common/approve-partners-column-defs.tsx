@@ -56,7 +56,7 @@ export const approvalListColumnDefs: ColumnDef<ApprovalList>[] = [
                     },
                     body: JSON.stringify({
                         userId: id,
-                        approved
+                        status: approved
                     })
                 });
         
@@ -68,7 +68,15 @@ export const approvalListColumnDefs: ColumnDef<ApprovalList>[] = [
                         toast.error(data.message || "Failed to approve partner.");
                     } else {
                         toast.success(data.message);
-                        router.push(`/partner-management/update/${data?.data?.username}?updateMode=approval`);
+                        if (data?.data?.approved === 1) {
+                            toast.success("Partner approved successfully.");
+                            router.push(`/partner-management/update/${data?.data?.username}?updateMode=approval`);
+                        } else if (data?.data?.approved === -1) {
+                            toast.error("Partner declined successfully.");
+                            router.push(`/partner-management`);
+                        } else {
+                            toast.error("Unexpected approval status.");
+                        }
                     }
                 } else {
                     console.error("Error approving partner: ", data.message);
