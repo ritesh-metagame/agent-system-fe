@@ -59,7 +59,7 @@ export const payoutAndWalletColumns: ColumnDef<PayoutAndWalletCommissionData>[] 
       header: "PAYOUT",
       cell: ({ row }) => {
         const value = row.getValue("payout");
-        return value ? formatCurrency(value as any) : "-";
+        return value ? formatCurrency(value as any) : "0";
       },
     },
     {
@@ -67,7 +67,7 @@ export const payoutAndWalletColumns: ColumnDef<PayoutAndWalletCommissionData>[] 
       header: "WALLET",
       cell: ({ row }) => {
         const value = row.getValue("wallet");
-        return value ? formatCurrency(value as any) : "-";
+        return value ? formatCurrency(value as any) : "0";
       },
     },
   ];

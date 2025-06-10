@@ -124,6 +124,7 @@ export default function RegisterPartnerForm({}: Props) {
           }),
         }
       );
+      console.log("Response:", response);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -131,7 +132,7 @@ export default function RegisterPartnerForm({}: Props) {
       } else {
         const data = await response.json();
         toast.success("Registration successful!");
-        // router.push("/login");
+        router.push("/login");
       }
     } catch (error) {
       console.error("Registration error:", error);
