@@ -332,7 +332,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
       },
       siteIds: selectedSiteIds,
       // eGamesCommissionComputationPeriod:values.eGamesCommissionComputationPeriod,
-      eGamesCommissionComputationPeriod:"BI_MONTHLY",
+      eGamesCommissionComputationPeriod: "BI_MONTHLY",
       // sportsBettingCommissionComputationPeriod:values.sportsBettingCommissionComputationPeriod,
       sportsBettingCommissionComputationPeriod: "WEEKLY",
 
@@ -340,7 +340,6 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
       specialityGamesRngCommissionComputationPeriod: "BI_MONTHLY",
       // specialityGamesToteCommissionComputationPeriod: values.specialityGamesToteCommissionComputationPeriod,
       specialityGamesToteCommissionComputationPeriod: "WEEKLY",
-
     };
 
     try {
@@ -421,17 +420,17 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
   };
 
   return (
-    <Card className="w-full max-w-3xl mx-auto p-6">
-      <CardHeader>
-        <CardTitle className="text-lg font-bold text-center">
+    <Card className="w-full max-w-4xl mx-auto p-3 sm:p-4 md:p-6">
+      <CardHeader className="pb-4 sm:pb-6">
+        <CardTitle className="text-lg sm:text-xl font-bold text-center">
           Operator Account Creation
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-3 sm:px-6">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6"
           >
             {/* First Name */}
             <FormField
@@ -470,7 +469,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Mobile Number</FormLabel>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <FormField
                       control={form.control}
                       name="mobileNumberPrefix"
@@ -479,7 +478,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                           value={prefixField.value}
                           onValueChange={prefixField.onChange}
                         >
-                          <SelectTrigger className="w-24">
+                          <SelectTrigger className="w-full sm:w-24">
                             <SelectValue placeholder="Prefix" />
                           </SelectTrigger>
                           <SelectContent>
@@ -607,20 +606,22 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
             />
 
             {/* Category-wise Commission Inputs */}
-            <div className="col-span-2">
+            <div className="col-span-1 lg:col-span-2">
               <Accordion type="multiple" className="w-full">
                 {/* eGames Category */}
                 <AccordionItem value="egames">
-                  <AccordionTrigger className="text-xl">
+                  <AccordionTrigger className="text-lg sm:text-xl">
                     E-Games
                   </AccordionTrigger>
-                  <AccordionContent className="flex items-center gap-2 justify-center w-full">
+                  <AccordionContent className="flex flex-col md:flex-row items-start md:items-center gap-3 sm:gap-4 justify-center w-full">
                     <FormField
                       control={form.control}
                       name="eGamesCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Commission (% of GGR)</FormLabel>
+                          <FormLabel className="text-sm">
+                            Commission (% of GGR)
+                          </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter commission percentage"
@@ -636,7 +637,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                       name="eGamesCommissionComputationPeriod"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>
+                          <FormLabel className="text-sm">
                             Commission Computation Period
                             <TooltipProvider>
                               <Tooltip>
@@ -683,16 +684,18 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
 
                 {/* Sports Betting Category */}
                 <AccordionItem value="sportsbetting">
-                  <AccordionTrigger className="text-xl">
+                  <AccordionTrigger className="text-lg sm:text-xl">
                     Sports Betting
                   </AccordionTrigger>
-                  <AccordionContent className="flex items-center gap-2 justify-center w-full">
+                  <AccordionContent className="flex flex-col md:flex-row items-start md:items-center gap-3 sm:gap-4 justify-center w-full">
                     <FormField
                       control={form.control}
                       name="sportsBettingCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Commission (% of Total Bets)</FormLabel>
+                          <FormLabel className="text-sm">
+                            Commission (% of Total Bets)
+                          </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter commission percentage"
@@ -708,7 +711,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                       name="sportsBettingCommissionComputationPeriod"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>
+                          <FormLabel className="text-sm">
                             Commission Computation Period
                             <TooltipProvider>
                               <Tooltip>
@@ -755,16 +758,18 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
 
                 {/* Specialty Games Category */}
                 <AccordionItem value="specialtygamesrng">
-                  <AccordionTrigger className="text-xl">
+                  <AccordionTrigger className="text-lg sm:text-xl">
                     Specialty Games - RNG
                   </AccordionTrigger>
-                  <AccordionContent className="flex items-center gap-2 justify-center w-full">
+                  <AccordionContent className="flex flex-col md:flex-row items-start md:items-center gap-3 sm:gap-4 justify-center w-full">
                     <FormField
                       control={form.control}
                       name="specialityGamesRngCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Commission (% of GGR)</FormLabel>
+                          <FormLabel className="text-sm">
+                            Commission (% of GGR)
+                          </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter commission percentage"
@@ -780,7 +785,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                       name="specialityGamesRngCommissionComputationPeriod"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>
+                          <FormLabel className="text-sm">
                             Commission Computation Period
                             <TooltipProvider>
                               <Tooltip>
@@ -826,16 +831,18 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                 </AccordionItem>
 
                 <AccordionItem value="specialtygamestote">
-                  <AccordionTrigger className="text-xl">
+                  <AccordionTrigger className="text-lg sm:text-xl">
                     Specialty Games - Tote
                   </AccordionTrigger>
-                  <AccordionContent className="flex items-center gap-2 justify-center w-full">
+                  <AccordionContent className="flex flex-col md:flex-row items-start md:items-center gap-3 sm:gap-4 justify-center w-full">
                     <FormField
                       control={form.control}
                       name="specialityGamesToteCommission"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Commission (% of Total Bets)</FormLabel>
+                          <FormLabel className="text-sm">
+                            Commission (% of Total Bets)
+                          </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter commission percentage"
@@ -851,7 +858,7 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
                       name="specialityGamesToteCommissionComputationPeriod"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>
+                          <FormLabel className="text-sm">
                             Commission Computation Period
                             <TooltipProvider>
                               <Tooltip>
@@ -899,20 +906,19 @@ export default function SuperAdminCreateAccountForm({ onSubmit }: Props) {
             </div>
 
             {/* Submit Button */}
-            <div className="col-span-2 flex justify-end">
+            <div className="col-span-1 lg:col-span-2 flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-end mt-4">
               <Button
                 variant="secondary"
                 onClick={() => router.push("/dashboard")}
                 type="button"
-                // type="submit"
-                // className="bg-red text-white"
+                className="w-full sm:w-auto"
               >
                 Cancel
               </Button>
               <Button
                 variant="default"
                 type="submit"
-                className="bg-blue-500 text-white"
+                className="bg-blue-500 text-white w-full sm:w-auto"
               >
                 Submit
               </Button>

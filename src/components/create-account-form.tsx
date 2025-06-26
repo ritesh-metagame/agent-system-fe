@@ -574,17 +574,17 @@ export default function CreateAccountFormWithCommissionPeriod({
   }, [id]);
 
   return (
-    <Card className="w-full max-w-3xl mx-auto p-6">
-      <CardHeader>
-        <CardTitle className="text-lg font-bold text-center">
+    <Card className="w-full max-w-4xl mx-auto p-3 sm:p-4 md:p-6">
+      <CardHeader className="pb-4 sm:pb-6">
+        <CardTitle className="text-lg sm:text-xl font-bold text-center">
           {getFormTitle()}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-3 sm:px-6">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6"
           >
             {/* First Name */}
             <FormField
@@ -623,7 +623,7 @@ export default function CreateAccountFormWithCommissionPeriod({
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Mobile Number</FormLabel>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <FormField
                       control={form.control}
                       name="mobileNumberPrefix"
@@ -632,7 +632,7 @@ export default function CreateAccountFormWithCommissionPeriod({
                           value={prefixField.value}
                           onValueChange={prefixField.onChange}
                         >
-                          <SelectTrigger className="w-24">
+                          <SelectTrigger className="w-full sm:w-24">
                             <SelectValue placeholder="Prefix" />
                           </SelectTrigger>
                           <SelectContent>
@@ -730,7 +730,7 @@ export default function CreateAccountFormWithCommissionPeriod({
               control={form.control}
               name="siteIds"
               render={({ field }) => (
-                <FormItem className="col-span-1">
+                <FormItem className="col-span-1 lg:col-span-2">
                   <FormLabel>Sites</FormLabel>
                   <FormControl>
                     {isLoading ? (
@@ -758,15 +758,16 @@ export default function CreateAccountFormWithCommissionPeriod({
                 </FormItem>
               )}
             />
-            <div className="flex col-span-2 gap-2 items-center justify-between">
+            <div className="col-span-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               {/* eGames Commission and Commission Computation Period */}
-              {/* <div className="grid grid-cols-2 col-span-2 gap-4"> */}
               <FormField
                 control={form.control}
                 name="eGamesCommission"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>E-Games Commission (% of GGR)</FormLabel>
+                    <FormLabel className="text-sm">
+                      E-Games Commission (% of GGR)
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Enter commission percentage"
@@ -786,7 +787,9 @@ export default function CreateAccountFormWithCommissionPeriod({
                 name="eGamesOwnCommission"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>E-Games Own Commission (% of GGR)</FormLabel>
+                    <FormLabel className="text-sm">
+                      E-Games Own Commission (% of GGR)
+                    </FormLabel>
                     <FormControl>
                       <Input
                         disabled
@@ -802,14 +805,13 @@ export default function CreateAccountFormWithCommissionPeriod({
             {/* </div> */}
 
             {/* Sports-Betting Commission and Commission Computation Period */}
-            {/* <div className="grid grid-cols-2 col-span-2 gap-4"> */}
-            <div className="flex col-span-2 gap-2 items-center justify-between">
+            <div className="col-span-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <FormField
                 control={form.control}
                 name="sportsBettingCommission"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>
+                    <FormLabel className="text-sm">
                       Sports-Betting Commission (% of Total Bets)
                     </FormLabel>
                     <FormControl>
@@ -831,7 +833,7 @@ export default function CreateAccountFormWithCommissionPeriod({
                 name="sportsBettingOwnCommission"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>
+                    <FormLabel className="text-sm">
                       Sports-Betting Own Commission (% of Total Bets)
                     </FormLabel>
                     <FormControl>
@@ -849,14 +851,13 @@ export default function CreateAccountFormWithCommissionPeriod({
             {/* </div> */}
 
             {/* SpecialityGames Commission and Commission Computation Period */}
-            {/* <div className="grid grid-cols-2 col-span-2 gap-4"> */}
-            <div className="flex col-span-2 gap-2 items-center justify-between">
+            <div className="col-span-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <FormField
                 control={form.control}
                 name="specialtyGamesRngCommission"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>
+                    <FormLabel className="text-sm">
                       Speciality Games - RNG Commission (% of GGR)
                     </FormLabel>
                     <FormControl>
@@ -881,7 +882,7 @@ export default function CreateAccountFormWithCommissionPeriod({
                 name="specialtyGamesRngOwnCommission"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>
+                    <FormLabel className="text-sm">
                       Speciality Games - RNG Own Commission (% of GGR)
                     </FormLabel>
                     <FormControl>
@@ -897,13 +898,13 @@ export default function CreateAccountFormWithCommissionPeriod({
               />
             </div>
 
-            <div className="flex col-span-2 gap-2 justify-between">
+            <div className="col-span-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <FormField
                 control={form.control}
                 name="specialtyGamesToteCommission"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>
+                    <FormLabel className="text-sm">
                       Speciality Games - Tote Commission (% of Total Bets)
                     </FormLabel>
                     <FormControl>
@@ -928,7 +929,7 @@ export default function CreateAccountFormWithCommissionPeriod({
                 name="specialtyGamesToteOwnCommission"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>
+                    <FormLabel className="text-sm">
                       Speciality Games - Tote Own Commission (% of Total Bets)
                     </FormLabel>
                     <FormControl>
@@ -945,20 +946,19 @@ export default function CreateAccountFormWithCommissionPeriod({
             </div>
 
             {/* Submit Button */}
-            <div className="col-span-2 flex justify-end">
+            <div className="col-span-1 lg:col-span-2 flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-end mt-4">
               <Button
                 variant="secondary"
                 onClick={() => router.push("/dashboard")}
                 type="button"
-                // type="submit"
-                // className="bg-red text-white"
+                className="w-full sm:w-auto"
               >
                 Cancel
               </Button>
               <Button
                 variant="default"
                 type="submit"
-                className="bg-blue-500 text-white"
+                className="bg-blue-500 text-white w-full sm:w-auto"
               >
                 Submit
               </Button>
