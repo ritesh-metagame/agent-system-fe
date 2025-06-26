@@ -977,7 +977,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
                   name="sportsBettingOwnCommission"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm md:text-base">
+                      <FormLabel className="text-sm">
                         Sports-Betting Own Commission (% of Total Bets)
                       </FormLabel>
                       <FormControl>
@@ -994,13 +994,13 @@ export default function UpdateAccountFormWithCommissionPeriod() {
                 />
               </div>
 
-              <div className="flex col-span-2 gap-2 items-center justify-between">
+              <div className="col-span-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 <FormField
                   control={form.control}
                   name="specialityGamesRngCommission"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm md:text-base">
+                      <FormLabel className="text-sm">
                         Specialty Games - RNG Commission (% of GGR)
                       </FormLabel>
                       <FormControl>
@@ -1030,7 +1030,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
                   name="specialityGamesRngOwnCommission"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm md:text-base">
+                      <FormLabel className="text-sm">
                         Specialty Games - RNG Own Commission (% of GGR)
                       </FormLabel>
                       <FormControl>
@@ -1047,13 +1047,13 @@ export default function UpdateAccountFormWithCommissionPeriod() {
                 />
               </div>
 
-              <div className="flex col-span-2 gap-2 items-center justify-between">
+              <div className="col-span-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 <FormField
                   control={form.control}
                   name="specialityGamesToteCommission"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm md:text-base">
+                      <FormLabel className="text-sm">
                         Specialty Games - Tote Commission (% of Total Bets)
                       </FormLabel>
                       <FormControl>
@@ -1083,7 +1083,7 @@ export default function UpdateAccountFormWithCommissionPeriod() {
                   name="specialityGamesToteOwnCommission"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm md:text-base">
+                      <FormLabel className="text-sm">
                         Specialty Games - Tote Own Commission (% of Total Bets)
                       </FormLabel>
                       <FormControl>
