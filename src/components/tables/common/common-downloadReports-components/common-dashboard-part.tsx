@@ -209,6 +209,8 @@ export default function CommonDashboard({
             item: response.data.roleLabel,
             eGames: entry.eGames,
             sportsBetting: entry.sportsBetting,
+            specialityGamesRNG: entry.specialityGamesRNG,
+            specialityGamesTote: entry.specialityGamesTote,
         }));
     }
 
@@ -772,9 +774,6 @@ export default function CommonDashboard({
                             }
                         />
                         <div className="mb-4">
-                            <TypographyH2 className="mb-2">
-                                Commission Available for Settlement
-                            </TypographyH2>
                             {/* <p>
           Cutoff period available for settlement:{" "}
           <span>Feb1 - Feb 15, 2025</span>
@@ -785,21 +784,26 @@ export default function CommonDashboard({
                         {/*    <></>*/}
                         {/*)}*/}
                         {role !== UserRole.GOLD ? (
-                            <div className="mb-4">
-                                <DataTable
-                                    columns={commissionAvailableForSettlementColumns}
-                                    data={
-                                        commissionAvailableForSettlementData.length
-                                            ? commissionAvailableForSettlementData
-                                            : defaultCommissionAvailableForSettlementData
-                                    }
-                                    columnWidths={["250px", "250px", "250px"]}
-                                    tooltips={{
-                                        availableForPayout:
-                                            "Based on unsettled completed commission periods",
-                                    }}
-                                />
-                            </div>
+                            <>
+                                <TypographyH2 className="mb-2">
+                                    Commission Available for Settlement
+                                </TypographyH2>
+                                <div className="mb-4">
+                                    <DataTable
+                                        columns={commissionAvailableForSettlementColumns}
+                                        data={
+                                            commissionAvailableForSettlementData.length
+                                                ? commissionAvailableForSettlementData
+                                                : defaultCommissionAvailableForSettlementData
+                                        }
+                                        columnWidths={["250px", "250px", "250px"]}
+                                        tooltips={{
+                                            availableForPayout:
+                                                "Based on unsettled completed commission periods",
+                                        }}
+                                    />
+                                </div>
+                            </>
                         ) : (
                             <></>
                         )}

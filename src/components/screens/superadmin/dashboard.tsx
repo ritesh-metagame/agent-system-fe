@@ -125,7 +125,7 @@ export const defaultCommissionPayoutsBreakdown: TotalCommissionPayoutsBreakdown2
 export const getRoleLabelForUser = (role: string): string => {
     switch (role.toLowerCase()) {
         case UserRole.SUPER_ADMIN:
-            return "ALL OPERATORS";
+            return "ALL NETWORKS";
         case UserRole.OPERATOR:
             return "ALL PLATINUMS";
         case UserRole.PLATINUM:
@@ -472,7 +472,7 @@ export default function Dashboard({}) {
 
             setCommissionAvailableForSettlementData([
                 {
-                    item: "ALL OPERATORS",
+                    item: "ALL NETWORKS",
                     availableForPayout: data.totalPending,
                     settledAllTime: data.totalSettled,
                 },

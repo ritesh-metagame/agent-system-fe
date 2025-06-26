@@ -105,6 +105,8 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
         cell: ({row}) => {
             const [date, setDate] = useState<Date>(new Date(Date.now()));
 
+            const [referenceId, setReferenceId] = useState<string | null>("");
+
             return (
                 <Dialog>
                     <DialogTrigger asChild>
@@ -183,8 +185,8 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
                                         type="text"
                                         placeholder="Enter Reference ID"
                                         className="w-[240px]"
-                                        // value={referenceId}
-                                        // onChange={(e) => setReferenceId(e.target.value)}
+                                        value={referenceId}
+                                        onChange={(e) => setReferenceId(e.target.value)}
                                     />
 								</span>
                             </div>
@@ -216,6 +218,7 @@ export const pendingSettlementColumnDefs: ColumnDef<PendingSettlement>[] = [
                                                         ids: row.original.ids,
                                                         childrenCommissionIds:
                                                         row.original.restCommissionIds,
+                                                        referenceId: referenceId
                                                     }),
                                                 },
                                             );
