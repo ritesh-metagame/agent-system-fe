@@ -20,6 +20,15 @@ import { ChevronDown } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useSelector } from "@/redux/store";
+import { UserRole } from "@/lib/constants";
 
 type Props = {
   onSubmit?: (values: z.infer<typeof createAccountFormSchema>) => void;
@@ -30,27 +39,41 @@ const settlementPeriods = [
   { value: "MONTHLY", label: "Monthly" },
 ];
 
+const mobilePrefixes = [
+  { value: "09", label: "09" },
+  { value: "+639", label: "+639" },
+  { value: "639", label: "639" },
+];
+
 const createAccountFormSchema = z.object({
   firstName: z
     .string()
+    .trim()
     .min(2, { message: "First name must be at least 2 characters" }),
   lastName: z
     .string()
+    .trim()
     .min(2, { message: "Last name must be at least 2 characters" }),
+  mobileNumberPrefix: z.string(),
   mobileNumber: z
     .string()
-    .min(10, { message: "Mobile number must be at least 10 digits" })
-    .regex(/^\d+$/, { message: "Mobile number must contain only digits" }),
-  bankName: z.string().min(2, { message: "Bank name is required" }),
+    .trim()
+    .regex(/^\d{9}$/, {
+      message: "Please enter 9 digits",
+    }),
+  bankName: z.string().trim().min(2, { message: "Bank name is required" }),
   accountNumber: z
     .string()
+    .trim()
     .min(5, { message: "Account number must be at least 5 characters" })
     .regex(/^\d+$/, { message: "Account number must contain only digits" }),
   username: z
     .string()
+    .trim()
     .min(2, { message: "First name must be at least 2 characters" }),
   password: z
     .string()
+    .trim()
     .min(8, { message: "Password must be at least 8 characters long" })
     .regex(/[A-Z]/, {
       message: "Password must contain at least one uppercase letter",
@@ -63,28 +86,54 @@ const createAccountFormSchema = z.object({
       message:
         "Password must contain at least one special character (!@#$%^&*)",
     }),
-  // Category-specific commission and commission computation details
   eGamesCommission: z
     .string()
-    .optional()
+    // .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-
+  eGamesOwnCommission: z
+    .string()
+    // .optional()
+    .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
+      message: "Commission percentage must be between 0 and 100",
+    }),
   sportsBettingCommission: z
     .string()
-    .optional()
+    // .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-
-  specialtyGamesCommission: z
+  sportsBettingOwnCommission: z
     .string()
-    .optional()
+    // .optional()
     .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
       message: "Commission percentage must be between 0 and 100",
     }),
-
+  specialtyGamesToteCommission: z
+    .string()
+    // .optional()
+    .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
+      message: "Commission percentage must be between 0 and 100",
+    }),
+  specialtyGamesToteOwnCommission: z
+    .string()
+    // .optional()
+    .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
+      message: "Commission percentage must be between 0 and 100",
+    }),
+  specialtyGamesRngCommission: z
+    .string()
+    // .optional()
+    .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
+      message: "Commission percentage must be between 0 and 100",
+    }),
+  specialtyGamesRngOwnCommission: z
+    .string()
+    // .optional()
+    .refine((val) => !val || (parseFloat(val) >= 0 && parseFloat(val) <= 100), {
+      message: "Commission percentage must be between 0 and 100",
+    }),
   siteIds: z.array(z.string()),
 });
 
@@ -105,17 +154,239 @@ type SiteType = {
 export default function CreateAccountFormWithCommissionPeriod({
   onSubmit,
 }: Props) {
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [csvPreview, setCsvPreview] = useState<string[][] | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   const [sites, setSites] = useState<SiteType[]>([]);
   const [selectedSiteIds, setSelectedSiteIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const { user } = useSelector((state) => state.authReducer);
+  const role = user?.role?.name;
+
+  const [
+    totalAssignedCommissionPercentage,
+    setTotalAssignedCommissionPercentage,
+  ] = useState({
+    eGames: 0,
+    sportsBetting: 0,
+    specialtyGamesRng: 0,
+    specialtyGamesTote: 0,
+  });
+
+  const [ownCommissionPercentage, setOwnCommissionPercentage] = useState({
+    eGames: 0,
+    sportsBetting: 0,
+    specialtyGamesRng: 0,
+    specialtyGamesTote: 0,
+  });
+
+  const [originalCommissions, setOriginalCommissions] = useState({
+    eGames: 0,
+    sportsBetting: 0,
+    specialtyGamesRng: 0,
+    specialtyGamesTote: 0,
+  });
+
+  const { id } = useSelector((state) => state.authReducer.user);
+
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const router = useRouter();
+
+  // Update own commission when commission input changes
+  const updateOwnCommission = (categoryName, value) => {
+    const numValue = parseFloat(value) || 0;
+    const original = originalCommissions[categoryName];
+
+    // Ensure the commission doesn't exceed the original value
+    if (numValue > original) {
+      toast.error(`Commission cannot exceed ${original}%`);
+      return false;
+    }
+
+    // Calculate remaining own commission and round to 2 decimal places
+    const remainingCommission = parseFloat((original - numValue).toFixed(2));
+
+    // Update the form values
+    switch (categoryName) {
+      case "eGames":
+        form.setValue("eGamesOwnCommission", remainingCommission?.toString());
+        break;
+      case "sportsBetting":
+        form.setValue(
+          "sportsBettingOwnCommission",
+          remainingCommission?.toString()
+        );
+        break;
+      case "specialtyGamesRng":
+        form.setValue(
+          "specialtyGamesRngOwnCommission",
+          remainingCommission?.toString()
+        );
+        break;
+      case "specialtyGamesTote":
+        form.setValue(
+          "specialtyGamesToteOwnCommission",
+          remainingCommission?.toString()
+        );
+        break;
+    }
+
+    return true;
+  };
+
+  const siteOptions = sites?.map((site: any) => ({
+    label: site.site.name,
+    value: site.site.id,
+    description: site.site.url,
+    key: site.site.id, // Adding a unique key for each option
+  }));
+
+  const getFormTitle = () => {
+    switch (role) {
+      case UserRole.SUPER_ADMIN:
+        return "Operator Account Creation";
+      case UserRole.OPERATOR:
+        return "Platinum Account Creation";
+      case UserRole.PLATINUM:
+        return "Gold Account Creation";
+      default:
+        return "Create Account";
+    }
+  };
+
+  const form = useForm<z.infer<typeof createAccountFormSchema>>({
+    resolver: zodResolver(createAccountFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      username: "",
+      mobileNumberPrefix: "09",
+      mobileNumber: "",
+      bankName: "",
+      accountNumber: "",
+      password: "",
+      eGamesCommission: "",
+      sportsBettingCommission: "",
+      specialtyGamesRngCommission: "",
+      specialtyGamesToteCommission: "",
+      eGamesOwnCommission:
+        totalAssignedCommissionPercentage?.eGames?.toString(),
+      sportsBettingOwnCommission:
+        totalAssignedCommissionPercentage?.sportsBetting?.toString(),
+      specialtyGamesRngOwnCommission:
+        totalAssignedCommissionPercentage?.specialtyGamesRng?.toString(),
+      specialtyGamesToteOwnCommission:
+        totalAssignedCommissionPercentage?.specialtyGamesTote?.toString(),
+      siteIds: [],
+    },
+  });
+
+  const handleSiteSelectionChange = (selectedValues: string[]) => {
+    setSelectedSiteIds(selectedValues);
+    form.setValue("siteIds", selectedValues);
+  };
+
+  async function handleSubmit(values: z.infer<typeof createAccountFormSchema>) {
+    // Validate that commissions don't exceed the original values
+    const eGamesCommissionValue = parseFloat(values.eGamesCommission || "0");
+    const sportsBettingCommissionValue = parseFloat(
+      values.sportsBettingCommission || "0"
+    );
+    const specialtyGamesRngCommissionValue = parseFloat(
+      values.specialtyGamesRngCommission || "0"
+    );
+    const specialtyGamesToteCommissionValue = parseFloat(
+      values.specialtyGamesToteCommission || "0"
+    );
+
+    // Check if any commission exceeds the total assigned percentage
+    if (eGamesCommissionValue > originalCommissions.eGames) {
+      toast.error(
+        `E-Games commission cannot exceed ${originalCommissions.eGames}%`
+      );
+      return;
+    }
+
+    if (sportsBettingCommissionValue > originalCommissions.sportsBetting) {
+      toast.error(
+        `Sports Betting commission cannot exceed ${originalCommissions.sportsBetting}%`
+      );
+      return;
+    }
+
+    if (
+      specialtyGamesRngCommissionValue > originalCommissions.specialtyGamesRng
+    ) {
+      toast.error(
+        `Specialty Games RNG commission cannot exceed ${originalCommissions.specialtyGamesRng}%`
+      );
+      return;
+    }
+
+    if (
+      specialtyGamesToteCommissionValue > originalCommissions.specialtyGamesTote
+    ) {
+      toast.error(
+        `Specialty Games Tote commission cannot exceed ${originalCommissions.specialtyGamesTote}%`
+      );
+      return;
+    }
+
+    const fullMobileNumber = values.mobileNumberPrefix + values.mobileNumber;
+
+    const payload = {
+      username: values.username,
+      password: values.password,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      mobileNumber: fullMobileNumber,
+      bankName: values.bankName,
+      accountNumber: values.accountNumber,
+      commissions: {
+        eGames: values.eGamesCommission || undefined,
+        sportsBetting: values.sportsBettingCommission || undefined,
+        specialityGamesRng: values.specialtyGamesRngCommission || undefined,
+        specialityGamesTote: values.specialtyGamesToteCommission || undefined,
+        eGamesOwn: values.eGamesOwnCommission || undefined,
+        sportsBettingOwn: values.sportsBettingOwnCommission || undefined,
+
+        specialtyGamesRngOwn:
+          values.specialtyGamesRngOwnCommission || undefined,
+        specialtyGamesToteOwn:
+          values.specialtyGamesToteOwnCommission || undefined,
+      },
+      siteIds: selectedSiteIds,
+    };
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/user/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error creating account:", errorData);
+      } else {
+        const data = await response.json();
+
+        if (data.code === "1004") {
+          toast(data.message ?? "Something went wrong");
+          router.push("/partner-management");
+        }
+
+        console.log("Account created successfully:", data);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
+  }
 
   useEffect(() => {
     async function fetchSites() {
@@ -154,105 +425,166 @@ export default function CreateAccountFormWithCommissionPeriod({
     fetchSites();
   }, [BASE_URL]);
 
-  const siteOptions = sites.map((site: any) => ({
-    label: site.site.name,
-    value: site.site.id,
-    description: site.site.url,
-    key: site.site.id, // Adding a unique key for each option
-  }));
-
-  console.log("Site Options", siteOptions);
-
-  const form = useForm<z.infer<typeof createAccountFormSchema>>({
-    resolver: zodResolver(createAccountFormSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      username: "",
-      mobileNumber: "",
-      bankName: "",
-      accountNumber: "",
-      password: "",
-      eGamesCommission: "",
-      sportsBettingCommission: "",
-      specialtyGamesCommission: "",
-      siteIds: [],
-    },
-  });
-
-  const handleSiteSelectionChange = (selectedValues: string[]) => {
-    setSelectedSiteIds(selectedValues);
-    form.setValue("siteIds", selectedValues);
-  };
-
-  async function handleSubmit(values: z.infer<typeof createAccountFormSchema>) {
-    // if (onSubmit) {
-    //   onSubmit(values);
-    // }
-
-    console.log(
-      "-----------------------------------------------------------------------------------------------"
-    );
-
-    const payload = {
-      username: values.username,
-      password: values.password,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      mobileNumber: values.mobileNumber,
-      bankName: values.bankName,
-      accountNumber: values.accountNumber,
-      commissions: {
-        eGames: values.eGamesCommission || undefined,
-        sportsBetting: values.sportsBettingCommission || undefined,
-        specialtyGames: values.specialtyGamesCommission || undefined,
-      },
-      siteIds: selectedSiteIds,
-    };
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/user/create`,
-        {
-          method: "POST",
+  useEffect(() => {
+    async function fetchUserCommissions() {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`${BASE_URL}/commission/${id}`, {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(payload),
-        }
-      );
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error creating account:", errorData);
-      } else {
-        const data = await response.json();
-
-        if (data.code === "1004") {
-          toast(data.message ?? "Something went wrong");
-          router.push("/partner-management");
+        if (response.status !== 200) {
+          console.error("Failed to fetch user sites");
         }
 
-        console.log("Account created successfully:", data);
+        if (response.data && response.data.data) {
+          console.log("User Commissions", response.data.data);
+
+          const userCommissionsSet = new Set();
+
+          const commissions = response.data.data
+            ?.map((com) => {
+              if (!userCommissionsSet.has(com.categoryId)) {
+                userCommissionsSet.add(com.categoryId);
+                return com;
+              } else {
+                return null; // Skip duplicates
+              }
+            })
+            .filter((com) => com !== null); // Filter out null values
+
+          const eGamesCategoryCommission = commissions?.find(
+            (com) => com?.category?.name === "E-Games"
+          );
+          const sportsBettingCategoryCommission = commissions?.find(
+            (com) => com?.category?.name === "Sports Betting"
+          );
+
+          const specialtyGamesRNGCategoryCommission = commissions?.find(
+            (com) => com?.category?.name === "Speciality Games - RNG"
+          );
+
+          const specialtyGamesToteCategoryCommission = commissions?.find(
+            (com) => com?.category?.name === "Speciality Games - Tote"
+          );
+
+          setTotalAssignedCommissionPercentage({
+            eGames: parseFloat(
+              eGamesCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+            sportsBetting: parseFloat(
+              sportsBettingCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+            specialtyGamesRng: parseFloat(
+              specialtyGamesRNGCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+            specialtyGamesTote: parseFloat(
+              specialtyGamesToteCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+          });
+
+          setOriginalCommissions({
+            eGames: parseFloat(
+              eGamesCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+            sportsBetting: parseFloat(
+              sportsBettingCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+            specialtyGamesRng: parseFloat(
+              specialtyGamesRNGCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+            specialtyGamesTote: parseFloat(
+              specialtyGamesToteCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            ),
+          });
+
+          form.setValue(
+            "eGamesOwnCommission",
+            parseFloat(
+              eGamesCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            )?.toString()
+          );
+          form.setValue(
+            "sportsBettingOwnCommission",
+            parseFloat(
+              sportsBettingCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            )?.toString()
+          );
+          form.setValue(
+            "specialtyGamesRngOwnCommission",
+            parseFloat(
+              specialtyGamesRNGCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            )?.toString()
+          );
+          form.setValue(
+            "specialtyGamesToteOwnCommission",
+            parseFloat(
+              specialtyGamesToteCategoryCommission?.totalAssignedCommissionPercentage?.toFixed(
+                2
+              )
+            )?.toString()
+          );
+
+          console.log(
+            "Total Assigned Commission Percentage",
+            totalAssignedCommissionPercentage
+          );
+
+          // console.log({
+          //   eGamesCategoryCommission,
+          //   sportsBettingCategoryCommission,
+          //   specialtyGamesRNGCategoryCommission,
+          //   specialtyGamesToteCategoryCommission,
+          // });
+        } else {
+          console.error("Unexpected API response format:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching user sites:", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Network error:", error);
     }
-  }
+
+    fetchUserCommissions();
+  }, [id]);
 
   return (
-    <Card className="w-full max-w-3xl mx-auto p-6">
-      <CardHeader>
-        <CardTitle className="text-lg font-bold text-center">
-          Create Account
+    <Card className="w-full max-w-4xl mx-auto p-3 sm:p-4 md:p-6">
+      <CardHeader className="pb-4 sm:pb-6">
+        <CardTitle className="text-lg sm:text-xl font-bold text-center">
+          {getFormTitle()}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-3 sm:px-6">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6"
           >
             {/* First Name */}
             <FormField
@@ -284,16 +616,50 @@ export default function CreateAccountFormWithCommissionPeriod({
               )}
             />
 
-            {/* Mobile Number */}
+            {/* Mobile Number with Prefix */}
             <FormField
               control={form.control}
               name="mobileNumber"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel>Mobile Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="1234567890" {...field} />
-                  </FormControl>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <FormField
+                      control={form.control}
+                      name="mobileNumberPrefix"
+                      render={({ field: prefixField }) => (
+                        <Select
+                          value={prefixField.value}
+                          onValueChange={prefixField.onChange}
+                        >
+                          <SelectTrigger className="w-full sm:w-24">
+                            <SelectValue placeholder="Prefix" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {mobilePrefixes?.map((prefix) => (
+                              <SelectItem
+                                key={prefix.value}
+                                value={prefix.value}
+                              >
+                                {prefix.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="123456789"
+                        maxLength={9}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^\d]/g, "");
+                          field.onChange(value);
+                        }}
+                      />
+                    </FormControl>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -364,7 +730,7 @@ export default function CreateAccountFormWithCommissionPeriod({
               control={form.control}
               name="siteIds"
               render={({ field }) => (
-                <FormItem className="col-span-1">
+                <FormItem className="col-span-1 lg:col-span-2">
                   <FormLabel>Sites</FormLabel>
                   <FormControl>
                     {isLoading ? (
@@ -392,73 +758,207 @@ export default function CreateAccountFormWithCommissionPeriod({
                 </FormItem>
               )}
             />
-
-            {/* eGames Commission and Commission Computation Period */}
-            {/* <div className="grid grid-cols-2 col-span-2 gap-4"> */}
-            <FormField
-              control={form.control}
-              name="eGamesCommission"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>eGames Commission (%)</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter commission percentage"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="col-span-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+              {/* eGames Commission and Commission Computation Period */}
+              <FormField
+                control={form.control}
+                name="eGamesCommission"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-sm">
+                      E-Games Commission (% of GGR)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter commission percentage"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          updateOwnCommission("eGames", e.target.value);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eGamesOwnCommission"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-sm">
+                      E-Games Own Commission (% of GGR)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled
+                        placeholder="Enter commission percentage"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             {/* </div> */}
 
             {/* Sports-Betting Commission and Commission Computation Period */}
-            {/* <div className="grid grid-cols-2 col-span-2 gap-4"> */}
-            <FormField
-              control={form.control}
-              name="sportsBettingCommission"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Sports-Betting Commission (%)</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter commission percentage"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="col-span-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+              <FormField
+                control={form.control}
+                name="sportsBettingCommission"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-sm">
+                      Sports-Betting Commission (% of Total Bets)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter commission percentage"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          updateOwnCommission("sportsBetting", e.target.value);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="sportsBettingOwnCommission"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-sm">
+                      Sports-Betting Own Commission (% of Total Bets)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled
+                        placeholder="Enter commission percentage"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             {/* </div> */}
 
             {/* SpecialityGames Commission and Commission Computation Period */}
-            {/* <div className="grid grid-cols-2 col-span-2 gap-4"> */}
-            <FormField
-              control={form.control}
-              name="specialtyGamesCommission"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>SpecialityGames Commission (%)</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter commission percentage"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* </div> */}
+            <div className="col-span-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+              <FormField
+                control={form.control}
+                name="specialtyGamesRngCommission"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-sm">
+                      Speciality Games - RNG Commission (% of GGR)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter commission percentage"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          updateOwnCommission(
+                            "specialtyGamesRng",
+                            e.target.value
+                          );
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="specialtyGamesRngOwnCommission"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-sm">
+                      Speciality Games - RNG Own Commission (% of GGR)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled
+                        placeholder="Enter commission percentage"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="col-span-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+              <FormField
+                control={form.control}
+                name="specialtyGamesToteCommission"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-sm">
+                      Speciality Games - Tote Commission (% of Total Bets)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter commission percentage"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          updateOwnCommission(
+                            "specialtyGamesTote",
+                            e.target.value
+                          );
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="specialtyGamesToteOwnCommission"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-sm">
+                      Speciality Games - Tote Own Commission (% of Total Bets)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled
+                        placeholder="Enter commission percentage"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             {/* Submit Button */}
-            <div className="col-span-2 flex justify-end">
+            <div className="col-span-1 lg:col-span-2 flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-end mt-4">
+              <Button
+                variant="secondary"
+                onClick={() => router.push("/dashboard")}
+                type="button"
+                className="w-full sm:w-auto"
+              >
+                Cancel
+              </Button>
               <Button
                 variant="default"
                 type="submit"
-                className="bg-blue-500 text-white"
+                className="bg-blue-500 text-white w-full sm:w-auto"
               >
                 Submit
               </Button>

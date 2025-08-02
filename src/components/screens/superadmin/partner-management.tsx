@@ -55,7 +55,7 @@ export default function PartnerManagement({}: Props) {
 
       console.log("Fetched partners:", data.data);
 
-      const partnersList = data.data.map((p: any) => ({
+      const partnersList = data.data?.map((p: any) => ({
         username: p.username,
         role: p.role.name,
         mobileNumber: p.mobileNumber,
@@ -89,59 +89,8 @@ export default function PartnerManagement({}: Props) {
               "200px",
               "150px",
             ]}
+            filterRequired={true}
           />
-        </div>
-        {/* <div className="mb-4">
-          <DataTable
-            columns={partnerManagementColumns}
-            data={allNetworkStatsData}
-            columnWidths={[
-              "300px",
-              "250px",
-              "150px",
-              "150px",
-              "150px",
-              "150px",
-              "150px",
-            ]}
-          />
-        </div>
-        <DataTable
-          columns={partnerManagementColumns}
-          data={operatorWiseNetworkStatsData}
-          columnWidths={[
-            "300px",
-            "250px",
-            "150px",
-            "150px",
-            "150px",
-            "150px",
-            "150px",
-          ]}
-        />
-      </div>
-      <div className="mb-10">
-        <div className="mb-4">
-          <TypographyH2 className="mb-2">Network Commissions</TypographyH2>
-        </div>
-        <div className="mb-4">
-          <DataTable
-            columns={networkCommissionColumns}
-            data={networkCommissionData}
-            columnWidths={["300px", "250px", "150px", "150px", "150px"]}
-            tooltips={{
-              pendingCommission: "As of available cutoff period",
-            }}
-          />
-        </div>
-      </div> */}
-        <div className="mb-10">
-          <div className="mb-4">
-            <TypographyH4 className="mb-2">
-              Cutoff period available for settlement:{" "}
-              <span className="text-gray-500">Feb 1 - Feb 15, 2025</span>
-            </TypographyH4>
-          </div>
         </div>
       </div>
     </div>

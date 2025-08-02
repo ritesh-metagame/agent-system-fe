@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -32,26 +33,33 @@ export const commissionRecentCutoffColumns: ColumnDef<CommissionRecentCutoffData
     {
       accessorKey: "totalNetworkBets",
       header: "TOTAL BETS",
+      cell: ({ row }) => formatCurrency(row.getValue("totalNetworkBets")),
     },
     {
       accessorKey: "totalNetworkWinnings",
       header: "TOTAL WINNINGS",
+      cell: ({ row }) => formatCurrency(row.getValue("totalNetworkWinnings")),
     },
     {
       accessorKey: "totalNetworkGGR",
       header: "GGR",
+      cell: ({ row }) => formatCurrency(row.getValue("totalNetworkGGR")),
     },
     {
       accessorKey: "totalNetworkGrossCommissions",
       header: "GROSS COMMISSIONS",
+      cell: ({ row }) =>
+        formatCurrency(row.getValue("totalNetworkGrossCommissions")),
     },
     {
       accessorKey: "totalNetworkDeductions",
       header: "TOTAL DEDUCTIONS",
+      cell: ({ row }) => formatCurrency(row.getValue("totalNetworkDeductions")),
     },
     {
       accessorKey: "totalNetCommissions",
       header: "NET COMMISSIONS",
+      cell: ({ row }) => formatCurrency(row.getValue("totalNetCommissions")),
     },
     {
       accessorKey: "partnerBreakdown",

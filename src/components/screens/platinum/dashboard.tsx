@@ -106,7 +106,7 @@ export default function Dashboard({}: Props) {
 
       // Transform API response to match our PlatinumTopPerformersAllTimeData type
       if (data && data.topPerformers && Array.isArray(data.topPerformers)) {
-        const formattedData = data.topPerformers.map((performer: any) => ({
+        const formattedData = data.topPerformers?.map((performer: any) => ({
           goldenName: performer.name || "",
           pendingCommission: performer.pendingCommission || 0,
           released: performer.released || 0,
@@ -133,7 +133,7 @@ export default function Dashboard({}: Props) {
     <div>
       <div className="container mb-10">
         <CommonDashboard
-          welcomeTierName="Platinum Partners"
+          welcomeTierName="Golden Partners"
           referralLink={user?.affiliateLink}
           networkOverviewData={networkOverviewData}
           userRole={user?.role.name}
@@ -141,32 +141,6 @@ export default function Dashboard({}: Props) {
         />
 
         {/* Top Performers All Time */}
-        <div className="mb-10">
-          <TypographyH2 className="mb-4">Top Performers All Time</TypographyH2>
-
-          <DataTable
-            columns={platinumtopPerformersAllTimeColumns}
-            data={allTimeTopPerformersData}
-            columnWidths={["250px", "250px", "250px"]}
-            tooltips={{
-              pendingCommission: "As of available cutoff period",
-            }}
-          />
-        </div>
-
-        {/* Per Cut Off */}
-        <div className="mb-10">
-          <TypographyH2 className="mb-4">Per Cut Off</TypographyH2>
-
-          <DataTable
-            columns={platinumtopPerformersPerCutoffColumns}
-            data={allTimeTopPerformersData}
-            columnWidths={["250px", "250px", "250px"]}
-            tooltips={{
-              pendingCommission: "As of available cutoff period",
-            }}
-          />
-        </div>
       </div>
     </div>
   );

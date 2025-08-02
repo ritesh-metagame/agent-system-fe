@@ -10,6 +10,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ColumnDef } from "@tanstack/react-table";
+import { Edit } from "lucide-react";
+import Link from "next/link";
 
 // Define the shape of the data for the table.
 
@@ -121,66 +123,92 @@ export const partnerColumns: ColumnDef<Partners>[] = [
                     <thead className="bg-gray-100">
                       <tr>
                         <th className="border p-2 text-left">Site</th>
-                        <th className="border p-2 text-center">eGames</th>
+                        <th className="border p-2 text-center">E-Games</th>
                         <th className="border p-2 text-center">
-                          Sports-Betting
+                          Sports Betting
                         </th>
                         <th className="border p-2 text-center">
-                          SpecialityGames
+                          Speciality Games - RNG
+                        </th>
+                        <th className="border p-2 text-center">
+                          Speciality Games - Tote
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {Object.keys(commissionsBySite).map((siteName, index) => (
-                        <tr key={index} className="hover:bg-gray-50">
-                          <td className="border p-2 font-medium">{siteName}</td>
-                          <td className="border p-2 text-center">
-                            {commissionsBySite[siteName]["eGames"] ? (
-                              <div className="flex flex-col gap-1">
-                                {commissionsBySite[siteName]["eGames"].map(
-                                  (comm, i) => (
+                      {Object.keys(commissionsBySite)?.map(
+                        (siteName, index) => (
+                          <tr key={index} className="hover:bg-gray-50">
+                            <td className="border p-2 font-medium">
+                              {siteName}
+                            </td>
+                            <td className="border p-2 text-center">
+                              {commissionsBySite[siteName]["E-Games"] ? (
+                                <div className="flex flex-col gap-1">
+                                  {commissionsBySite[siteName]["E-Games"]?.map(
+                                    (comm, i) => (
+                                      <div key={i} className="text-sm">
+                                        {comm.percentage}%
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              ) : (
+                                "-"
+                              )}
+                            </td>
+                            <td className="border p-2 text-center">
+                              {commissionsBySite[siteName]["Sports Betting"] ? (
+                                <div className="flex flex-col gap-1">
+                                  {commissionsBySite[siteName][
+                                    "Sports Betting"
+                                  ]?.map((comm, i) => (
                                     <div key={i} className="text-sm">
                                       {comm.percentage}%
                                     </div>
-                                  )
-                                )}
-                              </div>
-                            ) : (
-                              "-"
-                            )}
-                          </td>
-                          <td className="border p-2 text-center">
-                            {commissionsBySite[siteName]["Sports-Betting"] ? (
-                              <div className="flex flex-col gap-1">
-                                {commissionsBySite[siteName][
-                                  "Sports-Betting"
-                                ].map((comm, i) => (
-                                  <div key={i} className="text-sm">
-                                    {comm.percentage}%
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              "-"
-                            )}
-                          </td>
-                          <td className="border p-2 text-center">
-                            {commissionsBySite[siteName]["SpecialityGames"] ? (
-                              <div className="flex flex-col gap-1">
-                                {commissionsBySite[siteName][
-                                  "SpecialityGames"
-                                ].map((comm, i) => (
-                                  <div key={i} className="text-sm">
-                                    {comm.percentage}%
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              "-"
-                            )}
-                          </td>
-                        </tr>
-                      ))}
+                                  ))}
+                                </div>
+                              ) : (
+                                "-"
+                              )}
+                            </td>
+                            <td className="border p-2 text-center">
+                              {commissionsBySite[siteName][
+                                "Speciality Games - RNG"
+                              ] ? (
+                                <div className="flex flex-col gap-1">
+                                  {commissionsBySite[siteName][
+                                    "Speciality Games - RNG"
+                                  ]?.map((comm, i) => (
+                                    <div key={i} className="text-sm">
+                                      {comm.percentage}%
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                "-"
+                              )}
+                            </td>
+                            <td className="border p-2 text-center">
+                              {commissionsBySite[siteName][
+                                "Speciality Games - Tote"
+                              ] ? (
+                                <div className="flex flex-col gap-1">
+                                  {commissionsBySite[siteName][
+                                    "Speciality Games - Tote"
+                                  ]?.map((comm, i) => (
+                                    <div key={i} className="text-sm">
+                                      {comm.percentage}%
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                "-"
+                              )}
+                            </td>
+                          </tr>
+                        )
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -193,6 +221,21 @@ export const partnerColumns: ColumnDef<Partners>[] = [
             </DialogClose>
           </DialogContent>
         </Dialog>
+      );
+    },
+  },
+  {
+    id: "actions",
+    header: "ACTIONS",
+    cell: ({ row }) => {
+      return (
+        <div className="flex gap-2">
+          <Link href={`/partner-management/update/${row.original.username}`}>
+            <Button variant="secondary">
+              <Edit />
+            </Button>
+          </Link>
+        </div>
       );
     },
   },

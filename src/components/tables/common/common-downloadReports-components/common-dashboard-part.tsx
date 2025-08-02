@@ -7,6 +7,8 @@ import {
   overallSummaryColumns,
   eGamesColumns,
   sportsbettingColumns,
+  payoutAndWalletColumns,
+  goldenNetworkOverviewColumns,
 } from "../common-column-defs/common-dashboard-part-column";
 
 import type {
@@ -15,6 +17,7 @@ import type {
   EGamesData,
   SportsbettingData,
   OverallSummaryData,
+  PayoutAndWalletCommissionData,
 } from "../common-column-defs/common-dashboard-part-column";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -31,18 +34,26 @@ import {
   commissionAvailableForSettlementColumns,
   commissionRunningTally,
   commissionRunningTallyColumns,
+  LicenseCommissionBreakdown,
+  licenseCommissionBreakdownColumns,
   NetworkStatistics,
-  TotalCommissionPayoutsBreakdown,
-  totalCommissionPayoutsBreakdownColumns,
+  PaymentGatewayFees,
+  paymentGatewayFeesColumns,
+  TotalCommissionPayoutsBreakdown2,
+  totalCommissionPayoutsBreakdownColumns2,
+  // TotalCommissionPayoutsBreakdown,
+  // totalCommissionPayoutsBreakdownColumns,
 } from "../../superadmin/general/dashboard-columns";
 import {
-  defaultCommissionAvailableForSettlementData,
+  // defaultCommissionAvailableForSettlementData,
   defaultCommissionPayoutsBreakdown,
-  defaultCommissionRunningTallyData,
+  getRoleLabelForUser,
+  // defaultCommissionRunningTallyData,
 } from "@/components/screens/superadmin/dashboard";
 import { useSelector } from "@/redux/store";
 import { UserRole } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 type Props = {};
 
@@ -72,21 +83,56 @@ export default function CommonDashboard({
   networkOverviewData,
   userRole,
   userId,
-}: any) {
+}: any): React.ReactNode {
   const [eGamesData, setEGamesData] = useState([]);
   const [sportsBettingData, setSportsBettingData] = useState([]);
+  const [payoutAndWalletCommissionData, setPayoutAndWalletCommissionData] =
+    React.useState<PayoutAndWalletCommissionData[]>([]);
+
+  const filteredColumns =
+    userRole === "golden"
+      ? payoutAndWalletColumns.filter(
+          (col: any) => col.accessorKey !== "payout"
+        )
+      : payoutAndWalletColumns;
+
+  console.log("payoutAndWalletCommissionData", payoutAndWalletCommissionData);
 
   const role = useSelector((state) => state.authReducer.user.role.name);
+
+  const defaultCommissionRunningTallyData: commissionRunningTally[] = [
+    {
+      item: getRoleLabelForUser(role),
+      eGames: "",
+      sportsBetting: "",
+      specialityGamesRNG: "",
+      specialityGamesTote: "",
+    },
+  ];
+
+  const defaultCommissionAvailableForSettlementData: CommissionAvailableForSettlement[] =
+    [
+      {
+        item: getRoleLabelForUser(role),
+        availableForPayout: "",
+        settledAllTime: "",
+      },
+    ];
 
   console.log("eGamesData:", eGamesData);
   console.log("sportsBettingData:", sportsBettingData);
 
   const token = localStorage.getItem("token");
-  console.log("token:", userRole);
+  console.log("token:", token);
 
   const [operatorStatisticsData, setOperatorStatisticsData] = React.useState<
     NetworkStatistics[]
   >([]);
+
+  const [
+    numberOfPlayerAssociatedWithAgent,
+    setNumberOfPlayerAssociatedWithAgent,
+  ] = useState(0);
 
   const [commissionRunningTallyData, setCommissionRunningTallyData] =
     React.useState<commissionRunningTally[]>([]);
@@ -94,22 +140,26 @@ export default function CommonDashboard({
   const [
     totalCommissionPayoutsBreakdownData,
     setTotalCommissionPayoutsBreakdownData,
-  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([]);
+  ] = React.useState<TotalCommissionPayoutsBreakdown2[]>([]);
 
   const [
     eGamesTotalCommissionPayoutsBreakdownData,
     setEGamesTotalCommissionPayoutsBreakdownData,
-  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([]);
+  ] = React.useState<TotalCommissionPayoutsBreakdown2[]>([]);
 
   const [
     sportsBettingTotalCommissionPayoutsBreakdownData,
     setSportsBettingTotalCommissionPayoutsBreakdownData,
-  ] = React.useState<TotalCommissionPayoutsBreakdown[]>([]);
+  ] = React.useState<TotalCommissionPayoutsBreakdown2[]>([]);
 
   const [
     commissionAvailableForSettlementData,
     setCommissionAvailableForSettlementData,
   ] = React.useState<CommissionAvailableForSettlement[]>([]);
+
+  const [paymentGatewayFeesData, setPaymentGatewayFeesData] = React.useState<
+    PaymentGatewayFees[]
+  >([]);
 
   const [commissionDateRange, setCommissionDateRange] = React.useState({
     from: "",
@@ -120,6 +170,21 @@ export default function CommonDashboard({
     from: "",
     to: "",
   });
+
+  const [eGamesLicenseBreakdownData, setEGamesLicenseBreakdownData] =
+    React.useState<LicenseCommissionBreakdown[]>([]);
+  const [
+    sportsBettingLicenseBreakdownData,
+    setSportsBettingLicenseBreakdownData,
+  ] = React.useState<LicenseCommissionBreakdown[]>([]);
+  const [
+    specialityGamesToteLicenseBreakdownData,
+    setSpecialityGamesToteLicenseBreakdownData,
+  ] = React.useState<LicenseCommissionBreakdown[]>([]);
+  const [
+    specialityGamesRNGLicenseBreakdownData,
+    setSpecialityGamesRNGLicenseBreakdownData,
+  ] = React.useState<LicenseCommissionBreakdown[]>([]);
 
   // Format date helper function
   const formatDate = (dateString: string) => {
@@ -145,35 +210,44 @@ export default function CommonDashboard({
       });
     }
 
-    return tallyData.map((entry: any) => ({
+    return tallyData?.map((entry: any) => ({
       item: response.data.roleLabel,
       eGames: entry.eGames,
       sportsBetting: entry.sportsBetting,
+      specialityGamesRNG: entry.specialityGamesRNG,
+      specialityGamesTote: entry.specialityGamesTote,
     }));
   }
 
-  function formatCommissionDataForTable(
-    data: any
-  ): TotalCommissionPayoutsBreakdown[] {
-    if (!data?.data?.overview) return [];
+  const fetchPayoutAndWalletCommissionData = async () => {
+    try {
+      const accessToken = localStorage.getItem("token");
 
-    return data.data?.overview.map((entry: any) => {
-      let item = entry.metric;
+      //
+      // Fetch data from the API or perform any other async operation
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/user/payoutAndWalletBalance`,
 
-      // Add subtext for Net Commission
-      if (item === "Net Commission Available for Payout") {
-        item =
-          "Net Commission Available for Payout\n(Gross Commission less Payment Gateway Fees)";
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data; // Use response.data instead of response.json()
+      console.log(
+        "Fetched commission running tally data------------------------:",
+        data
+      );
+
+      if (data) {
+        setPayoutAndWalletCommissionData([data.data]);
       }
-
-      return {
-        item,
-        amountPendingSettlement:
-          entry.pendingSettlement !== undefined ? entry.pendingSettlement : "",
-        settledAllTime: entry.allTime !== undefined ? entry.allTime : "",
-      };
-    });
-  }
+    } catch (error) {
+      console.error("Error fetching commission running tally data:", error);
+    }
+  };
 
   const fetchCommissionRunningTallyData = async () => {
     try {
@@ -199,7 +273,7 @@ export default function CommonDashboard({
 
         // console.log({ formatted });
 
-        // const formattedData = data.map((statistic: any) => ({
+        // const formattedData = data?.map((statistic: any) => ({
         //   item: statistic.role || "",
         //   eGames: statistic.eGames || 0,
         //   sportsBetting: statistic.sportsBetting || 0,
@@ -220,7 +294,7 @@ export default function CommonDashboard({
       const accessToken = localStorage.getItem("token");
 
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/payout-report`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/total-breakdown`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -240,41 +314,13 @@ export default function CommonDashboard({
         });
       }
 
-      setTotalCommissionPayoutsBreakdownData(data.data?.overview);
-      setEGamesTotalCommissionPayoutsBreakdownData(
-        data.data?.breakdownPerGame.eGames
-      );
-      setSportsBettingTotalCommissionPayoutsBreakdownData(
-        data.data?.breakdownPerGame["Sports-Betting"]
-      );
-    } catch (error) {
-      console.error("Error fetching commission overview data:", error);
-    }
-  };
-
-  const fetchTotalCommissionByUser = async () => {
-    try {
-      const accessToken = localStorage.getItem("token");
-
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/getTotalCommissionByUser?userId=${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = response.data;
-      console.log("Fetched commission overview data:", data);
-
-      setCommissionAvailableForSettlementData([
-        {
-          item: role === "operator" ? "ALL PLATINUM" : "ALL GOLD",
-          availableForPayout: data.totalPending,
-          settledAllTime: data.totalSettled,
-        },
-      ]);
+      setTotalCommissionPayoutsBreakdownData(data.data?.rows);
+      // setEGamesTotalCommissionPayoutsBreakdownData(
+      //   data.data?.breakdownPerGame.eGames
+      // );
+      // setSportsBettingTotalCommissionPayoutsBreakdownData(
+      //   data.data?.breakdownPerGame["Sports-Betting"]
+      // );
     } catch (error) {
       console.error("Error fetching commission overview data:", error);
     }
@@ -320,7 +366,7 @@ export default function CommonDashboard({
 
       // Transform API response to match our NetworkStatistics type
       if (data && Array.isArray(data)) {
-        // const formattedData = data.map((statistic: any) => ({
+        // const formattedData = data?.map((statistic: any) => ({
         //   networkName: statistic.role || "",
         //   totalDeposits: statistic.totalDeposits || 0,
         //   totalGGR: statistic.totalGGR || 0,
@@ -337,35 +383,186 @@ export default function CommonDashboard({
     }
   };
 
+  const fetchTotalCommissionByUser = async () => {
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/getTotalCommissionByUser?userId=${userId}`,
+
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = response.data;
+
+      console.log("Fetched total commission by user data:", userId);
+
+      setCommissionAvailableForSettlementData([
+        {
+          item: userRole === UserRole.OPERATOR ? "ALL PLATINUM" : "ALL GOLDEN",
+          availableForPayout: data.totalPending || 0,
+          settledAllTime: data.totalSettled || 0,
+        },
+      ]);
+      console.log("Fetched commission settlement data:", data);
+
+      // Set date range from periodInfo
+    } catch (error) {
+      console.error("Error fetching commission overview data:", error);
+    }
+  };
+
+  const fetchPaymentGatewayFeesData = async () => {
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      // Fetch data from the API or perform any other async operation
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/payment-gateway-fees`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = response.data; // Use response.data instead of response.json()
+      console.log("Fetched all time top performers data:", data);
+
+      if (data.code == "2005") {
+        setPaymentGatewayFeesData(data.data?.fees);
+        return;
+      }
+    } catch (error) {
+      console.error("Error fetching all time top performers data:", error);
+    }
+  };
+
+  const [eGamesCommissionRate, setEGamesCommissionRate] =
+    React.useState<number>(0);
+  const [sportsBettingCommissionRate, setSportsBettingCommissionRate] =
+    React.useState<number>(0);
+  const [
+    specialityGamesToteCommissionRate,
+    setSpecialityGamesToteCommissionRate,
+  ] = React.useState<number>(0);
+
+  const [
+    specialityGamesRNGCommissionRate,
+    setSpecialityGamesRNGCommissionRate,
+  ] = React.useState<number>(0);
+
+  const fetchLicenseBreakdownData = async () => {
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      // Fetch data from the API or perform any other async operation
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/commission/license-breakdown`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data; // Use response.data instead of response.json()
+      console.log("Fetched license breakdown data:", data);
+
+      if (data.code === "2010") {
+        data.data.data.forEach((d) => {
+          switch (d.license) {
+            case "E-Games":
+              setEGamesCommissionRate(
+                parseFloat(
+                  d.fields.find((field) => field.label === "Commission Rate")
+                    ?.value || "0"
+                )
+              );
+              setEGamesLicenseBreakdownData(
+                d.fields.filter((field) => field.label !== "Commission Rate")
+              );
+              break;
+            case "Sports Betting":
+              setSportsBettingCommissionRate(
+                parseFloat(
+                  d.fields.find((field) => field.label === "Commission Rate")
+                    ?.value || "0"
+                )
+              );
+              setSportsBettingLicenseBreakdownData(
+                d.fields.filter((field) => field.label !== "Commission Rate")
+              );
+              break;
+            case "Speciality Games - Tote":
+              setSpecialityGamesToteCommissionRate(
+                parseFloat(
+                  d.fields.find((field) => field.label === "Commission Rate")
+                    ?.value || "0"
+                )
+              );
+              setSpecialityGamesToteLicenseBreakdownData(
+                d.fields.filter((field) => field.label !== "Commission Rate")
+              );
+              break;
+            case "Speciality Games - RNG":
+              setSpecialityGamesRNGCommissionRate(
+                parseFloat(
+                  d.fields.find((field) => field.label === "Commission Rate")
+                    ?.value || "0"
+                )
+              );
+              setSpecialityGamesRNGLicenseBreakdownData(
+                d.fields.filter((field) => field.label !== "Commission Rate")
+              );
+              break;
+            default:
+              break;
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching license breakdown data:", error);
+    }
+
+    console.log("networkOverviewData:", networkOverviewData);
+  };
   useEffect(() => {
-    const fetchTransactions = async (category: string, agent: string) => {
-      console.log("agent:", agent);
+    const fetchPlayers = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/user/transactionsByCategory`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}/player/getNumberOfPlayerAssociatedWithAgent`,
           {
-            params: { categoryName: category, agent },
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
 
-        // Ensure we always return an array
-        const responseData = response.data.data;
-        return Array.isArray(responseData) ? responseData : [];
+        if (response.data.code === 200) {
+          setNumberOfPlayerAssociatedWithAgent(response.data.data);
+        } else {
+          toast.error(
+            response.data.message ??
+              "Failed to fetch number of players associated with agent."
+          );
+        }
       } catch (error) {
-        console.error(`Error fetching ${category} transactions:`, error);
+        console.error(`Error fetching players:`, error);
         return [];
       }
     };
 
     const formatCurrency = (value: number): string => {
-      return new Intl.NumberFormat("en-PH", {
-        style: "currency",
-        currency: "PHP",
+      return `$${value.toLocaleString(undefined, {
         minimumFractionDigits: 2,
-      }).format(value);
+      })}`;
     };
 
     const getSummary = (data: any[]) => {
@@ -427,70 +624,86 @@ export default function CommonDashboard({
         {
           item: "TOTAL BETS",
           dailyOverview: formatCurrency(totalBets),
-          pendingSettlement: "0",
-          previousSettled: "0",
+          pendingSettlement: "$0",
+          previousSettled: "$0",
           summary: formatCurrency(totalBets),
         },
         {
           item: "TOTAL WINNINGS",
           dailyOverview: formatCurrency(totalWinnings),
-          pendingSettlement: "0",
-          previousSettled: "0",
+          pendingSettlement: "$0",
+          previousSettled: "$0",
           summary: formatCurrency(totalWinnings),
         },
         {
           item: "GGR",
           dailyOverview: formatCurrency(ggr),
-          pendingSettlement: "0",
-          previousSettled: "0",
+          pendingSettlement: "$0",
+          previousSettled: "$0",
           summary: formatCurrency(ggr),
         },
         {
           item: "GROSS COMMISSIONS",
           dailyOverview: formatCurrency(grossCommissions),
-          pendingSettlement: "0",
-          previousSettled: "0",
+          pendingSettlement: "$0",
+          previousSettled: "$0",
           summary: formatCurrency(grossCommissions),
         },
       ];
     };
 
     const loadData = async () => {
-      const eGames = await fetchTransactions("eGames", userRole);
-      const sports = await fetchTransactions("Sports-Betting", userRole);
+      fetchPlayers();
 
       fetchOperatorStatisticsData();
+      fetchPayoutAndWalletCommissionData();
       fetchCommissionRunningTallyData();
       fetchCommissionBreakdownData();
       fetchTotalCommissionByUser();
 
-      const eGamesSummary = getSummary(eGames);
-      const sportsSummary = getSummary(sports);
+      // fetchCommissionBreakdownData();
+      fetchPaymentGatewayFeesData();
+      fetchLicenseBreakdownData();
 
-      setEGamesData(eGamesSummary);
-      setSportsBettingData(sportsSummary);
+      // const eGamesSummary = getSummary(eGames);
+      // const sportsSummary = getSummary(sports);
+
+      // setEGamesData(eGamesSummary);
+      // setSportsBettingData(sportsSummary);
     };
 
     loadData();
   }, [token, userRole]);
-
-  console.log("networkOverviewData:", networkOverviewData);
-
   return (
     <div>
       {/* QR Code and Referral Link */}
       {/* <Card> */}
       <CardContent className="p-4  flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <QRCodeSVG value={referralLink} size={80} />
+          <QRCodeSVG
+            value={
+              role === UserRole.GOLD
+                ? `${referralLink}${userId}`
+                : `${referralLink}`
+            }
+            size={80}
+          />
           <p className="text-sm text-black-900">Download QR Code</p>
         </div>
       </CardContent>
       <div className="p-4 text-start">
         <p className="text-sm  font-bold">
           Referral Link:{" "}
-          <a href="#" className="text-blue-500">
+          <a
+            href={
+              role === UserRole.GOLD
+                ? `${referralLink}${userId}`
+                : `${referralLink}`
+            }
+            className="text-blue-500"
+          >
             {referralLink}
+            {role === UserRole.GOLD ? userId : ""}
           </a>
         </p>
         <p className="text-md  text-black-900">
@@ -499,119 +712,135 @@ export default function CommonDashboard({
       </div>
       {/* </Card> */}
       <div className="container mb-10">
-        {/* <div className="mb-10">
-          <div className="flex items-center gap-4">
-            <TypographyH2 className="mb-4">
-              Cutoff Period Available For Settlement :
-            </TypographyH2>
-            <p className="text-md font-medium text-gray-700">
-              Feb 1 - Feb 15, 2025
-            </p>
-          </div>
-
-          <DataTable
-            columns={cutoffPeriodColumns}
-            data={[]}
-            columnWidths={["250px", "250px"]}
-          />
-        </div> */}
-
         <div className="mb-10">
           <TypographyH2 className="mb-4">Network Overview</TypographyH2>
 
+          {role !== UserRole.GOLD ? (
+            <DataTable
+              columns={networkOverviewColumns}
+              data={networkOverviewData}
+              columnWidths={["250px", "250px", "250px", "250px", "250px"]}
+            />
+          ) : (
+            <></>
+          )}
+
+          <div className="flex w-20 gap-2 items-center justify-between mb-4">
+            <div
+              className={
+                "bg-table-header text-white font-medium px-2 py-1 rounded"
+              }
+            >
+              PLAYERS
+            </div>
+            <div
+              className={"border-2 text-black font-medium px-2 py-1 rounded"}
+            >
+              {numberOfPlayerAssociatedWithAgent}
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-10">
+          {/* <TypographyH2 className="mb-4">Network Overview</TypographyH2> */}
+
           <DataTable
-            columns={networkOverviewColumns}
-            data={networkOverviewData}
-            columnWidths={["250px", "250px", "250px", "250px", "250px"]}
+            columns={filteredColumns}
+            data={payoutAndWalletCommissionData}
+            columnWidths={["250px", "250px"]}
           />
         </div>
 
         <div className="mb-10">
-          {role !== UserRole.GOLD ? (
-            <div className="mb-4">
-              <div className="flex items-center gap-2 mb-2">
-                <TypographyH2 className="">
-                  Commission Running Tally
-                </TypographyH2>
-                <Badge variant="outline" className="text-xs">
-                  {commissionDateRange.from} - {commissionDateRange.to}
-                </Badge>
-              </div>
-              {/* <p>
-            Cutoff period available for settlement:{" "}
-            <span>Feb1 - Feb 15, 2025</span>
-          </p> */}
-            </div>
-          ) : (
-            <></>
-          )}
+          {/*{role !== UserRole.GOLD ? (*/}
           <div className="mb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <TypographyH2 className="">
+                Commission Running Tally{" "}
+                <span className="text-gray-400 text-sm">
+                  *Based on ongoing computation periods
+                </span>
+              </TypographyH2>
+              <span className="text-gray-400 text-sm">
+                As of {commissionDateRange.to}
+              </span>
+              {/* <Badge variant="outline" className="text-xs">
+                  {commissionDateRange.from} - {commissionDateRange.to}
+                </Badge> */}
+            </div>
+            {/* <p>
+          Cutoff period available for settlement:{" "}
+          <span>Feb1 - Feb 15, 2025</span>
+        </p> */}
+          </div>
+          {/*) : (*/}
+          {/*    <></>*/}
+          {/*)}*/}
+
+          <div className="mb-4">
+            {/*{role !== UserRole.GOLD ? (*/}
+            {/*    <>*/}
+            <DataTable
+              columns={commissionRunningTallyColumns}
+              data={
+                commissionRunningTallyData.length
+                  ? commissionRunningTallyData
+                  : defaultCommissionRunningTallyData
+              }
+              columnWidths={["250px", "250px", "250px"]}
+              tooltips={
+                {
+                  // pendingCommission: "As of Available cutoff period",
+                }
+              }
+            />
+            <div className="mb-4">
+              {/* <p>
+          Cutoff period available for settlement:{" "}
+          <span>Feb1 - Feb 15, 2025</span>
+        </p> */}
+            </div>
+            {/*</>*/}
+            {/*) : (*/}
+            {/*    <></>*/}
+            {/*)}*/}
             {role !== UserRole.GOLD ? (
               <>
-                <DataTable
-                  columns={commissionRunningTallyColumns}
-                  data={
-                    commissionRunningTallyData.length
-                      ? commissionRunningTallyData
-                      : defaultCommissionRunningTallyData
-                  }
-                  columnWidths={["250px", "250px", "250px"]}
-                  tooltips={
-                    {
-                      // pendingCommission: "As of Available cutoff period",
-                    }
-                  }
-                />
+                <TypographyH2 className="mb-2">
+                  Commission Available for Settlement
+                </TypographyH2>
                 <div className="mb-4">
-                  <TypographyH2 className="mb-2">
-                    Commission Available for Settlement
-                  </TypographyH2>
-                  {/* <p>
-            Cutoff period available for settlement:{" "}
-            <span>Feb1 - Feb 15, 2025</span>
-          </p> */}
+                  <DataTable
+                    columns={commissionAvailableForSettlementColumns}
+                    data={
+                      commissionAvailableForSettlementData.length
+                        ? commissionAvailableForSettlementData
+                        : defaultCommissionAvailableForSettlementData
+                    }
+                    columnWidths={["250px", "250px", "250px"]}
+                    tooltips={{
+                      availableForPayout:
+                        "Based on unsettled completed commission periods",
+                    }}
+                  />
                 </div>
               </>
             ) : (
               <></>
             )}
-            {role !== UserRole.GOLD ? (
-              <div className="mb-4">
-                <DataTable
-                  columns={commissionAvailableForSettlementColumns}
-                  data={
-                    commissionAvailableForSettlementData.length
-                      ? commissionAvailableForSettlementData
-                      : defaultCommissionAvailableForSettlementData
-                  }
-                  columnWidths={["250px", "250px", "250px"]}
-                  tooltips={{
-                    availableForPayout:
-                      "Based on unsettled completed commission periods",
-                  }}
-                />
-              </div>
-            ) : (
-              <></>
-            )}
-
             <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
                 <TypographyH2 className="">
                   Total Commission Payouts Breakdown
                 </TypographyH2>
-                <Badge variant="outline" className="text-xs">
-                  {payoutsDateRange.from} - {payoutsDateRange.to}
-                </Badge>
+                {/*                <span className="text-gray-400 text-sm">*/}
+                {/*  As of {commissionDateRange.to}*/}
+                {/*</span>*/}
               </div>
-              {/* <p>
-            Cutoff period available for settlement:{" "}
-            <span>Feb1 - Feb 15, 2025</span>
-          </p> */}
             </div>
             <div className="mb-4">
               <DataTable
-                columns={totalCommissionPayoutsBreakdownColumns}
+                columns={totalCommissionPayoutsBreakdownColumns2}
                 data={totalCommissionPayoutsBreakdownData}
                 columnWidths={["250px", "250px", "250px", "250px", "150px"]}
                 tooltips={{
@@ -619,43 +848,91 @@ export default function CommonDashboard({
                 }}
               />
             </div>
+            {/* <div className="mb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <TypographyH2 className="">Payment Gateway Fees</TypographyH2>
+            </div>
+          </div>
+          <div className="mb-4">
+            <DataTable
+              columns={paymentGatewayFeesColumns}
+              data={paymentGatewayFeesData}
+              columnWidths={["250px", "250px", "250px", "250px", "150px"]}
+              tooltips={{
+                pendingCommission: "As of Available cutoff period",
+              }}
+            />
+          </div> */}
             <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
-                <TypographyH2 className="">Breakdown Per Game</TypographyH2>
+                <TypographyH2 className="">Breakdown Per License</TypographyH2>
+                {/* <Badge variant="outline" className="text-xs">
+                          {payoutsDateRange.from} - {payoutsDateRange.to}
+                        </Badge> */}
               </div>
+            </div>
+            <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
-                <TypographyH4 className="">eGames</TypographyH4>
+                <TypographyH4 className="mb-2">E-Games</TypographyH4>
                 <Badge variant="outline" className="text-xs">
-                  {payoutsDateRange.from} - {payoutsDateRange.to}
+                  Commission Rate: {eGamesCommissionRate} %
                 </Badge>
               </div>
               <DataTable
-                columns={totalCommissionPayoutsBreakdownColumns}
-                data={
-                  eGamesTotalCommissionPayoutsBreakdownData?.length
-                    ? eGamesTotalCommissionPayoutsBreakdownData
-                    : defaultCommissionPayoutsBreakdown
-                }
+                columns={licenseCommissionBreakdownColumns}
+                data={eGamesLicenseBreakdownData}
                 columnWidths={["250px", "250px", "250px", "250px", "150px"]}
                 tooltips={{
                   pendingCommission: "As of Available cutoff period",
                 }}
               />
             </div>
-            <div className="mb-10">
+            <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
-                <TypographyH4 className="">Sports Betting</TypographyH4>
+                <TypographyH4 className="mb-2">Sports Betting</TypographyH4>
                 <Badge variant="outline" className="text-xs">
-                  {payoutsDateRange.from} - {payoutsDateRange.to}
+                  Commission Rate: {sportsBettingCommissionRate} %
                 </Badge>
               </div>
               <DataTable
-                columns={totalCommissionPayoutsBreakdownColumns}
-                data={
-                  sportsBettingTotalCommissionPayoutsBreakdownData?.length
-                    ? sportsBettingTotalCommissionPayoutsBreakdownData
-                    : defaultCommissionPayoutsBreakdown
-                }
+                columns={licenseCommissionBreakdownColumns}
+                data={sportsBettingLicenseBreakdownData}
+                columnWidths={["250px", "250px", "250px", "250px", "150px"]}
+                tooltips={{
+                  pendingCommission: "As of Available cutoff period",
+                }}
+              />
+            </div>
+            <div className="mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <TypographyH4 className="mb-2">
+                  Specialty Games - Tote
+                </TypographyH4>
+                <Badge variant="outline" className="text-xs">
+                  Commission Rate: {specialityGamesToteCommissionRate} %
+                </Badge>
+              </div>
+              <DataTable
+                columns={licenseCommissionBreakdownColumns}
+                data={specialityGamesToteLicenseBreakdownData}
+                columnWidths={["250px", "250px", "250px", "250px", "150px"]}
+                tooltips={{
+                  pendingCommission: "As of Available cutoff period",
+                }}
+              />
+            </div>
+            <div className="mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <TypographyH4 className="mb-2">
+                  Specialty Games - RNG
+                </TypographyH4>
+                <Badge variant="outline" className="text-xs">
+                  Commission Rate: {specialityGamesRNGCommissionRate} %
+                </Badge>
+              </div>
+              <DataTable
+                columns={licenseCommissionBreakdownColumns}
+                data={specialityGamesRNGLicenseBreakdownData}
                 columnWidths={["250px", "250px", "250px", "250px", "150px"]}
                 tooltips={{
                   pendingCommission: "As of Available cutoff period",
@@ -663,107 +940,7 @@ export default function CommonDashboard({
               />
             </div>
           </div>
-          {/* <DataTable
-          columns={financialOverviewColumns}
-          data={[]}
-          columnWidths={["250px", "250px", "250px", "250px"]}
-          tooltips={{
-            pendingCommission: "As of Available cutoff period",
-          }}
-        /> */}
         </div>
-        {/* <div className="mb-10">
-        <div className="mb-4">
-          <TypographyH2 className="mb-2">Commissions Overview</TypographyH2>
-          <p>
-            Cutoff period available for settlement:{" "}
-            <span>Feb1 - Feb 15, 2025</span>
-          </p>
-        </div>
-        <div className="mb-4">
-          <DataTable
-            columns={commissionOverviewColumns}
-            data={[]}
-            columnWidths={["250px", "250px"]}
-            tooltips={{
-              pendingCommission: "As of Available cutoff period",
-            }}
-          />
-        </div>
-        <DataTable
-          columns={financialOverviewColumns}
-          data={[]}
-          columnWidths={["250px", "250px", "250px", "250px"]}
-          tooltips={{
-            pendingCommission: "As of Available cutoff period",
-          }}
-        />
-      </div> */}
-        {/* <div className="mb-4">
-        <TypographyH2 className="mb-2">Per Category</TypographyH2>
-        <TypographyH4 className="mb-2">eGames</TypographyH4>
-        <DataTable
-          columns={categoryFinancialOverviewColumns}
-          data={[]}
-          columnWidths={["250px", "250px", "250px", "250px", "150px"]}
-          tooltips={{
-            pendingCommission: "As of Available cutoff period",
-          }}
-        />
-      </div>
-      <div className="mb-10">
-        <TypographyH4 className="mb-2">Sports Betting</TypographyH4>
-        <DataTable
-          columns={sportsBettingOverviewColumns}
-          data={[]}
-          columnWidths={["250px", "250px", "250px", "250px", "150px"]}
-          tooltips={{
-            pendingCommission: "As of Available cutoff period",
-          }}
-        />
-      </div> */}
-
-        {/* summary */}
-        {/* <div className="mb-10">
-          <div className="flex items-center gap-4">
-            <TypographyH2 className="mb-4">
-              Summary: eGames & Sports-Betting
-            </TypographyH2>
-            <p className="text-md font-medium text-gray-700">
-              Cutoff Period: Feb 1 - Feb 15, 2025
-            </p>
-          </div>
-
-          <DataTable
-            columns={overallSummaryColumns}
-            data={Data.overallSummaryData}
-            columnWidths={["250px", "250px", "250px", "250px"]}
-          />
-        </div> */}
-
-        {/* egames */}
-
-        {/* <div className="mb-10">
-          <TypographyH2 className="mb-4">eGames</TypographyH2>
-
-          <DataTable
-            columns={eGamesColumns}
-            data={eGamesData}
-            columnWidths={["250px", "250px", "250px", "250px", "250px"]}
-          />
-        </div> */}
-
-        {/* SportsBetting */}
-
-        {/* <div className="mb-10">
-          <TypographyH2 className="mb-4">Sports-Betting</TypographyH2>
-
-          <DataTable
-            columns={sportsbettingColumns}
-            data={sportsBettingData}
-            columnWidths={["250px", "250px", "250px", "250px", "250px"]}
-          />
-        </div> */}
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ export { default as SuperAdminPartnerManagement } from "./superadmin/partner-man
 export { default as PartnerManagement } from "./operator/partner-management";
 export { default as CommissionRecentCutoff } from "./operator/commission-recent-cutoff";
 export { default as SuperAdminCommissionRecentCutoff } from "./superadmin/commission-recent-cutoff";
+export { default as SuperAdminCommissionSettlementQueue } from "./superadmin/commission-settlement-queue";
 // export { default as SuperAdminPartnerManagement } from "./superadmin/partner-management";
 // export { default as SuperAdminCreateOperatorAccount } from "./superadmin/create-operator-account";
 export { default as SuperAdminAllCommissionCutoffs } from "./superadmin/all-commission-cutoffs";
@@ -47,3 +48,5 @@ export { default as GoldenAllCommissionCutoff } from "./gold/all-commission-cuto
 export { default as GoldenCommissionRecentCutoff } from "./gold/commission-recent-cutoff";
 export { default as GoldenCreateOperatorAccount } from "./gold/create-operator-account";
 export { default as GoldenPartnerManagement } from "./gold/partner-management";
+
+export { default as OperatorCommissionSettlementQueue } from "./superadmin/commission-settlement-queue";

@@ -33,19 +33,39 @@ import {
   SuperAdminManageSites,
   OperatorCreatePlatinumAccount,
   AllUser,
+  SuperAdminCommissionSettlementQueue,
+  OperatorCommissionSettlementQueue,
 } from "@/components/screens";
+import PlayerTransactionsPage from "@/components/screens/common/player-transactions-page";
 import CommissionRecentCutsOff from "@/components/screens/operator/commission-recent-cutoff";
 import PartnerManagement from "@/components/screens/operator/partner-management";
+import SuperAdminUpdateAccountForm from "@/components/superadmin-update-account-form";
+import UpdateAccountFormWithCommissionPeriod from "@/components/update-account-form";
 // import AllCommissionCutoffs from "@/components/screens/superadmin/all-commission-cutoffs";
 // import { OperatorDashboard } from "@/components/screens";
 import { JSX } from "react";
+
+export type Link = {
+  title: Pages;
+  url: Paths;
+  isActive?: boolean;
+};
+
+export type LinkCategory = {
+  category: string;
+  links: Link[];
+};
+
+export type RoleWiseLinkMap = {
+  [key in UserRole]?: LinkCategory[];
+};
 
 export enum UserRole {
   SUPER_ADMIN = "superadmin",
   OPERATOR = "operator",
   PLATINUM = "platinum",
-  GOLD = "gold",
-  DEFAULT = "default",
+  GOLD = "golden",
+  // DEFAULT = "default",
 }
 
 export enum Pages {
@@ -57,12 +77,18 @@ export enum Pages {
   TRANSACTIONS = "Transactions",
   COMMISSIONS = "Commissions",
   SETTLEMENT_HISTORY = "Settlement History",
+  SETTLEMENT_QUEUE = "Commission Settlement Queue",
+  SETTLED_COMMISSIONS = "Settled Commissions",
   APPROVE_AGENTS = "Approve Partners",
   CREATE_SITE = "Create Site",
   MANAGE_SITES = "Manage Sites",
   MANAGE_COMMISSION = "Manage Commission",
   ALL_USERS = "All Users",
-  PLAYER_MANAGEMENT = "Player Management",
+  PLAYER_TRANSACTIONS = "Player Transactions",
+  PROFILE = "Profile",
+  UPDATE_PARTNER = "Update Partner",
+  SETTLEMENT_DETAILS = "Settlement Details",
+  SETTLEMENT_TRANSACTIONS = "Settlement Transactions",
 }
 
 export enum Paths {
@@ -74,12 +100,18 @@ export enum Paths {
   TRANSACTIONS = "/transactions",
   COMMISSIONS = "/commissions",
   SETTLEMENT_HISTORY = "/settlement-history",
+  SETTLEMENT_QUEUE = "/commission-settlement-queue",
   APPROVE_AGENTS = "/approve-partners",
   CREATE_SITE = "/create-site",
   MANAGE_SITES = "/manage-sites",
   MANAGE_COMMISSION = "/manage-commission",
+  SETTLED_COMMISSIONS = "/settled-commissions",
   ALL_USERS = "/all-users",
-  PLAYER_MANAGEMENT = "/player-management",
+  PLAYER_TRANSACTIONS = "/player-transactions",
+  PROFILE = "/profile",
+  UPDATE_PARTNER = "/partner-management/update/:username",
+  SETTLEMENT_DETAILS = "/commission-settlement-queue/:username",
+  SETTLEMENT_TRANSACTIONS = "/settlement-transactions",
 }
 
 export const pagePaths = new Map<Paths, Pages>([
@@ -95,8 +127,203 @@ export const pagePaths = new Map<Paths, Pages>([
   [Paths.MANAGE_SITES, Pages.MANAGE_SITES],
   [Paths.MANAGE_COMMISSION, Pages.MANAGE_COMMISSION],
   [Paths.ALL_USERS, Pages.ALL_USERS],
-  [Paths.PLAYER_MANAGEMENT, Pages.PLAYER_MANAGEMENT],
+  [Paths.PLAYER_TRANSACTIONS, Pages.PLAYER_TRANSACTIONS],
+  [Paths.SETTLEMENT_HISTORY, Pages.SETTLEMENT_HISTORY],
+  [Paths.SETTLEMENT_QUEUE, Pages.SETTLEMENT_QUEUE],
+  [Paths.SETTLED_COMMISSIONS, Pages.SETTLED_COMMISSIONS],
+  [Paths.SETTLEMENT_TRANSACTIONS, Pages.SETTLEMENT_TRANSACTIONS],
+  [Paths.PROFILE, Pages.PROFILE],
+  [Paths.UPDATE_PARTNER, Pages.UPDATE_PARTNER],
+  [Paths.SETTLEMENT_DETAILS, Pages.SETTLEMENT_DETAILS],
 ]);
+
+export const roleWiseLinks: RoleWiseLinkMap = {
+  [UserRole.SUPER_ADMIN]: [
+    {
+      category: "GENERAL",
+      links: [
+        {
+          title: Pages.DASHBOARD,
+          url: Paths.DASHBOARD,
+        },
+      ],
+    },
+    {
+      category: "NETWORK",
+      links: [
+        {
+          title: Pages.CREATE_SITE,
+          url: Paths.CREATE_SITE,
+        },
+        {
+          title: Pages.MANAGE_SITES,
+          url: Paths.MANAGE_SITES,
+        },
+        {
+          title: Pages.ALL_USERS,
+          url: Paths.ALL_USERS,
+        },
+        {
+          title: Pages.CREATE_OPERATOR_ACCOUNT,
+          url: Paths.CREATE_OPERATOR_ACCOUNT,
+        },
+        {
+          title: Pages.PARTNER_MANAGEMENT,
+          url: Paths.PARTNER_MANAGEMENT,
+        },
+      ],
+    },
+    {
+      category: "COMMISSION RELEASE",
+      links: [
+        {
+          title: Pages.SETTLEMENT_QUEUE,
+          url: Paths.SETTLEMENT_QUEUE,
+        },
+      ],
+    },
+    {
+      category: "DOWNLOAD REPORTS",
+      links: [
+        {
+          title: Pages.PLAYER_TRANSACTIONS,
+          url: Paths.PLAYER_TRANSACTIONS,
+        },
+        {
+          title: Pages.SETTLED_COMMISSIONS,
+          url: Paths.SETTLED_COMMISSIONS,
+        },
+        // {
+        //   title: Pages.SETTLEMENT_TRANSACTIONS,
+        //   url: Paths.SETTLEMENT_TRANSACTIONS,
+        // },
+      ],
+    },
+  ],
+
+  [UserRole.OPERATOR]: [
+    {
+      category: "GENERAL",
+      links: [
+        {
+          title: Pages.DASHBOARD,
+          url: Paths.DASHBOARD,
+        },
+      ],
+    },
+    {
+      category: "NETWORK",
+      links: [
+        {
+          title: Pages.CREATE_OPERATOR_ACCOUNT,
+          url: Paths.CREATE_OPERATOR_ACCOUNT,
+        },
+        {
+          title: Pages.PARTNER_MANAGEMENT,
+          url: Paths.PARTNER_MANAGEMENT,
+        },
+        {
+          title: Pages.APPROVE_AGENTS,
+          url: Paths.APPROVE_AGENTS,
+        }
+      ],
+    },
+    {
+      category: "COMMISSION RELEASE",
+      links: [
+        {
+          title: Pages.SETTLEMENT_QUEUE,
+          url: Paths.SETTLEMENT_QUEUE,
+        },
+      ],
+    },
+    {
+      category: "DOWNLOAD REPORTS",
+      links: [
+        {
+          title: Pages.SETTLED_COMMISSIONS,
+          url: Paths.SETTLED_COMMISSIONS,
+        },
+        // {
+        //   title: Pages.SETTLEMENT_TRANSACTIONS,
+        //   url: Paths.SETTLEMENT_TRANSACTIONS,
+        // },
+      ],
+    },
+  ],
+  [UserRole.PLATINUM]: [
+    {
+      category: "GENERAL",
+      links: [
+        {
+          title: Pages.DASHBOARD,
+          url: Paths.DASHBOARD,
+        },
+      ],
+    },
+    {
+      category: "NETWORK",
+      links: [
+        {
+          title: Pages.CREATE_OPERATOR_ACCOUNT,
+          url: Paths.CREATE_OPERATOR_ACCOUNT,
+        },
+        {
+          title: Pages.PARTNER_MANAGEMENT,
+          url: Paths.PARTNER_MANAGEMENT,
+        },
+        {
+          title: Pages.APPROVE_AGENTS,
+          url: Paths.APPROVE_AGENTS,
+        }
+      ],
+    },
+    {
+      category: "COMMISSION RELEASE",
+      links: [
+        {
+          title: Pages.SETTLEMENT_QUEUE,
+          url: Paths.SETTLEMENT_QUEUE,
+        },
+      ],
+    },
+    {
+      category: "DOWNLOAD REPORTS",
+      links: [
+        {
+          title: Pages.SETTLED_COMMISSIONS,
+          url: Paths.SETTLED_COMMISSIONS,
+        },
+        // {
+        //   title: Pages.SETTLEMENT_TRANSACTIONS,
+        //   url: Paths.SETTLEMENT_TRANSACTIONS,
+        // },
+      ],
+    },
+  ],
+
+  [UserRole.GOLD]: [
+    {
+      category: "GENERAL",
+      links: [
+        {
+          title: Pages.DASHBOARD,
+          url: Paths.DASHBOARD,
+        },
+      ],
+    },
+    // {
+    //   category: "DOWNLOAD REPORTS",
+    //   links: [
+    //     {
+    //       title: Pages.SETTLED_COMMISSIONS,
+    //       url: Paths.SETTLED_COMMISSIONS,
+    //       isActive: true,
+    //     },
+    //   ],
+    // },
+  ],
+};
 
 export const users = [
   {
@@ -123,12 +350,12 @@ export const users = [
     role: UserRole.GOLD,
     password: "password",
   },
-  {
-    id: "5",
-    username: "example4",
-    role: UserRole.DEFAULT,
-    password: "password",
-  },
+  // {
+  //   id: "5",
+  //   username: "example4",
+  //   role: UserRole.DEFAULT,
+  //   password: "password",
+  // },
 ];
 
 export type RolePageMap = {
@@ -144,10 +371,13 @@ export const RolePageComponentMap: RolePageMap = {
     [Pages.ALL_USERS]: () => <AllUser />,
     [Pages.MANAGE_SITES]: () => <SuperAdminManageSites />,
     [Pages.CREATE_OPERATOR_ACCOUNT]: () => <SuperAdminCreateAccountForm />,
+    [Pages.UPDATE_PARTNER]: () => <SuperAdminUpdateAccountForm />,
     [Pages.PARTNER_MANAGEMENT]: () => <SuperAdminPartnerManagement />,
+    [Pages.PLAYER_TRANSACTIONS]: () => <PlayerTransactionsPage />,
     [Pages.COMMISSION_RECENT_CUTOFF]: () => (
       <SuperAdminCommissionRecentCutoff />
     ),
+    [Pages.SETTLEMENT_QUEUE]: () => <SuperAdminCommissionSettlementQueue />,
 
     [Pages.HISTORICAL_CUTOFFS]: () => <SuperAdminAllCommissionCutoffs />,
     [Pages.TRANSACTIONS]: () => <SuperAdminTransactions />,
@@ -157,12 +387,14 @@ export const RolePageComponentMap: RolePageMap = {
   [UserRole.PLATINUM]: {
     [Pages.DASHBOARD]: () => <PlatinumDashboard />,
     [Pages.CREATE_OPERATOR_ACCOUNT]: () => <CreateGoldenAccount />,
+    [Pages.UPDATE_PARTNER]: () => <UpdateAccountFormWithCommissionPeriod />,
     [Pages.PARTNER_MANAGEMENT]: () => <PlatinumPartnerManagement />,
     [Pages.COMMISSION_RECENT_CUTOFF]: () => <PlatinumCommissionRecentCutoff />,
     [Pages.HISTORICAL_CUTOFFS]: () => <PlatinumHistoricalCutoff />,
     [Pages.TRANSACTIONS]: () => <PlatinumTransactions />,
     [Pages.COMMISSIONS]: () => <PlatinumCommissions />,
     [Pages.SETTLEMENT_HISTORY]: () => <PlatinumSettlementHistory />,
+    [Pages.SETTLEMENT_QUEUE]: () => <OperatorCommissionSettlementQueue />,
   },
 
   [UserRole.GOLD]: {
@@ -174,27 +406,29 @@ export const RolePageComponentMap: RolePageMap = {
     [Pages.CREATE_OPERATOR_ACCOUNT]: () => <GoldenCreateOperatorAccount />,
     [Pages.PARTNER_MANAGEMENT]: () => <GoldenPartnerManagement />,
     [Pages.COMMISSION_RECENT_CUTOFF]: () => <GoldenCommissionRecentCutoff />,
-    [Pages.PLAYER_MANAGEMENT]: () => <GoldenPartnerManagement />,
+    [Pages.PLAYER_TRANSACTIONS]: () => <GoldenPartnerManagement />,
   },
   [UserRole.OPERATOR]: {
     [Pages.DASHBOARD]: () => <OperatorDashboard />,
     [Pages.CREATE_OPERATOR_ACCOUNT]: () => <OperatorCreatePlatinumAccount />,
+    [Pages.UPDATE_PARTNER]: () => <UpdateAccountFormWithCommissionPeriod />,
     [Pages.PARTNER_MANAGEMENT]: () => <PartnerManagement />,
     [Pages.COMMISSION_RECENT_CUTOFF]: () => <CommissionRecentCutsOff />,
     [Pages.HISTORICAL_CUTOFFS]: () => <OperatorAllCommissionCutoff />,
+    [Pages.SETTLEMENT_QUEUE]: () => <OperatorCommissionSettlementQueue />,
 
     [Pages.TRANSACTIONS]: () => <OperatorTransactions />,
     [Pages.COMMISSIONS]: () => <OperatorCommissions />,
     [Pages.SETTLEMENT_HISTORY]: () => <OperatorSettlementHistory />,
   },
-  [UserRole.DEFAULT]: {
-    [Pages.DASHBOARD]: () => <></>,
-    [Pages.CREATE_OPERATOR_ACCOUNT]: () => <></>,
-    [Pages.PARTNER_MANAGEMENT]: () => <></>,
-    [Pages.COMMISSION_RECENT_CUTOFF]: () => <></>,
-    [Pages.HISTORICAL_CUTOFFS]: () => <></>,
-    [Pages.TRANSACTIONS]: () => <></>,
-    [Pages.COMMISSIONS]: () => <></>,
-    [Pages.SETTLEMENT_HISTORY]: () => <></>,
-  },
+  // [UserRole.DEFAULT]: {
+  //   [Pages.DASHBOARD]: () => <></>,
+  //   [Pages.CREATE_OPERATOR_ACCOUNT]: () => <></>,
+  //   [Pages.PARTNER_MANAGEMENT]: () => <></>,
+  //   [Pages.COMMISSION_RECENT_CUTOFF]: () => <></>,
+  //   [Pages.HISTORICAL_CUTOFFS]: () => <></>,
+  //   [Pages.TRANSACTIONS]: () => <></>,
+  //   [Pages.COMMISSIONS]: () => <></>,
+  //   [Pages.SETTLEMENT_HISTORY]: () => <></>,
+  // },
 };

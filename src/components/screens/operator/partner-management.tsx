@@ -75,7 +75,7 @@ export default function PartnerManagement({}: Props) {
 
       console.log("Fetched partners:", data.data);
 
-      const partnersList = data.data.map((p: any) => ({
+      const partnersList = data.data?.map((p: any) => ({
         username: p.username,
         role: p.role.name,
         mobileNumber: p.mobileNumber,
@@ -155,14 +155,14 @@ export default function PartnerManagement({}: Props) {
               />
             </div>
           </div> */}
-        <div className="mb-10">
+        {/* <div className="mb-10">
           <div className="mb-4">
             <TypographyH4 className="mb-2">
               Cutoff period available for settlement:{" "}
               <span className="text-gray-500">Feb 1 - Feb 15, 2025</span>
             </TypographyH4>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

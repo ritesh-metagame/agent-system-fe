@@ -1,8 +1,10 @@
 "use client";
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -16,12 +18,16 @@ import {
 } from "@/components/ui/table";
 import { CircleHelp } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { parse } from "path";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   columnWidths?: string[];
   tooltips?: { [key: string]: string }; // New prop for tooltip information
+  filterRequired?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -29,11 +35,19 @@ export function DataTable<TData, TValue>({
   data,
   columnWidths = [],
   tooltips = {}, // Default to empty object
+  filterRequired = false,
 }: DataTableProps<TData, TValue>) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      columnFilters,
+    },
   });
 
   const accumulativeWidths = columns.reduce(
@@ -51,14 +65,38 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="rounded-md">
+      {filterRequired ? (
+        <div className="flex items-center py-4">
+          <Input
+            placeholder="Username or mobile number"
+            value={
+              (table.getColumn("username")?.getFilterValue() as string) ??
+              (table.getColumn("mobileNumber")?.getFilterValue() as string)
+            }
+            onChange={(event) => {
+              const value = event.target.value;
+              if (!isNaN(Number(value)) && value !== "") {
+                table.getColumn("mobileNumber")?.setFilterValue(value);
+                table.getColumn("username")?.setFilterValue("");
+              } else {
+                table.getColumn("username")?.setFilterValue(value);
+                table.getColumn("mobileNumber")?.setFilterValue("");
+              }
+            }}
+            className="max-w-sm"
+          />
+        </div>
+      ) : (
+        <></>
+      )}
       <ScrollArea
         className={`w-screen md-[${accumulativeWidths.total + 80}px]`}
       >
         <Table className="w-max border rounded-md">
           <TableHeader className="bg-table-header">
-            {table.getHeaderGroups().map((headerGroup) => (
+            {table.getHeaderGroups()?.map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header, index) => {
+                {headerGroup.headers?.map((header, index) => {
                   const tooltip = tooltips[header.id];
                   return (
                     <TableHead
@@ -91,12 +129,12 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows?.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell, index) => (
+                  {row.getVisibleCells()?.map((cell, index) => (
                     <TableCell
                       key={cell.id}
                       style={{ width: columnWidths[index] || "auto" }} // Apply column width

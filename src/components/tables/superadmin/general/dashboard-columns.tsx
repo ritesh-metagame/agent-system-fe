@@ -1,6 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { formatCurrency } from "@/lib/utils";
 
 // Updated type for commission data
 export type CommissionOverview = {
@@ -13,6 +14,8 @@ export type commissionRunningTally = {
   item: string;
   eGames: number | string;
   sportsBetting: number | string;
+  specialityGamesRNG: number | string;
+  specialityGamesTote: number | string;
 };
 
 export type CommissionAvailableForSettlement = {
@@ -35,7 +38,7 @@ export const commissionAvailableForSettlementColumns: ColumnDef<CommissionAvaila
       header: "COMMISSION AVAILABLE FOR PAYOUT",
       cell: ({ row }) => {
         const value = row.getValue("availableForPayout");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return formatCurrency(value as any);
       },
     },
     {
@@ -43,7 +46,7 @@ export const commissionAvailableForSettlementColumns: ColumnDef<CommissionAvaila
       header: "SETTLED ALL TIME",
       cell: ({ row }) => {
         const value = row.getValue("settledAllTime");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return formatCurrency(value as any);
       },
     },
   ];
@@ -62,7 +65,7 @@ export const commissionRunningTallyColumns: ColumnDef<commissionRunningTally>[] 
       header: "EGAMES",
       cell: ({ row }) => {
         const value = row.getValue("eGames");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return formatCurrency(value as any);
       },
     },
     {
@@ -70,7 +73,23 @@ export const commissionRunningTallyColumns: ColumnDef<commissionRunningTally>[] 
       header: "SPORTS BETTING",
       cell: ({ row }) => {
         const value = row.getValue("sportsBetting");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return formatCurrency(value as any);
+      },
+    },
+    {
+      accessorKey: "specialityGamesRNG",
+      header: "SPECIALITY GAMES RNG",
+      cell: ({ row }) => {
+        const value = row.getValue("specialityGamesRNG");
+        return formatCurrency(value as any);
+      },
+    },
+    {
+      accessorKey: "specialityGamesTote",
+      header: "SPECIALITY GAMES TOTE",
+      cell: ({ row }) => {
+        const value = row.getValue("specialityGamesTote");
+        return formatCurrency(value as any);
       },
     },
   ];
@@ -101,19 +120,56 @@ export const commissionOverviewColumns: ColumnDef<CommissionOverview>[] = [
   },
 ];
 
-export type TotalCommissionPayoutsBreakdown = {
-  metric: string; // Total Deposits, Total Withdrawals, etc.
+export type TotalCommissionPayoutsBreakdown2 = {
+  label: string; // Total Deposits, Total Withdrawals, etc.
   amountPendingSettlement: number | string; // Amount based on latest completed commission periods pending settlement
   settledAllTime: number | string; // Settled All Time
 };
 
-export const totalCommissionPayoutsBreakdownColumns: ColumnDef<TotalCommissionPayoutsBreakdown>[] =
+export const totalCommissionPayoutsBreakdownColumns2: ColumnDef<TotalCommissionPayoutsBreakdown2>[] =
   [
     {
-      accessorKey: "metric",
+      accessorKey: "label",
       header: "",
       cell: ({ row }) => (
-        <span className="font-bold">{row.getValue("metric")}</span>
+        <span className="font-bold">{row.getValue("label")}</span>
+      ),
+    },
+    {
+      accessorKey: "pendingSettlement",
+      header: "CURRENT",
+      cell: ({ row }) => {
+        const value = row.getValue("pendingSettlement");
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
+      },
+    },
+    // {
+    //   accessorKey: "settledAllTime",
+    //   header: "ALL TIME",
+    //   cell: ({ row }) => {
+    //     const value = row.getValue("settledAllTime");
+    //     return typeof value === "number"
+    //       ? formatCurrency(value as any)
+    //       : formatCurrency(value as any);
+    //   },
+    // },
+  ];
+
+export type TotalCommissionPayoutsBreakdown1 = {
+  label: string; // Total Deposits, Total Withdrawals, etc.
+  amountPendingSettlement: number | string; // Amount based on latest completed commission periods pending settlement
+  allTime: number | string; // Settled All Time
+};
+
+export const totalCommissionPayoutsBreakdownColumns1: ColumnDef<TotalCommissionPayoutsBreakdown1>[] =
+  [
+    {
+      accessorKey: "label",
+      header: "",
+      cell: ({ row }) => (
+        <span className="font-bold">{row.getValue("label")}</span>
       ),
     },
     {
@@ -140,6 +196,68 @@ export type NetworkStatistics = {
   pending: number | string;
   declined: number | string;
 };
+
+export type PaymentGatewayFees = {
+  type: string; // e.g., "Payment Gateway Fees"
+  amount: number | string; // Amount in PHP
+};
+
+export const paymentGatewayFeesColumns: ColumnDef<PaymentGatewayFees>[] = [
+  {
+    accessorKey: "type",
+    header: "",
+    cell: ({ row }) => (
+      <span className="font-bold">{row.getValue("type")}</span>
+    ),
+  },
+  {
+    accessorKey: "amount",
+    header: "AMOUNT",
+    cell: ({ row }) => {
+      const value = row.getValue("amount");
+      return typeof value === "number"
+        ? formatCurrency(value as any)
+        : formatCurrency(value as any);
+    },
+  },
+];
+
+export type LicenseCommissionBreakdown = {
+  label: string;
+  pendingSettlement: string | number;
+  settledAllTime: string | number;
+};
+
+export const licenseCommissionBreakdownColumns: ColumnDef<LicenseCommissionBreakdown>[] =
+  [
+    {
+      accessorKey: "label",
+      header: "",
+      cell: ({ row }) => (
+        <span className="font-bold">{row.getValue("label")}</span>
+      ),
+    },
+    {
+      accessorKey: "pendingSettlement",
+      header: "CURRENT",
+      cell: ({ row }) => {
+        const value = row.getValue("pendingSettlement");
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
+      },
+    },
+    // {
+    //   accessorKey: "settledAllTime",
+    //   header: "ALL TIME",
+    //   cell: ({ row }) => {
+    //     const value = row.getValue("settledAllTime");
+    //     return typeof value === "number"
+    //       ? formatCurrency(value as any)
+    //       : formatCurrency(value as any);
+    //   },
+    // },
+  ];
 
 export const networkStatisticsColumn: ColumnDef<NetworkStatistics>[] = [
   {
@@ -185,7 +303,9 @@ export const financialOverviewColumns: ColumnDef<FinancialOverview>[] = [
     header: "PENDING COMMISSION",
     cell: ({ row }) => {
       const value = row.getValue("pendingCommission");
-      return typeof value === "number" ? value.toLocaleString() : value;
+      return typeof value === "number"
+        ? formatCurrency(value as any)
+        : formatCurrency(value as any);
     },
   },
   {
@@ -193,7 +313,9 @@ export const financialOverviewColumns: ColumnDef<FinancialOverview>[] = [
     header: "RELEASED ALL TIME",
     cell: ({ row }) => {
       const value = row.getValue("releasedAllTime");
-      return typeof value === "number" ? value.toLocaleString() : value;
+      return typeof value === "number"
+        ? formatCurrency(value as any)
+        : formatCurrency(value as any);
     },
   },
   {
@@ -237,7 +359,9 @@ export const categoryFinancialOverviewColumns: ColumnDef<CategoryFinancialOvervi
       header: "PENDING COMMISSION",
       cell: ({ row }) => {
         const value = row.getValue("pendingCommission");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -245,7 +369,9 @@ export const categoryFinancialOverviewColumns: ColumnDef<CategoryFinancialOvervi
       header: "RELEASED ALL TIME",
       cell: ({ row }) => {
         const value = row.getValue("releasedAllTime");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -253,7 +379,9 @@ export const categoryFinancialOverviewColumns: ColumnDef<CategoryFinancialOvervi
       header: "SUMMARY",
       cell: ({ row }) => {
         const value = row.getValue("totalSummary");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
   ];
@@ -289,7 +417,9 @@ export const sportsBettingOverviewColumns: ColumnDef<SportsBettingOverview>[] =
       header: "PENDING COMMISSION",
       cell: ({ row }) => {
         const value = row.getValue("pendingCommission");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -297,7 +427,9 @@ export const sportsBettingOverviewColumns: ColumnDef<SportsBettingOverview>[] =
       header: "RELEASED ALL TIME",
       cell: ({ row }) => {
         const value = row.getValue("releasedAllTime");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -347,17 +479,21 @@ export const topPerformersColumns: ColumnDef<TopPerformersOverview>[] = [
     header: "BASED ON PREVIOUSLY COMPLETED MONTH",
     cell: ({ row }) => {
       const value = row.getValue("basedOnPreviouslyCompletedMonth");
-      return typeof value === "number" ? value.toLocaleString() : value;
+      return typeof value === "number"
+        ? formatCurrency(value as any)
+        : formatCurrency(value as any);
     },
   },
-  {
-    accessorKey: "allTime",
-    header: "ALL TIME",
-    cell: ({ row }) => {
-      const value = row.getValue("allTime");
-      return typeof value === "number" ? value.toLocaleString() : value;
-    },
-  },
+  // {
+  //   accessorKey: "allTime",
+  //   header: "ALL TIME",
+  //   cell: ({ row }) => {
+  //     const value = row.getValue("allTime");
+  //     return typeof value === "number"
+  //       ? formatCurrency(value as any)
+  //       : formatCurrency(value as any);
+  //   },
+  // },
 ];
 
 export type TopPlayersDepositsOverview = {
@@ -381,7 +517,9 @@ export const topPlayersDepositsColumns: ColumnDef<TopPlayersDepositsOverview>[] 
       header: "DEPOSITS MADE AS OF AVAILABLE CUTOFF PERIOD",
       cell: ({ row }) => {
         const value = row.getValue("depositsMade");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -389,7 +527,9 @@ export const topPlayersDepositsColumns: ColumnDef<TopPlayersDepositsOverview>[] 
       header: "TOTAL DEPOSITS TO DATE",
       cell: ({ row }) => {
         const value = row.getValue("totalDeposits");
-        return typeof value === "number" ? value.toLocaleString() : value;
+        return typeof value === "number"
+          ? formatCurrency(value as any)
+          : formatCurrency(value as any);
       },
     },
     {
@@ -420,7 +560,9 @@ export const topPlayersGGRColumns: ColumnDef<TopPlayersGGROverview>[] = [
     header: "GGR MADE AS OF AVAILABLE CUTOFF PERIOD",
     cell: ({ row }) => {
       const value = row.getValue("ggrMade");
-      return typeof value === "number" ? value.toLocaleString() : value;
+      return typeof value === "number"
+        ? formatCurrency(value as any)
+        : formatCurrency(value as any);
     },
   },
   {
@@ -428,12 +570,57 @@ export const topPlayersGGRColumns: ColumnDef<TopPlayersGGROverview>[] = [
     header: "TOTAL GGR TO DATE",
     cell: ({ row }) => {
       const value = row.getValue("totalGGR");
-      return typeof value === "number" ? value.toLocaleString() : value;
+      return typeof value === "number"
+        ? formatCurrency(value)
+        : formatCurrency(value as any);
     },
   },
   {
     accessorKey: "operatorName",
     header: "OPERATOR NAME",
     cell: ({ row }) => row.getValue("operatorName"),
+  },
+];
+
+// 1) Define the row shape
+export type PlayerActivityRow = {
+  label: string; // e.g. "PLAYERS"
+  active: number;
+  inactive: number;
+  totalApprovedPlayers: number; // must match the row in E12, as per your note
+};
+
+// 2) Define columns for the “PLAYER ACTIVITY” table
+export const playerActivityColumns: ColumnDef<PlayerActivityRow>[] = [
+  {
+    accessorKey: "label",
+    header: "PLAYER ACTIVITY",
+    cell: ({ row }) => (
+      <span className="font-bold">{row.getValue("label")}</span>
+    ),
+  },
+  {
+    accessorKey: "active",
+    header: "ACTIVE",
+    cell: ({ row }) => {
+      const value = row.getValue("active") as number;
+      return value.toLocaleString();
+    },
+  },
+  {
+    accessorKey: "inactive",
+    header: "INACTIVE",
+    cell: ({ row }) => {
+      const value = row.getValue("inactive") as number;
+      return value.toLocaleString();
+    },
+  },
+  {
+    accessorKey: "totalApprovedPlayers",
+    header: "TOTAL APPROVED PLAYERS",
+    cell: ({ row }) => {
+      const value = row.getValue("totalApprovedPlayers") as number;
+      return value.toLocaleString();
+    },
   },
 ];

@@ -78,6 +78,8 @@ export default function Dashboard({}: Props) {
 
   const { user } = useSelector((state) => state.authReducer);
 
+  console.log("userDate-", user);
+
   const [allTimeTopPerformersData, setAllTimeTopPerformersData] =
     React.useState<OperatorTopPerformersAllTime[]>([]);
 
@@ -101,7 +103,7 @@ export default function Dashboard({}: Props) {
       const data = response.data.data;
 
       if (data && typeof data === "object") {
-        const formattedData = Object.entries(data).map(
+        const formattedData = Object.entries(data)?.map(
           ([role, stats]: [string, any]) => ({
             network: role.charAt(0).toUpperCase() + role.slice(1),
             approved: stats.approved || 0,
@@ -145,7 +147,7 @@ export default function Dashboard({}: Props) {
 
       // Transform API response to match our PlatinumTopPerformersAllTimeData type
       if (data && data.topPerformers && Array.isArray(data.topPerformers)) {
-        const formattedData = data.topPerformers.map((performer: any) => ({
+        const formattedData = data.topPerformers?.map((performer: any) => ({
           platinumName: performer.name || "",
           pendingCommission: performer.pendingCommission || 0,
           released: performer.released || 0,
@@ -177,8 +179,8 @@ export default function Dashboard({}: Props) {
         welcomeTierName="Platinum Partners"
         referralLink={user?.affiliateLink}
         networkOverviewData={networkOverviewData}
-        userRole={user?.role.name}
-        userId={user?.id}
+        userRole={user.role.name}
+        userId={user.id}
       />
 
       {/* Top Performers All Time */}

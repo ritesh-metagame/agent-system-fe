@@ -1,6 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { formatCurrency } from "@/lib/utils";
 
 // Define the data structure for the Operator Network table
 export type OperatorNetworkData = {
@@ -28,27 +29,33 @@ export const operatorNetworkColumns: ColumnDef<OperatorNetworkData>[] = [
   {
     accessorKey: "totalBets",
     header: "TOTAL NETWORK BETS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalBets")),
   },
   {
     accessorKey: "totalWinnings",
     header: "TOTAL NETWORK WINNINGS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalWinnings")),
   },
   {
     accessorKey: "totalGGR",
     header: "TOTAL NETWORK GGR",
+    cell: ({ row }) => formatCurrency(row.getValue("totalGGR")),
   },
   {
     accessorKey: "totalGrossCommissions",
     header: "TOTAL NETWORK GROSS COMMISSIONS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalGrossCommissions")),
   },
   {
     accessorKey: "totalDeductions",
     header:
       "TOTAL NETWORK DEDUCTIONS (Payment Gateway Fee Deductions from GP Commissions)",
+    cell: ({ row }) => formatCurrency(row.getValue("totalDeductions")),
   },
   {
     accessorKey: "totalNetCommissions",
     header: "TOTAL NET COMMISSIONS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalNetCommissions")),
   },
 ];
 
@@ -78,27 +85,33 @@ export const platinumPartnerColumns: ColumnDef<PlatinumPartnerData>[] = [
   {
     accessorKey: "totalBets",
     header: "TOTAL BETS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalBets")),
   },
   {
     accessorKey: "totalWinnings",
     header: "TOTAL WINNINGS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalWinnings")),
   },
   {
     accessorKey: "totalGGR",
     header: "TOTAL GGR",
+    cell: ({ row }) => formatCurrency(row.getValue("totalGGR")),
   },
   {
     accessorKey: "totalGrossCommissions",
     header: "TOTAL GROSS COMMISSIONS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalGrossCommissions")),
   },
   {
     accessorKey: "totalDeductions",
     header:
       "TOTAL DEDUCTIONS (Payment Gateway Fee Deductions from GP Commissions)",
+    cell: ({ row }) => formatCurrency(row.getValue("totalDeductions")),
   },
   {
     accessorKey: "totalNetCommissions",
     header: "TOTAL NET COMMISSIONS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalNetCommissions")),
   },
 ];
 
@@ -128,26 +141,32 @@ export const goldenPartnerColumns: ColumnDef<GoldenPartnerData>[] = [
   {
     accessorKey: "totalBets",
     header: "TOTAL BETS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalBets")),
   },
   {
     accessorKey: "totalWinnings",
     header: "TOTAL WINNINGS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalWinnings")),
   },
   {
     accessorKey: "totalGGR",
     header: "TOTAL GGR",
+    cell: ({ row }) => formatCurrency(row.getValue("totalGGR")),
   },
   {
     accessorKey: "totalGrossCommissions",
     header: "TOTAL GROSS COMMISSIONS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalGrossCommissions")),
   },
   {
     accessorKey: "totalDeductions",
     header:
       "TOTAL DEDUCTIONS (Payment Gateway Fee Deductions from GP Commissions)",
+    cell: ({ row }) => formatCurrency(row.getValue("totalDeductions")),
   },
   {
     accessorKey: "totalNetCommissions",
     header: "TOTAL NET COMMISSIONS",
+    cell: ({ row }) => formatCurrency(row.getValue("totalNetCommissions")),
   },
 ];

@@ -1,4 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { formatCurrency } from "@/lib/utils";
 
 /**
  * Cutoff Period Table
@@ -30,6 +31,16 @@ export type NetworkOverviewData = {
   summary: number | string;
 };
 
+export type GoldenNetworkOverviewData = {
+  network: string;
+  approved: number | string;
+}
+
+export type PayoutAndWalletCommissionData = {
+  payout: number | string;
+  wallet: number | string;
+};
+
 export const networkOverviewColumns: ColumnDef<NetworkOverviewData>[] = [
   {
     accessorKey: "network",
@@ -45,6 +56,40 @@ export const networkOverviewColumns: ColumnDef<NetworkOverviewData>[] = [
   { accessorKey: "suspended", header: "SUSPENDED" },
   { accessorKey: "summary", header: "SUMMARY" },
 ];
+
+export const goldenNetworkOverviewColumns: ColumnDef<GoldenNetworkOverviewData>[] =
+  [
+    {
+      accessorKey: "network",
+      header: "NETWORK",
+      cell: ({ row }) => (
+        <>
+          <h1 className="font-bold">{row.getValue("network")}</h1>
+        </>
+      ),
+    },
+    { accessorKey: "approved", header: "APPROVED" },
+  ];
+
+export const payoutAndWalletColumns: ColumnDef<PayoutAndWalletCommissionData>[] =
+  [
+    {
+      accessorKey: "payout",
+      header: "PAYOUT",
+      cell: ({ row }) => {
+        const value = row.getValue("payout");
+        return value ? formatCurrency(value as any) : "0";
+      },
+    },
+    {
+      accessorKey: "wallet",
+      header: "WALLET",
+      cell: ({ row }) => {
+        const value = row.getValue("wallet");
+        return value ? formatCurrency(value as any) : "0";
+      },
+    },
+  ];
 
 /**
  * Overall Summary (E-Games & Sportsbetting) Table
@@ -71,7 +116,7 @@ export const overallSummaryColumns: ColumnDef<OverallSummaryData>[] = [
     header: "PENDING SETTLEMENT",
     cell: ({ row }) => {
       const value = row.getValue("pendingSettlement");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
   {
@@ -79,7 +124,7 @@ export const overallSummaryColumns: ColumnDef<OverallSummaryData>[] = [
     header: "PREVIOUS SETTLED (Cumulative)",
     cell: ({ row }) => {
       const value = row.getValue("previousSettled");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
   {
@@ -87,7 +132,7 @@ export const overallSummaryColumns: ColumnDef<OverallSummaryData>[] = [
     header: "SUMMARY",
     cell: ({ row }) => {
       const value = row.getValue("summary");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
 ];
@@ -118,7 +163,7 @@ export const eGamesColumns: ColumnDef<EGamesData>[] = [
     header: "DAILY OVERVIEW",
     cell: ({ row }) => {
       const value = row.getValue("dailyOverview");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
   {
@@ -126,15 +171,15 @@ export const eGamesColumns: ColumnDef<EGamesData>[] = [
     header: "PENDING SETTLEMENT",
     cell: ({ row }) => {
       const value = row.getValue("pendingSettlement");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
   {
     accessorKey: "previousSettled",
-    header: "PREVIOUS SETTLED ",
+    header: "PREVIOUS SETTLED",
     cell: ({ row }) => {
       const value = row.getValue("previousSettled");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
   {
@@ -142,7 +187,7 @@ export const eGamesColumns: ColumnDef<EGamesData>[] = [
     header: "SUMMARY",
     cell: ({ row }) => {
       const value = row.getValue("summary");
-      return ["0", 0, "$0", "$0.00"].includes(value as any) ? "_" : value;
+      return value ? formatCurrency(value as any) : "-";
     },
   },
 ];
