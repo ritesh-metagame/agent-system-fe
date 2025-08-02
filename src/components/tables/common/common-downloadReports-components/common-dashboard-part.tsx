@@ -812,9 +812,9 @@ export default function CommonDashboard({
                                 <TypographyH2 className="">
                                     Total Commission Payouts Breakdown
                                 </TypographyH2>
-                                <span className="text-gray-400 text-sm">
-                  As of {commissionDateRange.to}
-                </span>
+                                {/*                <span className="text-gray-400 text-sm">*/}
+                                {/*  As of {commissionDateRange.to}*/}
+                                {/*</span>*/}
                             </div>
                         </div>
                         <div className="mb-4">

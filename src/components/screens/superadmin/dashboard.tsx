@@ -679,9 +679,9 @@ export default function Dashboard({}) {
                             <TypographyH2 className="">
                                 Total Commission Payouts Breakdown
                             </TypographyH2>
-                            <p className="text-sm text-gray-500">
-                                (As of {payoutsDateRange.to})
-                            </p>
+                            {/*<p className="text-sm text-gray-500">*/}
+                            {/*    (As of {payoutsDateRange.to})*/}
+                            {/*</p>*/}
                             {/* <Badge variant="outline" className="text-xs">
                 {payoutsDateRange.from} - {payoutsDateRange.to}
               </Badge> */}
@@ -721,9 +721,9 @@ export default function Dashboard({}) {
                     <div className="mb-4">
                         <div className="flex items-center gap-2 mb-2">
                             <TypographyH2 className="">Breakdown Per License</TypographyH2>
-                            <p className="text-sm text-gray-500">
-                                (As of {payoutsDateRange.to})
-                            </p>
+                            {/*<p className="text-sm text-gray-500">*/}
+                            {/*    (As of {payoutsDateRange.to})*/}
+                            {/*</p>*/}
                             {/* <Badge variant="outline" className="text-xs">
                 {payoutsDateRange.from} - {payoutsDateRange.to}
               </Badge> */}
